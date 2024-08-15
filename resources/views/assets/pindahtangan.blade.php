@@ -25,7 +25,8 @@
                         @endforeach
                     </select>
                 </div>
-
+                <input type="hidden" name="approval_status" value="Pending">
+                <input type="hidden" name="aksi" value="Mutasi">
                 <div class="form-group">
                     <label for="nama">Nama</label>
                     <select class="form-control" id="nama" name="nama" required>
@@ -44,14 +45,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="documentation">Documentation</label>
-                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*">
+               
+                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" hidden>
                     @if($asset->documentation)
-                        <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
+                        <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a>
+                        </p>
                     @endif
                 </div>
 
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-warning">Mutasi</button>
             </form>
         </div>
     </div>

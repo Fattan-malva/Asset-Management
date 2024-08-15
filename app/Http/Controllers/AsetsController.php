@@ -29,6 +29,42 @@ class AsetsController extends Controller
 
         return view('assets.index', compact('assets'));
     }
+    public function indexmutasi(Request $request)
+    {
+        // Initialize the query builder
+        $query = DB::table('assets')
+            ->join('merk', 'assets.merk', '=', 'merk.id')
+            ->join('customer', 'assets.nama', '=', 'customer.id')
+            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id') // Join inventory to get tagging
+            ->select(
+                'assets.*',
+                'merk.name as merk_name',
+                'customer.name as customer_name',
+                'customer.mapping as customer_mapping', // Select the mapping from customer
+                'inventory.tagging as tagging'
+            )
+            ->where('assets.approval_status', 'Approved'); // Filter based on status 'Mutasi'
+
+        // Apply search filter if provided
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('inventory.tagging', 'like', "%$search%")
+                    ->orWhere('assets.jenis_aset', 'like', "%$search%")
+                    ->orWhere('merk.name', 'like', "%$search%")
+                    ->orWhere('customer.name', 'like', "%$search%");
+            });
+        }
+
+        // Execute the query and get the results
+        $assets = $query->get();
+
+        // Return the view with assets
+        return view('assets.indexmutasi', compact('assets'));
+    }
+
+
+
 
     public function create()
     {
@@ -100,6 +136,8 @@ class AsetsController extends Controller
             'nama' => $request->input('nama'),
             'mapping' => $customer->mapping,
             'lokasi' => $request->input('lokasi'),
+            'approval_status' => $request->input('approval_status', ''),
+            'aksi' => $request->input('aksi', ''),
         ];
 
         // Handle documentation file
@@ -148,7 +186,8 @@ class AsetsController extends Controller
             'lokasi' => $request->input('lokasi', ''),
             'status' => $request->input('status'),
             'kondisi' => $request->input('kondisi', ''),
-            'approval_status' => $request->input('approval_status', ''), // Use input value
+            'approval_status' => $request->input('approval_status', ''),
+            'aksi' => $request->input('aksi', ''),
         ];
 
         if ($request->hasFile('documentation')) {

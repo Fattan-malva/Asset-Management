@@ -5,16 +5,11 @@
 <br>
 <br>
 <br>
-<h1 class="mt-4 text-center">Activity</h1>
+<h1 class="mt-4 text-center">Mutasi</h1>
 <br>
 <br>
 <br>
 <div class="container">
-    <!-- <div class="mb-3">
-        <a href="{{ route('assets.create') }}" class="btn btn-lg btn-success">
-            <i class="bi bi-cloud-plus-fill"></i> Serah Terima
-        </a>
-    </div> -->
     <div class="card">
         <div class="card-header">
             <h2>Asets Operation</h2>
@@ -26,17 +21,14 @@
                 </div>
             @endif
             <div class="table-responsive">
-                <table id="assetTable" class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Asset Tagging</th>
                             <th scope="col">Name Holder</th>
+                            <th scope="col">Asset Tagging</th>
                             <th scope="col">Asset Type</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Approval</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -44,36 +36,16 @@
                         @forelse ($assets as $index => $asset)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
+                                <td>{{ $asset->customer_name }}</td> 
                                 <td>{{ $asset->tagging }}</td>
-                                <td>{{ $asset->customer_name }}</td>
                                 <td>{{ $asset->jenis_aset }}</td>
                                 <td>{{ $asset->merk_name }}</td>
-                                <td>{{ $asset->lokasi }}</td>
-                                <td>{{ $asset->status }}</td>
-                                <td>{{ $asset->approval_status }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                            data-bs-target="#detailModal{{ $asset->id }}" title="View Details">
-                                            <i class="bi bi-file-earmark-text"> Detail</i>
-                                        </button>
-                                        <a href="{{ route('assets.edit', ['id' => $asset->id]) }}"
-                                            class="btn btn-sm btn-primary" title="Edit">
-                                            <i class="bi bi-pencil-square"> Edit</i>
-                                        </a>
-                                        <!-- <a href="{{ route('assets.pindahtangan', ['id' => $asset->id]) }}"
-                                            class="btn btn-sm btn-warning" title="Edit">
+                                        <a href="{{ route('assets.pindahtangan', ['id' => $asset->id]) }}"
+                                            class="btn btn-sm btn-warning" title="Mutasi">
                                             Mutasi
                                         </a>
-                                        <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST"
-                                            style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this asset?')">
-                                                Return
-                                            </button>
-                                        </form> -->
                                     </div>
                                 </td>
                             </tr>
@@ -113,7 +85,6 @@
                                                         No Document
                                                     @endif
                                                 </div>
-
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -125,7 +96,7 @@
                             </div>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center"
+                                <td colspan="9" class="text-center"
                                     style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
                                     assets found.</td>
                             </tr>

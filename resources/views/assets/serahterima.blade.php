@@ -26,7 +26,7 @@
                     </select>
                     <input type="hidden" name="asset_tagging_hidden" value="{{ $asset->asset_tagging }}">
                 </div>
-
+                <input type="hidden" name="approval_status" value="Approved">
                 <div class="form-group">
                     <label for="nama">Nama</label>
                     <select class="form-control" id="nama" name="nama" readonly>

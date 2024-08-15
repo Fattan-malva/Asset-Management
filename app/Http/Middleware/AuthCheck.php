@@ -14,25 +14,32 @@ class AuthCheck
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, $role = null)
     {
+        // Check if the user is logged in
         if (!$request->session()->has('user_id')) {
             return redirect('/')->with('fail', 'Anda harus login dulu');
         }
 
-        // Jika user_id ada, ambil user_role dari sesi
+        // Retrieve user_role from the session
         $userRole = $request->session()->get('user_role');
-        
-        // Set user_role di sesi jika belum ada
+
+        // If user_role is not set, retrieve it from the database and store it in the session
         if (is_null($userRole)) {
-            // Ambil user_role dari database atau tempat lain
             $userId = $request->session()->get('user_id');
             $user = \App\Models\User::find($userId);
-            
-            // Misalkan `user_role` ada dalam model `User`
+
             if ($user) {
-                $request->session()->put('user_role', $user->role);
+                $userRole = $user->role;
+                $request->session()->put('user_role', $userRole);
+            } else {
+                return redirect('/')->with('fail', 'User tidak ditemukan');
             }
+        }
+
+        // If a specific role is required, check the user's role
+        if ($role && $userRole !== $role) {
+            return redirect('/')->with('fail', 'Anda tidak memiliki akses ke halaman ini');
         }
 
         return $next($request);

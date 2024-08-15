@@ -101,7 +101,7 @@ class AssetUserController extends Controller
                 'lokasi' => $validatedData['lokasi'] ?? '',
                 'status' => $validatedData['status'],
                 'kondisi' => $validatedData['kondisi'],
-                'approval_status' => 'Approved' // Set approval status to Approved
+                'approval_status' => $request->input('approval_status', ''),
             ];
 
             // Menangani file dokumentasi jika ada

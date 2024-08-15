@@ -25,7 +25,7 @@
                         @endforeach
                     </select>
                 </div>
-                <input type="hidden" name="approval_status" value="Approved">
+                <input type="hidden" name="approval_status" value="Pending">
 
                 <div class="form-group">
                     <label for="nama">Nama</label>

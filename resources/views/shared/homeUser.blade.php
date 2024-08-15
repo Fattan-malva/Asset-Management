@@ -109,6 +109,7 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $asset->customer_name }}</h5>
                                                     <p class="card-text">
+                                                        <strong>Action:</strong> {{ $asset->aksi }}<br>
                                                         <strong>Asset Tag:</strong> {{ $asset->tagging }}<br>
                                                         <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
                                                         <strong>Merk:</strong> {{ $asset->merk_name }}

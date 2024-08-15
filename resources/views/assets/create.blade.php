@@ -3,12 +3,12 @@
 @section('content')
 <br>
 <br>
-<h1 class="mt-4 text-center">Serah Terima</h1>
+<h1 class="mt-4 text-center">Handover</h1>
 <br>
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h2>Serah Terima</h2>
+            <h2>Handover</h2>
         </div>
         <div class="card-body">
             @if ($assetTaggingAvailable && $namesAvailable)
@@ -17,6 +17,7 @@
 
                     
                     <input type="hidden" name="approval_status" value="Pending">
+                    <input type="hidden" name="aksi" value="Handover">
 
                     <div class="form-group">
                         <label for="asset_tagging">Asset Tagging</label>

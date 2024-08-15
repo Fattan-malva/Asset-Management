@@ -22,6 +22,7 @@ class Assets extends Model
         'lokasi',
         'status',
         'approval_status',
+        'aksi',
         'kondisi',
         'documentation'
     ];
