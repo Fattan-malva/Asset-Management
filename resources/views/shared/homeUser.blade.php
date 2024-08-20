@@ -94,7 +94,10 @@
                 <!-- Assets Section -->
                 <div class="col-md-8">
                     <!-- Section for Pending Assets -->
-                    <div class="card border-primary mb-4 ">
+                    <!-- In your Blade view file -->
+
+                    <!-- Section for Pending Assets -->
+                    <div class="card border-primary mb-4">
                         <div class="card-header bg-primary text-white">
                             <h2>Waiting for Approval</h2>
                         </div>
@@ -109,13 +112,28 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $asset->customer_name }}</h5>
                                                     <p class="card-text">
+                                                        <span class="badge position-absolute top-0 end-0 m-2
+                                                            {{ $asset->aksi == 'Handover' ? 'bg-success' : '' }}
+                                                            {{ $asset->aksi == 'Mutasi' ? 'bg-warning' : '' }}
+                                                            {{ $asset->aksi == 'Return' ? 'bg-danger' : '' }}">
+                                                            {{ $asset->aksi }}
+                                                        </span>
                                                         <strong>Action:</strong> {{ $asset->aksi }}<br>
                                                         <strong>Asset Tag:</strong> {{ $asset->tagging }}<br>
                                                         <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
                                                         <strong>Merk:</strong> {{ $asset->merk_name }}
                                                     </p>
-                                                    <a href="{{ route('assets.serahterima', ['id' => $asset->id]) }}"
-                                                        class="btn btn-primary">Approve</a>
+                                                    <br>
+                                                    <br>
+                                                    <div class="d-flex justify-content-between">
+                                                        <a href="{{ route('assets.serahterima', ['id' => $asset->id]) }}"
+                                                            class="btn btn-primary" style="margin-bottom:15px;">Approve</a>
+                                                        <form action="{{ route('assets.reject', ['id' => $asset->id]) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-danger">Reject</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -124,6 +142,7 @@
                             @endif
                         </div>
                     </div>
+
 
                     <!-- Section for Approved Assets -->
                     <div class="card border-success">
@@ -197,6 +216,8 @@
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Close</button>
+                                                                <a href="{{ route('assets.print', ['id' => $asset->id]) }}"
+                                                                    class="btn btn-primary">Print</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -218,3 +239,32 @@
 @section('scripts')
 <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 @endsection
+
+
+@push('styles')
+    <style>
+        .card-header.bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .card-header.bg-warning {
+            background-color: #ffc107 !important;
+        }
+
+        .card-header.bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .badge.bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .badge.bg-warning {
+            background-color: #ffc107 !important;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+    </style>
+@endpush

@@ -36,8 +36,8 @@
 
                 <!-- Activity Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="activityDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" onclick="location.href='{{ route('assets.index') }}'">Activity</a>
+                    <a class="nav-link dropdown-toggle" id="activityyDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Activity</a>
                     <ul class="dropdown-menu" aria-labelledby="activityDropdown">
                         <li>
                             <a class="dropdown-item {{ Request::is('assets/create') ? 'active' : '' }}"
@@ -55,7 +55,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item {{ Request::is('assets/index') ? 'active' : '' }}"
-                                href="{{ route('assets.index') }}"
+                                href="{{ route('assets.indexreturn') }}"
                                 style="background-color: rgba(220, 53, 69, 0.2); color: black; border-radius: 2rem; margin-bottom: 0.2rem; margin-left: 0.4rem;">
                                 Return
                             </a>
@@ -64,6 +64,12 @@
                             <a class="dropdown-item {{ Request::is('assets/history') ? 'active' : '' }}"
                                 href="{{ route('assets.history') }}">
                                 History
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ Request::is('assets/history') ? 'active' : '' }}"
+                                href="{{ route('assets.index') }}">
+                                Approval Status
                             </a>
                         </li>
                     </ul>
@@ -136,7 +142,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item {{ Request::is('assets/index') ? 'active' : '' }}"
-                                href="{{ route('assets.index') }}"
+                                href="{{ route('assets.indexreturn') }}"
                                 style="background-color: rgba(220, 53, 69, 0.2); color: black; border-radius: 2rem; margin-bottom: 0.2rem; margin-left: 0.4rem;">
                                 Return
                             </a>

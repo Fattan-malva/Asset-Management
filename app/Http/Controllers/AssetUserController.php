@@ -136,6 +136,19 @@ class AssetUserController extends Controller
         $asset = Assets::findOrFail($id);
         $asset->delete();
 
-        return redirect()->route('asset-user')->with('success', 'Asset has been returned successfully.');
+        return redirect()->route('shared.homeUser')->with('success', 'Asset has been returned successfully.');
     }
+    // AssetsController.php
+// AssetsController.php
+    public function returnAsset($id)
+    {
+        $asset = Assets::findOrFail($id);
+
+        // Assuming `user` is a relationship method on the Asset model
+        $asset->user()->delete();
+
+        return redirect()->back()->with('success', 'Asset returned successfully.');
+    }
+
+
 }

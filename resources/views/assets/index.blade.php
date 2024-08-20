@@ -1,30 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<br>
-<br>
-<h1 class="mt-4 text-center">Activity</h1>
-<br>
-<br>
-<br>
-<div class="container">
-    <!-- <div class="mb-3">
-        <a href="{{ route('assets.create') }}" class="btn btn-lg btn-success">
-            <i class="bi bi-cloud-plus-fill"></i> Serah Terima
-        </a>
-    </div> -->
-    <div class="card">
-        <div class="card-header">
-            <h2>Asets Operation</h2>
+<div class="container mt-4">
+    <br>
+    <br>
+    <br>
+    <h1 class="text-center mb-4">List Status Approval</h1>
+
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <div class="card">
         <div class="card-body">
-            @if (session('success'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
             <div class="table-responsive">
                 <table id="assetTable" class="table table-striped table-bordered">
                     <thead>
@@ -36,6 +26,7 @@
                             <th scope="col">Merk</th>
                             <th scope="col">Location</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Process</th>
                             <th scope="col">Approval</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -50,30 +41,49 @@
                                 <td>{{ $asset->merk_name }}</td>
                                 <td>{{ $asset->lokasi }}</td>
                                 <td>{{ $asset->status }}</td>
-                                <td>{{ $asset->approval_status }}</td>
+                                <td>{{ $asset->aksi }}</td>
                                 <td>
-                                    <div class="action-buttons">
+                                    <!-- Approval Status Badge -->
+                                    @if ($asset->approval_status === 'Approved')
+                                        <span class="badge bg-success" style="padding: 5px;">Approved</span>
+                                    @elseif ($asset->approval_status === 'Pending')
+                                        <span class="badge bg-primary" style="padding: 5px;">Waiting Approval</span>
+                                    @elseif ($asset->approval_status === 'Rejected')
+                                        <span class="badge bg-danger" style="padding: 5px;">Rejected</span>
+                                    @else
+                                        <span class="badge bg-secondary" style="padding: 5px;">Unknown</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <!-- Button to View Details -->
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                            data-bs-target="#detailModal{{ $asset->id }}" title="View Details">
-                                            <i class="bi bi-file-earmark-text"> Detail</i>
+                                            data-bs-target="#detailModal{{ $asset->id }}" title="View Details" style="margin-right:10px;">
+                                            <i class="bi bi-file-earmark-text"></i>
                                         </button>
-                                        <a href="{{ route('assets.edit', ['id' => $asset->id]) }}"
-                                            class="btn btn-sm btn-primary" title="Edit">
-                                            <i class="bi bi-pencil-square"> Edit</i>
-                                        </a>
-                                        <!-- <a href="{{ route('assets.pindahtangan', ['id' => $asset->id]) }}"
-                                            class="btn btn-sm btn-warning" title="Edit">
-                                            Mutasi
-                                        </a>
-                                        <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST"
-                                            style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this asset?')">
-                                                Return
-                                            </button>
-                                        </form> -->
+                                        <!-- Conditional Button: Cancel Process -->
+                                        @if ($asset->approval_status === 'Rejected' && $asset->aksi === 'Handover')
+                                            <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger" title="Cancel Process"
+                                                    onclick="return confirm('Are you sure you want to return this asset to inventory?')">
+                                                    Cancel Process
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <!-- Conditional Button: Rollback Name -->
+                                        @if ($asset->approval_status === 'Rejected' && ($asset->aksi === 'Mutasi' || $asset->aksi === 'Return'))
+                                            <form action="{{ route('assets.rollbackMutasi', ['id' => $asset->id]) }}"
+                                                method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-warning" title="Rollback Name"
+                                                    onclick="return confirm('Are you sure you want to rollback this asset to its previous name?')">
+                                                    Rollback Name
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -92,18 +102,18 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <strong>Asset Tagging:</strong> {{ $asset->tagging }}<br>
-                                                    <strong>Nama Customer:</strong> {{ $asset->customer_name }}<br>
+                                                    <strong>Name Holder:</strong> {{ $asset->customer_name }}<br>
                                                     <strong>Position:</strong> {{ $asset->customer_mapping }}<br>
                                                     <strong>Location:</strong> {{ $asset->lokasi }}<br>
-                                                    <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
+                                                    <strong>Asset Type:</strong> {{ $asset->jenis_aset }}<br>
                                                     <strong>Merk:</strong> {{ $asset->merk_name }}<br>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <strong>Serial Number:</strong> {{ $asset->serial_number }}<br>
                                                     <strong>O365:</strong> {{ $asset->o365 }}<br>
                                                     <strong>Status:</strong> {{ $asset->status }}<br>
-                                                    <strong>Kondisi:</strong> {{ $asset->kondisi }}<br>
-                                                    <strong>Serah Terima:</strong>
+                                                    <strong>Condition:</strong> {{ $asset->kondisi }}<br>
+                                                    <strong>Transfer Date:</strong>
                                                     {{ \Carbon\Carbon::parse($asset->created_at)->format('d-m-Y') }}<br>
                                                     <strong>Documentation:</strong>
                                                     @if($asset->documentation)
@@ -113,7 +123,6 @@
                                                         No Document
                                                     @endif
                                                 </div>
-
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -125,9 +134,8 @@
                             </div>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    assets found.</td>
+                                <td colspan="10" class="text-center"
+                                    style="padding: 50px; font-size: 1.2em;">No assets found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -136,6 +144,4 @@
         </div>
     </div>
 </div>
-<br>
-<br>
 @endsection

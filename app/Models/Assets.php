@@ -24,7 +24,8 @@ class Assets extends Model
         'approval_status',
         'aksi',
         'kondisi',
-        'documentation'
+        'documentation',
+        'previous_customer_name'
     ];
 
     // Relationships

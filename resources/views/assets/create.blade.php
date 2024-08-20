@@ -15,7 +15,7 @@
                 <form action="{{ route('assets.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    
+
                     <input type="hidden" name="approval_status" value="Pending">
                     <input type="hidden" name="aksi" value="Handover">
 
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="nama">Nama</label>
+                        <label for="nama">Name</label>
                         <select class="form-control" id="nama" name="nama" required>
                             @foreach($customers as $customer)
                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
@@ -68,7 +68,8 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" capture="camera" hidden nullable>
+                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*"
+                            capture="camera" hidden nullable>
                         @if ($errors->has('documentation'))
                             <span class="text-danger">{{ $errors->first('documentation') }}</span>
                         @endif

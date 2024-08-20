@@ -1,9 +1,18 @@
 <?php
 
 use App\Http\Controllers\{
-    MerkController, HomeController, HomeUserController, DashboardController, 
-    ReportController, AsetsController, AssetUserController, CustomerController, 
-    InventoryController, MappingController, InventoryTotalController, UserController
+    MerkController,
+    HomeController,
+    HomeUserController,
+    DashboardController,
+    ReportController,
+    AsetsController,
+    AssetUserController,
+    CustomerController,
+    InventoryController,
+    MappingController,
+    InventoryTotalController,
+    UserController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +32,12 @@ Route::middleware(['auth.check'])->group(function () {
     Route::get('assets/{id}/serahterima', [AssetUserController::class, 'serahterima'])->name('assets.serahterima');
     Route::put('/assets/{id}/updateserahterima', [AssetUserController::class, 'updateserahterima'])->name('assets.updateserahterima');
     Route::delete('assets-user/{id}', [AssetUserController::class, 'destroyasset'])->name('assets-user.delete');
+    Route::delete('/assets/{id}/return', [AssetUserController::class, 'returnAsset'])->name('assets.return');
+    Route::post('/assets/reject/{id}', [AsetsController::class, 'reject'])->name('assets.reject');
+    Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
+    Route::get('/assets/print/{id}', [AsetsController::class, 'print'])->name('assets.print');
+
+
 });
 
 Route::middleware(['auth.check:admin'])->group(function () {
@@ -37,8 +52,11 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::delete('customer/{id}', [CustomerController::class, 'destroy'])->name('customer.delete');
 
     Route::resource('assets', AsetsController::class);
+    // routes/web.php
+    Route::get('assets/data', [App\Http\Controllers\AsetsController::class, 'data'])->name('assets.data');
     Route::get('assetsgsi', [AsetsController::class, 'index'])->name('assets.index');
     Route::get('assetsgsi/mutasi', [AsetsController::class, 'indexmutasi'])->name('assets.indexmutasi');
+    Route::get('assetsgsi/return', [AsetsController::class, 'indexreturn'])->name('assets.indexreturn');
     Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
     Route::get('assets/create', [AsetsController::class, 'create'])->name('assets.create');
     Route::post('assetsgsi', [AsetsController::class, 'store'])->name('assets.store');
@@ -47,6 +65,14 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('/assets/{id}/pindah', [AsetsController::class, 'pindahUpdate'])->name('assets.pindahUpdate');
     Route::put('assets/{id}', [AsetsController::class, 'update'])->name('assets.update');
     Route::get('assets-history', [AsetsController::class, 'history'])->name('assets.history');
+
+    Route::get('/assets/return/{id}', [AsetsController::class, 'returnAsset'])->name('assets.return');
+    Route::put('/assets/return/{id}', [AsetsController::class, 'returnUpdate'])->name('assets.returnUpdate');
+    Route::put('/assets/{id}/approvereturn', [AsetsController::class, 'approveReturn'])->name('assets.approvereturn');
+    Route::put('/assets/{id}/approvemutasi', [AsetsController::class, 'approveMutasi'])->name('assets.approvemutasi');
+    Route::put('/assets/{id}/approveaction', [AsetsController::class, 'approveAction'])->name('assets.approveaction');
+    Route::post('/assets/rollbackMutasi/{id}', [AsetsController::class, 'rollbackMutasi'])->name('assets.rollbackMutasi');
+
 
     Route::resource('inventorys', InventoryController::class);
     Route::get('inventorys', [InventoryController::class, 'index'])->name('inventorys.index');

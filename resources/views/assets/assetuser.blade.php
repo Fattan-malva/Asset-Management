@@ -56,7 +56,7 @@
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Nama</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Asset Tagging</th>
                             <th scope="col">Jenis Aset</th>
                             <th scope="col">Merk</th>

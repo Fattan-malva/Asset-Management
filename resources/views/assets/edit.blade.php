@@ -9,13 +9,24 @@
     <div class="card">
         <div class="card-header">
             <h2>Edit Asset</h2>
+            <!-- Approval Status Label -->
+            <div class="text-end mb-3">
+                <span
+                    class="badges {{ $asset->approval_status == 'Approved' ? 'bg-success' : ($asset->approval_status == 'Pending' ? 'bg-primary' : 'bg-danger') }}"
+                    style="padding:5px; border-radius: 5px;">
+                    {{ $asset->approval_status }}
+                </span>
+            </div>
         </div>
         <div class="card-body">
             <form action="{{ route('assets.update', $asset->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <div class="form-group">
+
+
+                <!-- Asset Tagging -->
+                <div class="form-group mb-3">
                     <label for="asset_tagging">Asset Tagging</label>
                     <select class="form-control" id="asset_tagging" name="asset_tagging" required>
                         @foreach($inventories as $inventory)
@@ -25,10 +36,13 @@
                         @endforeach
                     </select>
                 </div>
-                <input type="hidden" name="approval_status" value="Pending">
 
-                <div class="form-group">
-                    <label for="nama">Nama</label>
+                <!-- Hidden Field for Approval Status -->
+                <input type="hidden" name="approval_status" value="Approved">
+
+                <!-- Name -->
+                <div class="form-group mb-3">
+                    <label for="nama">Name</label>
                     <select class="form-control" id="nama" name="nama" required>
                         @foreach($customers as $customer)
                             <option value="{{ $customer->id }}" {{ $customer->id == $asset->nama ? 'selected' : '' }}>
@@ -38,45 +52,57 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="lokasi">Lokasi</label>
-                    <input type="text" class="form-control" id="lokasi" name="lokasi" value="{{ old('lokasi', $asset->lokasi) }}" required>
+                <!-- Location -->
+                <div class="form-group mb-3">
+                    <label for="lokasi">Location</label>
+                    <input type="text" class="form-control" id="lokasi" name="lokasi"
+                        value="{{ old('lokasi', $asset->lokasi) }}" required>
                 </div>
 
-                <div class="form-group">
-                    <select class="form-control" id="status" name="status" hidden>
-                        <option value="Operation" {{ $asset->status == 'Operation' ? 'selected' : '' }}>Operation</option>
-                        <option value="Inventory" {{ $asset->status == 'Inventory' ? 'selected' : '' }}>Inventory</option>
-                    </select>
-                </div>
+                <!-- Status (Hidden) -->
+                <input type="hidden" name="status" value="{{ $asset->status }}">
 
-                <div class="form-group">
+                <!-- O365 -->
+                <div class="form-group mb-3">
                     <label for="o365">O365</label>
                     <select class="form-control" id="o365" name="o365" required>
-                        <option value="Partner License" {{ $asset->o365 == 'Partner License' ? 'selected' : '' }}>Partner License</option>
+                        <option value="Partner License" {{ $asset->o365 == 'Partner License' ? 'selected' : '' }}>Partner
+                            License</option>
                         <option value="Business" {{ $asset->o365 == 'Business' ? 'selected' : '' }}>Business</option>
-                        <option value="Business Standard" {{ $asset->o365 == 'Business Standard' ? 'selected' : '' }}>Business Standard</option>
-                        <option value="No License" {{ $asset->o365 == 'No License' ? 'selected' : '' }}>No License</option>
+                        <option value="Business Standard" {{ $asset->o365 == 'Business Standard' ? 'selected' : '' }}>
+                            Business Standard</option>
+                        <option value="No License" {{ $asset->o365 == 'No License' ? 'selected' : '' }}>No License
+                        </option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <select class="form-control" id="kondisi" name="kondisi" hidden>
-                        <option value="Good" {{ $asset->kondisi == 'Good' ? 'selected' : '' }}>Good</option>
-                        <option value="Exception" {{ $asset->kondisi == 'Exception' ? 'selected' : '' }}>Exception</option>
-                        <option value="Bad" {{ $asset->kondisi == 'Bad' ? 'selected' : '' }}>Bad</option>
-                    </select>
+                <!-- Condition (Hidden) -->
+                <input type="hidden" name="kondisi" value="{{ $asset->kondisi }}">
+
+                <!-- Documentation -->
+                <div class="form-group mb-3">
+                    <label for="documentation">Documentation</label>
+                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*">
+                    @if($asset->documentation)
+                        <p class="mt-2">Current file: <a href="{{ asset('storage/' . $asset->documentation) }}"
+                                target="_blank">View</a></p>
+                    @endif
                 </div>
 
-                <div class="form-group">
-        <label for="documentation">Documentation</label>
-        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*">
-        @if($asset->documentation)
-            <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
-        @endif
-    </div>
+                <!-- Buttons -->
+                <div class="form-group mb-3 d-flex justify-content-start">
+                    <button type="submit" class="btn btn-success mr-2">Update</button>
 
-                <button type="submit" class="btn btn-primary">Update</button>
+                    <!-- Return to Inventory Form -->
+                    <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-warning" title="Return to Inventory"
+                            onclick="return confirm('Are you sure you want to return this asset to inventory?')">
+                            Return to Inventory
+                        </button>
+                    </form>
+                </div>
             </form>
         </div>
     </div>

@@ -5,7 +5,7 @@
 <br>
 <br>
 <br>
-<h1 class="mt-4 text-center">Mutasi</h1>
+<h1 class="mt-4 text-center">Return</h1>
 <br>
 <br>
 <br>
@@ -42,9 +42,9 @@
                                 <td>{{ $asset->merk_name }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{{ route('assets.pindahtangan', ['id' => $asset->id]) }}"
-                                            class="btn btn-sm btn-warning" title="Mutasi">
-                                            Mutasi
+                                        <a href="{{ route('assets.return', ['id' => $asset->id]) }}"
+                                            class="btn btn-sm btn-danger" title="Return">
+                                            Return
                                         </a>
                                     </div>
                                 </td>
