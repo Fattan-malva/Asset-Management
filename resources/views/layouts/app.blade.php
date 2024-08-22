@@ -23,31 +23,73 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-
-
 
     <!-- Optional Bootstrap Slider -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Chart.js and DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+    .form-container {
+        max-width: 500px; /* Adjusted width for a more square appearance */
+        margin: 0 auto;
+        padding: 2rem; /* Added padding for better spacing inside the container */
+        border-radius: 8px; /* Rounded corners for a softer look */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        background-color: #f8f9fa; /* Light background color */
+    }
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
 
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 0.5rem; /* Added margin to separate label from input */
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        border-radius: 4px; /* Rounded corners for input fields */
+        border: 1px solid #ced4da; /* Light border color */
+        padding: 0.5rem; /* Padding inside input fields */
+    }
+
+    .form-group input[type="submit"] {
+        background-color: #007bff; /* Primary button color */
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1rem; /* Adjust padding for smaller screens */
+            max-width: 100%; /* Full width on smaller screens */
+        }
+    }
+</style>
 
 </head>
 
@@ -65,11 +107,13 @@
         @include('shared.header') <!-- Default or fallback header -->
     @endif
 
-    <main class="py-4">
-        @yield('content')
-    </main>
-
-    @include('shared.footer')
+    @if ($userRole === 'user')
+        <main class="py-4">
+            <div class="container form-container">
+                @yield('content')
+            </div>
+        </main>
+    @endif
 
     <!-- Vendor JS Files -->
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -78,7 +122,6 @@
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
     <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <!-- jQuery (make sure this is included only once) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -86,21 +129,12 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <!-- Optional Bootstrap Slider JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
 
     <!-- Your Custom Scripts -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 
     <!-- Initialize DataTables for all responsive tables -->
     <script>
@@ -133,7 +167,6 @@
             });
         });
     </script>
-
 
     @if(isset($assetData) && isset($locationData))
         <script>

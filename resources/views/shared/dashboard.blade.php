@@ -39,7 +39,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Column for Cards and Summary Report (Right Side) -->
         <div class="col-md-7">
             <div class="row">
