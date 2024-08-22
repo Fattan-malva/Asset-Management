@@ -5,15 +5,12 @@
 <br>
 <br>
 <br>
-<h1 class="mt-4 text-center">Mutasi</h1>
+<h1 class="mt-4 text-center">Mutation</h1>
 <br>
 <br>
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Asets Operation</h2>
-        </div>
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
@@ -44,7 +41,7 @@
                                     <div class="action-buttons">
                                         <a href="{{ route('assets.pindahtangan', ['id' => $asset->id]) }}"
                                             class="btn btn-sm btn-warning" title="Mutasi">
-                                            Mutasi
+                                            Mutation
                                         </a>
                                     </div>
                                 </td>

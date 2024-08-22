@@ -9,9 +9,6 @@
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Asset Total GSI</h2>
-        </div>
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">

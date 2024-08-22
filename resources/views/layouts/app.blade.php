@@ -41,8 +41,7 @@
         margin: 0 auto;
         padding: 2rem; /* Added padding for better spacing inside the container */
         border-radius: 8px; /* Rounded corners for a softer look */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        background-color: #f8f9fa; /* Light background color */
+    z
     }
 
     .form-section {

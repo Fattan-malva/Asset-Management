@@ -3,13 +3,10 @@
 @section('content')
 <br>
 <br>
-<h1 class="mt-4 text-center">Pindah Tangan</h1>
+<h1 class="mt-4 text-center">Asset Mutation</h1>
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Pindah Tangan</h2>
-        </div>
         <div class="card-body">
             <form action="{{ route('assets.pindahUpdate', $asset->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -53,8 +50,10 @@
                         </p>
                     @endif
                 </div>
-
-                <button type="submit" class="btn btn-warning">Mutasi</button>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-warning">Mutation</button>
+                    <a href="{{ route('assets.indexmutasi') }}" class="btn btn-secondary ml-3">Cancel</a>
+                </div>
             </form>
         </div>
     </div>

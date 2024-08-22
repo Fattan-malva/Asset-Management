@@ -201,7 +201,7 @@ class AsetsController extends Controller
         // Update the asset
         $asset->update($assetData);
 
-        return redirect()->route('assets.index')->with('success', 'Asset updated successfully.');
+        return redirect()->route('assets.index')->with('success', 'Asset has been successfully mutated, waiting for user approval.');
     }
 
 
@@ -249,7 +249,7 @@ class AsetsController extends Controller
 
         Assets::create($assetData);
 
-        return redirect()->route('assets.index')->with('success', 'Asset created successfully.');
+        return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree');
     }
 
 
@@ -339,10 +339,11 @@ class AsetsController extends Controller
     public function history()
     {
         $history = DB::table('asset_history')
-            ->join('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
-            ->join('merk', 'asset_history.merk_old', '=', 'merk.id')
-            ->join('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
+            ->leftJoin('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
+            ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
+            ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
             ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
+            ->leftJoin('assets', 'asset_history.asset_id', '=', 'assets.id') // Join with assets table
             ->select(
                 'inventory.tagging as asset_tagging',
                 'merk.name as merk',
@@ -352,7 +353,7 @@ class AsetsController extends Controller
                 'asset_history.changed_at',
                 'asset_history.action'
             )
-            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
+            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE']) 
             ->orderBy('asset_history.changed_at', 'DESC')
             ->get()
             ->groupBy('asset_tagging')
@@ -376,12 +377,6 @@ class AsetsController extends Controller
 
         return view('assets.history', compact('history'));
     }
-
-
-
-
-
-
 
     public function returnAsset($id)
     {

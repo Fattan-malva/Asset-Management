@@ -5,14 +5,8 @@
     <br>
     <br>
     <h1 class="mt-4 text-center">Update Customer</h1>
-    <p class="animate__animated animate__fadeInUp text-center">
-        Manage your customer details with ease. Update information accurately to keep your records up-to-date.
-    </p>
     <br>
     <div class="card">
-        <div class="card-header">
-            <h3>Update Customer</h3>
-        </div>
         <div class="card-body">
             <form method="POST" action="{{ route('customer.update', $customer->id) }}">
                 @csrf

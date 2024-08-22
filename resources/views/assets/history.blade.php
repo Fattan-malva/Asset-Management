@@ -1,142 +1,83 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container my-5">
+<div class="container mt-4">
+    <br>
+    <br>
     <h1 class="text-center mb-4">Asset History</h1>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="mb-0">Asset History</h3>
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <div class="card">
         <div class="card-body">
-            @foreach ($history as $assetTagging => $changes)
-                <div class="mb-3">
-                    <button class="btn asset-tagging-button w-100 text-start" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse-{{ Str::slug($assetTagging) }}" aria-expanded="false"
-                        aria-controls="collapse-{{ Str::slug($assetTagging) }}">
-                        Asset Tagging: {{ $assetTagging }}
-                        <i class="bi bi-chevron-down float-end"></i>
-                    </button>
-                    <div class="collapse" id="collapse-{{ Str::slug($assetTagging) }}">
-                        <div class="timeline mt-3">
-                            @foreach ($changes as $change)
-                                <div class="timeline-item {{ $change->action }}">
-                                    <div class="timeline-dot"></div>
-                                    <div class="timeline-content">
-                                        <h5>{{ \Carbon\Carbon::parse($change->changed_at)->format('d M Y, H:i') }}</h5>
-                                        <p>
-                                            @if ($change->action === 'CREATE')
-                                                Initial Holder: <strong>{{ $change->nama_old }}</strong>
-                                            @elseif ($change->action === 'UPDATE')
-                                                <strong>{{ $change->nama_old }}</strong> to <strong>{{ $change->nama_new }}</strong>
-                                            @elseif ($change->action === 'DELETE')
-                                                Holder: <strong>{{ $change->nama_old }}</strong>
-                                            @endif
-                                        </p>
-                                        <p>Merk: {{ $change->merk }}</p>
-                                        <span
-                                            class="badge {{ $change->action === 'CREATE' ? 'bg-success' : ($change->action === 'UPDATE' ? 'bg-warning' : 'bg-danger') }}">
-                                            {{ $change->action === 'CREATE' ? 'Handover' : ($change->action === 'UPDATE' ? 'Mutation' : 'Return') }}
-                                        </span>
-                                    </div>
-                                </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Asset Tagging</th>
+                            <th scope="col">Merk</th>
+                            <th scope="col">Jenis Aset</th>
+                            <th scope="col">Old Holder</th>
+                            <th scope="col">New Holder</th>
+                            <th scope="col">Changed At</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($history as $assetTagging => $items)
+                            @foreach ($items as $item)
+                                <tr>
+                                    <td>{{ $item->asset_tagging }}</td>
+                                    <td>{{ $item->merk }}</td>
+                                    <td>{{ $item->jenis_aset_old }}</td>
+                                    <td>{{ $item->nama_old }}</td>
+                                    <td>{{ $item->nama_new }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y H:i:s') }}</td>
+                                    <td>
+                                        @if ($item->action === 'CREATE')
+                                            <span class="badge badge-custom bg-success"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Handover</span>
+                                        @elseif ($item->action === 'UPDATE')
+                                            <span class="badge badge-custom bg-warning"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Mutasi</span>
+                                        @elseif ($item->action === 'DELETE')
+                                            <span class="badge badge-custom bg-danger"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Return</span>
+                                        @else
+                                            <span class="badge badge-custom bg-secondary"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($item->action === 'CREATE')
+                                            New asset added. Holder: <span
+                                                class="badge badge-custom bg-primary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                        @elseif ($item->action === 'UPDATE')
+                                            Mutation from <span class="badge badge-custom bg-secondary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                            to <span class="badge badge-custom bg-primary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_new }}</span>
+                                        @elseif ($item->action === 'DELETE')
+                                            Asset returned by: <span
+                                                class="badge badge-custom bg-secondary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforeach
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
+                                    found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 @endsection
-
-<style>
-    .timeline {
-        position: relative;
-        padding: 20px 0;
-    }
-
-    .timeline-item {
-        display: flex;
-        align-items: flex-start;
-        position: relative;
-        padding: 10px 0;
-        margin-bottom: 20px;
-        border-left: 2px solid #ddd;
-    }
-
-    .timeline-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background-color: #ddd;
-        border: 2px solid #fff;
-        margin-right: 15px;
-    }
-
-    .timeline-item.CREATE .timeline-dot {
-        background-color: #28a745;
-    }
-
-    .timeline-item.UPDATE .timeline-dot {
-        background-color: #ffc107;
-    }
-
-    .timeline-item.DELETE .timeline-dot {
-        background-color: #dc3545;
-    }
-
-    .timeline-content {
-        flex: 1;
-    }
-
-    .timeline-content h5 {
-        margin: 0;
-        font-size: 1.1em;
-    }
-
-    .timeline-content p {
-        margin: 0.5em 0;
-    }
-
-    .badge.bg-success {
-        background-color: #28a745;
-        color: #fff;
-    }
-
-    .badge.bg-warning {
-        background-color: #ffc107;
-        color: #212529;
-    }
-
-    .badge.bg-danger {
-        background-color: #dc3545;
-        color: #fff;
-    }
-
-    .badge {
-        padding: 0.5em 1em;
-        border-radius: 0.25em;
-    }
-
-    .btn.asset-tagging-button {
-        color: #000;
-        font-size: 1.25em;
-        font-weight: bold;
-        text-align: left;
-        background: none;
-        border: none;
-        padding: 10px;
-        box-shadow: none;
-    }
-
-    .btn.asset-tagging-button:hover,
-    .btn.asset-tagging-button:focus {
-        color: #000;
-        text-decoration: none;
-        background: none;
-    }
-
-    .btn.asset-tagging-button .bi-chevron-down {
-        font-size: 1.2em;
-    }
-</style>

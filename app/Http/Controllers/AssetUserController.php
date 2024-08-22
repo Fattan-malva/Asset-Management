@@ -71,7 +71,7 @@ class AssetUserController extends Controller
 
     public function updateserahterima(Request $request, $id)
     {
-        // Validasi input
+        // Validate input
         $validatedData = $request->validate([
             'asset_tagging' => 'required|exists:inventory,id',
             'nama' => 'required|exists:customer,id',
@@ -83,12 +83,12 @@ class AssetUserController extends Controller
         ]);
 
         try {
-            // Temukan asset berdasarkan ID
+            // Find the asset by ID
             $asset = Assets::findOrFail($id);
             $inventory = Inventory::findOrFail($validatedData['asset_tagging']);
             $customer = Customer::findOrFail($validatedData['nama']);
 
-            // Siapkan data untuk diperbarui
+            // Prepare data for update
             $assetData = [
                 'asset_tagging' => $validatedData['asset_tagging'],
                 'jenis_aset' => $inventory->asets,
@@ -104,32 +104,33 @@ class AssetUserController extends Controller
                 'approval_status' => $request->input('approval_status', ''),
             ];
 
-            // Menangani file dokumentasi jika ada
+            // Handle documentation file if present
             if ($request->hasFile('documentation')) {
-                // Hapus dokumentasi lama jika ada
+                // Delete old documentation if exists
                 if ($asset->documentation && \Storage::exists('public/' . $asset->documentation)) {
                     \Storage::delete('public/' . $asset->documentation);
                 }
 
-                // Simpan file dokumentasi baru
+                // Save new documentation
                 $file = $request->file('documentation');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $filePath = $file->storeAs('public/uploads/documentation', $filename);
                 $assetData['documentation'] = 'uploads/documentation/' . $filename;
             }
 
-            // Perbarui asset dengan data yang baru
+            // Update the asset with new data
             $asset->update($assetData);
 
-            // Redirect dengan pesan sukses
+            // Redirect with success message
             return redirect()->route('shared.homeUser')->with('success', 'Asset Approved successfully.');
 
         } catch (\Exception $e) {
-            // Log error dan redirect dengan pesan error
+            // Log error and redirect with error message
             \Log::error('Failed to update asset:', ['error' => $e->getMessage()]);
             return redirect()->back()->withErrors('Failed to approve asset. Please try again.');
         }
     }
+
 
     public function destroyasset($id)
     {

@@ -7,9 +7,6 @@
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Handover</h2>
-        </div>
         <div class="card-body">
             @if ($assetTaggingAvailable && $namesAvailable)
                 <form action="{{ route('assets.store') }}" method="POST" enctype="multipart/form-data">
@@ -74,8 +71,10 @@
                             <span class="text-danger">{{ $errors->first('documentation') }}</span>
                         @endif
                     </div>
-
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Give</button>
+                        <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
+                    </div>
                 </form>
             @elseif (!$assetTaggingAvailable)
                 <p class="text-center">All assets have been used</p>

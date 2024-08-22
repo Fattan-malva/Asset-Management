@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Merk;
-
 
 class MerkController extends Controller
 {
@@ -17,12 +15,10 @@ class MerkController extends Controller
         $merkes = Merk::all();
         return view('merk.index', compact('merkes'));
     }
-    public function create()
-    {
-        $merkes = Merk::all();
-        return view('merk.create', compact('merkes'));
-    }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -33,9 +29,43 @@ class MerkController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->route('inventorys.create')->with('success', 'Merk created successfully.');
+        return redirect()->route('merk.index')->with('success', 'Merk created successfully.');
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $merk = Merk::findOrFail($id);
+        return response()->json($merk);
+    }
 
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
 
+        $merk = Merk::findOrFail($id);
+        $merk->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('merk.index')->with('success', 'Merk updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $merk = Merk::findOrFail($id);
+        $merk->delete();
+
+        return redirect()->route('merk.index')->with('success', 'Merk deleted successfully.');
+    }
 }

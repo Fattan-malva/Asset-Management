@@ -48,6 +48,7 @@
                     <i class='bx bxs-chevron-down arrow'></i>
                 </div>
                 <ul class="sub-menu">
+                    <li><a href="{{ route('assets.index') }}">Approval Status</a></li>
                     <li><a href="{{ route('assets.create') }}">Handover</a></li>
                     <li><a href="{{ route('assets.indexmutasi') }}">Mutasi</a></li>
                     <li><a href="{{ route('assets.indexreturn') }}">Return</a></li>
@@ -70,7 +71,7 @@
                 <ul class="sub-menu">
                     <li><a href="{{ route('customer.index') }}">Users</a></li>
                     <li><a href="{{ route('inventorys.create') }}">Add Asset</a></li>
-                    <li><a href="{{ route('merk.create') }}">Add Merk</a></li>
+                    <li><a href="{{ route('merk.index') }}">Add Merk</a></li>
                 </ul>
             </li>
             <li>

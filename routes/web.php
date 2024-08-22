@@ -65,6 +65,11 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('/assets/{id}/pindah', [AsetsController::class, 'pindahUpdate'])->name('assets.pindahUpdate');
     Route::put('assets/{id}', [AsetsController::class, 'update'])->name('assets.update');
     Route::get('assets-history', [AsetsController::class, 'history'])->name('assets.history');
+    // web.php
+    Route::get('/history', [AsetsController::class, 'history'])->name('history');
+    Route::get('/history/data', [AsetsController::class, 'getData'])->name('history.data');
+
+
 
     Route::get('/assets/return/{id}', [AsetsController::class, 'returnAsset'])->name('assets.return');
     Route::put('/assets/return/{id}', [AsetsController::class, 'returnUpdate'])->name('assets.returnUpdate');
@@ -84,8 +89,13 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('inventorys/{id}', [InventoryController::class, 'update'])->name('inventorys.update');
     Route::get('mapping', [MappingController::class, 'mapping'])->name('inventorys.mapping');
 
-    Route::get('merk/create', [MerkController::class, 'create'])->name('merk.create');
-    Route::post('merk', [MerkController::class, 'store'])->name('merk.store');
+    Route::resource('merk', MerkController::class);
+    Route::get('/merks', [MerkController::class, 'index'])->name('merk.index');
+    Route::get('/merks/create', [MerkController::class, 'create'])->name('merk.create');
+    Route::post('/merks', [MerkController::class, 'store'])->name('merk.store');
+    Route::get('/merks/{id}/edit', [MerkController::class, 'edit'])->name('merk.edit');
+    Route::put('/merks/{id}', [MerkController::class, 'update'])->name('merk.update');
+    Route::delete('/merks/{id}', [MerkController::class, 'destroy'])->name('merk.destroy');
 
     Route::get('/summary-report', [ReportController::class, 'summaryReport'])->name('summary.report');
 

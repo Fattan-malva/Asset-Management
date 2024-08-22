@@ -7,13 +7,9 @@
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Approve Asset</h2>
-        </div>
         <div class="card-body">
             @if($asset->aksi !== 'Return')
-                <form action="{{ route('assets.updateserahterima', $asset->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                <form action="{{ route('assets.updateserahterima', $asset->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -35,7 +31,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="lokasi">Lokasi</label>
+                        <label for="lokasi">Location</label>
                         <input type="text" class="form-control" id="lokasi" name="lokasi"
                             value="{{ old('lokasi', $asset->lokasi) }}" readonly>
                     </div>
@@ -48,21 +44,24 @@
                         <label for="documentation">Documentation</label>
                         <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" required>
                         @if($asset->documentation)
-                            <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a>
-                            </p>
+                            <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
                         @endif
                     </div>
 
-                    @if($asset->aksi !== 'Return')
-                        <button type="submit" class="btn btn-success">Approve</button>
-                    @endif
+                    <div class="text-center">
+                        @if($asset->aksi !== 'Return')
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        @endif
+                        <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
+                    </div>
                 </form>
-
             @endif
 
             @if($asset->aksi === 'Return')
                 <form action="{{ route('assets-user.delete', $asset->id) }}" method="POST" class="mt-3">
                     @csrf
+                    @method('DELETE')
+
                     <div class="form-group">
                         <label for="asset_tagging">Asset Tagging</label>
                         <input type="text" class="form-control" id="asset_tagging" name="asset_tagging"
@@ -79,24 +78,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="lokasi">Lokasi</label>
+                        <label for="lokasi">Location</label>
                         <input type="text" class="form-control" id="lokasi" name="lokasi"
                             value="{{ old('lokasi', $asset->lokasi) }}" readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="documentation">Documentation</label>
-                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*"
-                            required>
+                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" required>
                         @if($asset->documentation)
-                            <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a>
-                            </p>
+                            <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
                         @endif
                     </div>
 
-
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Return Asset</button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger">Return Asset</button>
+                        <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
+                    </div>
                 </form>
             @endif
         </div>

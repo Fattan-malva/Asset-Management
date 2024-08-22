@@ -9,9 +9,6 @@
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Asets List GSI</h2>
-        </div>
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
@@ -23,7 +20,7 @@
                     {{ session('error') }}
                 </div>
             @endif
-            <div class="table-responsive">
+            <div class="table-responsizve">
                 <table id="inventoryTable" class="table table-striped">
                     <thead>
                         <tr>
