@@ -182,7 +182,6 @@
 
 @section('scripts')
 <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ mix('js/app.js') }}"></script> <!-- Pastikan file ini ada dan terkompilasi -->
 
 <script>
     window.Echo.channel('data-channel')
