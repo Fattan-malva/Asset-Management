@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<h1 class="mt-4 text-center">Asset List</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Asset List</h1>
 <br>
 <br>
 <br>
@@ -20,17 +18,17 @@
                     {{ session('error') }}
                 </div>
             @endif
-            <div class="table-responsizve">
+            <div class="table-responsive">
                 <table id="inventoryTable" class="table table-striped">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Asets Tag</th>
-                            <th scope="col">Asets Name</th>
+                            <th scope="col">Assets Tag</th>
+                            <th scope="col">Assets Name</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Serial Number</th>
                             <th scope="col">Type</th>
-                            <th scope="col">Kondisi</th>
+                            <th scope="col">Condition</th>
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -41,7 +39,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $inventory->tagging }}</td>
                                 <td>{{ $inventory->asets }}</td>
-                                <td>{{ $inventory->merk_name }}</td> <!-- Display merk name -->
+                                <td>{{ $inventory->merk_name }}</td>
                                 <td>{{ $inventory->seri }}</td>
                                 <td>{{ $inventory->type }}</td>
                                 <td>{{ $inventory->kondisi }}</td>
@@ -66,7 +64,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center" style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No Assets found.</td>
+                                <td colspan="9" class="text-center" style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No Assets found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -77,4 +75,20 @@
 </div>
 <br>
 <br>
+@endsection
+
+@section('scripts')
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#inventoryTable').DataTable({
+                paging: false,          // Enable pagination
+                searching: true,       // Enable search functionality
+                info: false,            // Show information about table state
+                lengthChange: false,   // Disable length change dropdown
+                pageLength: 10         // Default number of rows per page
+            });
+        });
+    </script>
 @endsection

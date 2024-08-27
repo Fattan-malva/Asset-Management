@@ -133,6 +133,9 @@ class UserController extends Controller
         $request->session()->put('user_username', $customer->username);
         $request->session()->put('user_role', $customer->role);
         $request->session()->put('user_name', $customer->name);
+        $request->session()->put('user_nrp', $customer->nrp);
+        $request->session()->put('user_mapping', $customer->mapping);
+
     
         // Alihkan berdasarkan peran pengguna
         if ($customer->role === 'admin') {

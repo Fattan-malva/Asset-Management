@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<br>
-<br>
-<h1 class="mt-4 text-center">Asset Return</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Asset Return</h1>
 <br>
 <br>
 <br>

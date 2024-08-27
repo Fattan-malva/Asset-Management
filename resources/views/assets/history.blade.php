@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="container mt-4">
+    <h1 class="text-center mb-4 fw-bold display-5">Asset History</h1>
     <br>
-    <br>
-    <h1 class="text-center mb-4">Asset History</h1>
     @if (session('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}

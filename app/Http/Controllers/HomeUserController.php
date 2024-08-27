@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use App\Events\DataUpdated; // Pastikan event diimpor
 
 class HomeUserController extends Controller
 {
@@ -49,6 +50,9 @@ class HomeUserController extends Controller
             ->where('assets.nama', $userId) // Filter by user ID
             ->where('assets.approval_status', 'Pending') // Only get pending assets
             ->get();
+
+        // Memicu event setelah data diambil
+        event(new DataUpdated(['assets' => $assets, 'pendingAssets' => $pendingAssets]));
 
         // Return view with the fetched data
         return response(view('shared.homeUser', compact('assets', 'pendingAssets')));

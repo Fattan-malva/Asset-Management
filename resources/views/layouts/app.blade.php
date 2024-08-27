@@ -36,60 +36,58 @@
 
     <!-- Custom CSS -->
     <style>
-    .form-container {
-        max-width: 500px; /* Adjusted width for a more square appearance */
-        margin: 0 auto;
-        padding: 2rem; /* Added padding for better spacing inside the container */
-        border-radius: 8px; /* Rounded corners for a softer look */
-    z
-    }
-
-    .form-section {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-section:last-child {
-        margin-bottom: 0;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-group label {
-        font-weight: bold;
-        margin-bottom: 0.5rem; /* Added margin to separate label from input */
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        border-radius: 4px; /* Rounded corners for input fields */
-        border: 1px solid #ced4da; /* Light border color */
-        padding: 0.5rem; /* Padding inside input fields */
-    }
-
-    .form-group input[type="submit"] {
-        background-color: #007bff; /* Primary button color */
-        color: white;
-        border: none;
-        cursor: pointer;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
-    }
-
-    .form-group input[type="submit"]:hover {
-        background-color: #0056b3; /* Darker shade on hover */
-    }
-
-    @media (max-width: 768px) {
         .form-container {
-            padding: 1rem; /* Adjust padding for smaller screens */
-            max-width: 100%; /* Full width on smaller screens */
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 8px;
         }
-    }
-</style>
 
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 0.5rem;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1rem;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -121,6 +119,9 @@
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
     <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.0.7/dist/countUp.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- jQuery (make sure this is included only once) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -140,46 +141,65 @@
         $(document).ready(function () {
             $('.table-responsive').each(function () {
                 $(this).find('table').DataTable({
-                    "paging": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "lengthMenu": [
-                        [10, 50, 100],
-                        [10, 50, 100]
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 5,
+                    lengthMenu: [
+                        [5, 50, 100],
+                        [5, 50, 100]
                     ],
-                    "language": {
-                        "search": "Search:",
-                        "lengthMenu": "_MENU_ entries per page",
-                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                        "infoEmpty": "No entries available",
-                        "infoFiltered": "(filtered from _MAX_ total entries)",
-                        "paginate": {
-                            "previous": "", // Remove previous text
-                            "next": "" // Remove next text
+                    language: {
+                        search: "Search:",
+                        lengthMenu: "_MENU_ entries per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "No entries available",
+                        infoFiltered: "(filtered from _MAX_ total entries)",
+                        paginate: {
+                            previous: "",
+                            next: ""
                         }
                     },
-                    "dom": '<"top"f>rt<"bottom"lp><"clear">'
+                    dom: '<"top"f>rt<"bottom"lp><"clear">'
                 });
             });
         });
     </script>
 
+    <!-- Initialize Echo for real-time updates -->
+    <script>
+        window.Echo.channel('data-channel')
+            .listen('DataUpdated', (e) => {
+                console.log('Data updated:', e.data);
+                const dataContainer = document.getElementById('data-container');
+                if (dataContainer) {
+                    dataContainer.innerHTML = JSON.stringify(e.data);
+                }
+            });
+
+        function fetchData() {
+            fetch('{{ url('/fetch-data') }}')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('data-container').innerHTML = JSON.stringify(data);
+                });
+        }
+
+        fetchData();
+    </script>
+
     @if(isset($assetData) && isset($locationData))
         <script>
-            // Data for Jenis Asset Pie Chart
             const assetLabels = @json($assetData->pluck('jenis_aset'));
             const assetCounts = @json($assetData->pluck('total'));
 
-            // Data for Lokasi Mapping Pie Chart
             const locationLabels = @json($locationData->pluck('lokasi'));
             const locationCounts = @json($locationData->pluck('total'));
 
-            // Jenis Asset Pie Chart
             const ctxAsset = document.getElementById('assetPieChart').getContext('2d');
-            const assetPieChart = new Chart(ctxAsset, {
+            new Chart(ctxAsset, {
                 type: 'pie',
                 data: {
                     labels: assetLabels,
@@ -192,39 +212,38 @@
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'right', // Position the legend to the right of the chart
+                            position: 'right',
                             labels: {
-                                boxWidth: 20, // Adjust the size of the color box
-                                padding: 15, // Add padding between items
+                                boxWidth: 20,
+                                padding: 15,
                                 font: {
-                                    size: 14 // Font size for legend labels
+                                    size: 14
                                 }
                             }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function (tooltipItem) {
-                                    return tooltipItem.label + ': ' + tooltipItem.raw; // Customize tooltip label
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
                                 }
                             }
                         },
                         datalabels: {
-                            color: '#fff', // Color of the labels
+                            color: '#fff',
                             display: true,
                             formatter: function (value) {
-                                return value; // Display the value in the segment
+                                return value;
                             },
-                            anchor: 'center', // Center the label inside the segment
-                            align: 'center', // Center the label inside the segment
-                            offset: 0 // Position the label in the center
+                            anchor: 'center',
+                            align: 'center',
+                            offset: 0
                         }
                     }
                 }
             });
 
-            // Lokasi Mapping Pie Chart
             const ctxLocation = document.getElementById('locationPieChart').getContext('2d');
-            const locationPieChart = new Chart(ctxLocation, {
+            new Chart(ctxLocation, {
                 type: 'pie',
                 data: {
                     labels: locationLabels,
@@ -237,31 +256,31 @@
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'right', // Position the legend to the right of the chart
+                            position: 'right',
                             labels: {
-                                boxWidth: 20, // Adjust the size of the color box
-                                padding: 15, // Add padding between items
+                                boxWidth: 20,
+                                padding: 15,
                                 font: {
-                                    size: 14 // Font size for legend labels
+                                    size: 14
                                 }
                             }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function (tooltipItem) {
-                                    return tooltipItem.label + ': ' + tooltipItem.raw; // Customize tooltip label
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
                                 }
                             }
                         },
                         datalabels: {
-                            color: '#fff', // Color of the labels
+                            color: '#fff',
                             display: true,
                             formatter: function (value) {
-                                return value; // Display the value in the segment
+                                return value;
                             },
-                            anchor: 'center', // Center the label inside the segment
-                            align: 'center', // Center the label inside the segment
-                            offset: 0 // Position the label in the center
+                            anchor: 'center',
+                            align: 'center',
+                            offset: 0
                         }
                     }
                 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     UserController
 };
 use Illuminate\Support\Facades\Route;
+use App\Events\DataUpdated;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -28,6 +29,7 @@ Route::post('/register', [UserController::class, 'storeregister'])->name('user.s
 
 Route::middleware(['auth.check'])->group(function () {
     Route::get('/home/user', [HomeUserController::class, 'index'])->name('shared.homeUser');
+    Route::get('/dashboard-User', [DashboardController::class, 'indexUser'])->name('dashboard.user');
     Route::get('/my-assets', [AssetUserController::class, 'indexuser'])->name('asset-user');
     Route::get('assets/{id}/serahterima', [AssetUserController::class, 'serahterima'])->name('assets.serahterima');
     Route::put('/assets/{id}/updateserahterima', [AssetUserController::class, 'updateserahterima'])->name('assets.updateserahterima');
@@ -36,6 +38,11 @@ Route::middleware(['auth.check'])->group(function () {
     Route::post('/assets/reject/{id}', [AsetsController::class, 'reject'])->name('assets.reject');
     Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
     Route::get('/assets/print/{id}', [AsetsController::class, 'print'])->name('assets.print');
+    Route::get('/test-broadcast', function () {
+        $data = ['message' => 'This is a test message'];
+        event(new DataUpdated($data));
+        return 'Broadcast event fired!';
+    });
 
 
 });

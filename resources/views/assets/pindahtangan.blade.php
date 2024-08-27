@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<h1 class="mt-4 text-center">Asset Mutation</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Asset Mutation</h1>
 <br>
 <div class="container">
     <div class="card">

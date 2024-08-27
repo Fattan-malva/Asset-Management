@@ -2,11 +2,8 @@
 
 @section('content')
 <div class="container mt-4">
+    <h1 class="text-center mb-4 fw-bold display-5">List Status Approval</h1>
     <br>
-    <br>
-    <br>
-    <h1 class="text-center mb-4">List Status Approval</h1>
-
     @if (session('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
@@ -58,12 +55,14 @@
                                     <div class="btn-group" role="group">
                                         <!-- Button to View Details -->
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                            data-bs-target="#detailModal{{ $asset->id }}" title="View Details" style="margin-right:10px;">
+                                            data-bs-target="#detailModal{{ $asset->id }}" title="View Details"
+                                            style="margin-right:10px;">
                                             <i class="bi bi-file-earmark-text"></i>
                                         </button>
                                         <!-- Conditional Button: Cancel Process -->
                                         @if ($asset->approval_status === 'Rejected' && $asset->aksi === 'Handover')
-                                            <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST"
+                                                style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger" title="Cancel Process"
@@ -134,8 +133,8 @@
                             </div>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center"
-                                    style="padding: 50px; font-size: 1.2em;">No assets found.</td>
+                                <td colspan="10" class="text-center" style="padding: 50px; font-size: 1.2em;">No assets
+                                    found.</td>
                             </tr>
                         @endforelse
                     </tbody>

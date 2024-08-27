@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<h1 class="mt-4 text-center">Asset Return</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Asset Return</h1>
 <br>
 <div class="container">
     <div class="card">
@@ -43,8 +41,8 @@
 
                 <div class="form-group">
                     <label for="documentation">Documentation</label>
-                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*">
-                    @if($asset->documentation)
+                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" hidden>
+                    @if($asset->documentation)  
                         <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a>
                         </p>
                     @endif

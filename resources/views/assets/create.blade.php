@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<h1 class="mt-4 text-center">Handover</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Handover</h1>
 <br>
 <div class="container">
     <div class="card">
@@ -35,7 +33,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="lokasi">Lokasi</label>
+                        <label for="lokasi">Location</label>
                         <input type="text" class="form-control" id="lokasi" name="lokasi" required>
                     </div>
 
@@ -47,7 +45,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="o365">O365</label>
+                        <label for="o365">Office 365</label>
                         <select class="form-control" id="o365" name="o365" required>
                             <option value="Partner License">Partner License</option>
                             <option value="Business">Business</option>

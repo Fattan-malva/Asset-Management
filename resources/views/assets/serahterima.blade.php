@@ -1,11 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<h1 class="mt-4 text-center fw-bold display-5">Approve Asset</h1>
 <br>
-<br>
-<h1 class="mt-4 text-center">Approve Asset</h1>
-<br>
-<div class="container">
+<div class="container form-container">
     <div class="card">
         <div class="card-body">
             @if($asset->aksi !== 'Return')
@@ -93,7 +91,7 @@
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-danger">Return Asset</button>
-                        <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
+                        <a href="{{ route('shared.homeUser') }}" class="btn btn-secondary ml-3">Cancel</a>
                     </div>
                 </form>
             @endif
@@ -103,3 +101,58 @@
 <br>
 <br>
 @endsection
+
+<style>
+    .form-container {
+        max-width: 500px; /* Adjusted width for a more square appearance */
+        margin: 0 auto;
+        padding: 2rem; /* Added padding for better spacing inside the container */
+        border-radius: 8px; /* Rounded corners for a softer look */
+    }
+
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 0.5rem; /* Added margin to separate label from input */
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        border-radius: 4px; /* Rounded corners for input fields */
+        border: 1px solid #ced4da; /* Light border color */
+        padding: 0.5rem; /* Padding inside input fields */
+    }
+
+    .form-group input[type="submit"] {
+        background-color: #007bff; /* Primary button color */
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1rem; /* Adjust padding for smaller screens */
+            max-width: 100%; /* Full width on smaller screens */
+        }
+    }
+</style>
+

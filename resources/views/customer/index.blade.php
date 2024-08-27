@@ -1,13 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<br>
-<br>
-<h1 class="mt-4 text-center">Users</h1>
-<br>
-<br>
+<h1 class="mt-4 text-center fw-bold display-5">Users</h1>
 <br>
 <div class="container">
     <div class="mb-3">

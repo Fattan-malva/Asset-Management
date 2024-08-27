@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
-<br>
-<h1 class="mt-4 text-center">Assets Location</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Assets Location</h1>
 <br>
 <br>
 <br>
@@ -19,9 +17,9 @@
                 <table id="mappingTable" class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Lokasi</th>
-                            <th scope="col">Jenis Aset</th>
-                            <th scope="col">Jumlah Aset</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Aset Type</th>
+                            <th scope="col">Aset Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
