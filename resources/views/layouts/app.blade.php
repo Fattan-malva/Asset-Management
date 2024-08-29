@@ -190,103 +190,83 @@
         fetchData();
     </script>
 
-    @if(isset($assetData) && isset($locationData))
-        <script>
-            const assetLabels = @json($assetData->pluck('jenis_aset'));
-            const assetCounts = @json($assetData->pluck('total'));
+@if(isset($assetData) && isset($locationData))
+<script>
+    const assetLabels = @json($assetData->pluck('jenis_aset'));
+    const assetCounts = @json($assetData->pluck('total'));
 
-            const locationLabels = @json($locationData->pluck('lokasi'));
-            const locationCounts = @json($locationData->pluck('total'));
+    const locationLabels = @json($locationData->pluck('lokasi'));
+    const locationCounts = @json($locationData->pluck('total'));
 
-            const ctxAsset = document.getElementById('assetPieChart').getContext('2d');
-            new Chart(ctxAsset, {
-                type: 'pie',
-                data: {
-                    labels: assetLabels,
-                    datasets: [{
-                        data: assetCounts,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                boxWidth: 20,
-                                padding: 15,
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    return tooltipItem.label + ': ' + tooltipItem.raw;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            color: '#fff',
-                            display: true,
-                            formatter: function (value) {
-                                return value;
-                            },
-                            anchor: 'center',
-                            align: 'center',
-                            offset: 0
-                        }
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false, // This ensures that the chart will adjust its size on mobile
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 20,
+                    padding: 15,
+                    font: {
+                        size: 14
                     }
                 }
-            });
-
-            const ctxLocation = document.getElementById('locationPieChart').getContext('2d');
-            new Chart(ctxLocation, {
-                type: 'pie',
-                data: {
-                    labels: locationLabels,
-                    datasets: [{
-                        data: locationCounts,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                boxWidth: 20,
-                                padding: 15,
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    return tooltipItem.label + ': ' + tooltipItem.raw;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            color: '#fff',
-                            display: true,
-                            formatter: function (value) {
-                                return value;
-                            },
-                            anchor: 'center',
-                            align: 'center',
-                            offset: 0
-                        }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        return tooltipItem.label + ': ' + tooltipItem.raw;
                     }
                 }
-            });
-        </script>
-    @endif
+            },
+            datalabels: {
+                color: '#fff',
+                display: true,
+                formatter: function (value) {
+                    return value;
+                },
+                anchor: 'center',
+                align: 'center',
+                offset: 0
+            }
+        }
+    };
+
+    const ctxAsset = document.getElementById('assetPieChart').getContext('2d');
+    new Chart(ctxAsset, {
+        type: 'pie',
+        data: {
+            labels: assetLabels,
+            datasets: [{
+                data: assetCounts,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        },
+        options: commonOptions
+    });
+
+    const ctxLocation = document.getElementById('locationPieChart').getContext('2d');
+    new Chart(ctxLocation, {
+        type: 'pie',
+        data: {
+            labels: locationLabels,
+            datasets: [{
+                data: locationCounts,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        },
+        options: commonOptions
+    });
+</script>
+<style>
+    @media (max-width: 768px) {
+        .assettotal-padding {
+            padding-top: 25px !important;
+        }
+    }
+</style>
+@endif
+
 </body>
 
 </html>

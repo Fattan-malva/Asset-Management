@@ -23,7 +23,7 @@
                 <input type="hidden" name="approval_status" value="Pending">
                 <input type="hidden" name="aksi" value="Mutasi">
                 <div class="form-group">
-                    <label for="nama">Name</label>
+                    <label for="nama">New Holder Name</label>
                     <select class="form-control" id="nama" name="nama" required>
                         @foreach($customers as $customer)
                             <option value="{{ $customer->id }}" {{ $customer->id == $asset->nama ? 'selected' : '' }}>

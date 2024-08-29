@@ -12,6 +12,12 @@
 
     <div class="card">
         <div class="card-body">
+            <!-- Form to clear history -->
+            <form action="{{ route('asset-history.clear') }}" method="POST" class="mb-4" id="clearHistoryForm">
+                @csrf
+                <button type="submit" class="btn btn-danger" onclick="return confirmClear()">Clear All History</button>
+            </form>
+
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -69,7 +75,7 @@
                             @endforeach
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
+                                <td colspan="9" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
                                     found.</td>
                             </tr>
                         @endforelse
@@ -79,4 +85,11 @@
         </div>
     </div>
 </div>
+
+<script>
+function confirmClear() {
+    return confirm("Are you sure you want to delete all asset history records?");
+}
+</script>
+
 @endsection

@@ -13,7 +13,7 @@
                 <input type="hidden" name="aksi" value="Return">
                 <div class="form-group">
                     <label for="asset_tagging">Asset Tagging</label>
-                    <select class="form-control" id="asset_tagging" name="asset_tagging" disabled>
+                    <select class="form-control" id="asset_tagging" name="asset_tagging" readonly>
                         @foreach($inventories as $inventory)
                             <option value="{{ $inventory->id }}" {{ $inventory->id == $asset->asset_tagging ? 'selected' : '' }}>
                                 {{ $inventory->tagging }}
@@ -24,7 +24,7 @@
 
                 <div class="form-group">
                     <label for="nama">Owner's Name</label>
-                    <select class="form-control" id="nama" name="nama" required>
+                    <select class="form-control" id="nama" name="nama" readonly>
                         @foreach($customers as $customer)
                             <option value="{{ $customer->id }}" {{ $customer->id == $asset->nama ? 'selected' : '' }}>
                                 {{ $customer->name }}
@@ -36,7 +36,7 @@
                 <div class="form-group">
                     <label for="lokasi">Location</label>
                     <input type="text" class="form-control" id="lokasi" name="lokasi"
-                        value="{{ old('lokasi', $asset->lokasi) }}" required>
+                        value="{{ old('lokasi', $asset->lokasi) }}" readonly>
                 </div>
 
                 <div class="form-group">

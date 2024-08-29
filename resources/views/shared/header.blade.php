@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Global Service Indonesia</title>
+    <title>Global Service Indonesia isa</title>
     <link rel="stylesheet" href="style.css">
     <!-- Boxicons CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
@@ -94,7 +94,7 @@
     <section class="home-section">
         <div class="home-content">
             <i class='bx bx-menu'></i>
-            <span class="text" style="font-size:30px; font-weight: bold;">Global Service Indonesia</span>
+            <span class="text gsi-button" style="font-size:30px; font-weight: bold;">Global Service Indonesia</span>
         </div>
         <div class="">
             <main class="py-4">
@@ -395,5 +395,9 @@
     font-weight: 600;
     color: #11101d;
 }
-
+@media (max-width: 768px) {
+        .gsi-button {
+            display: none;
+        }
+    }
 </style>

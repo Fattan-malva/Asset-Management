@@ -102,7 +102,7 @@ class AsetsController extends Controller
     public function create()
     {
         // Retrieve all customers, no filtering needed
-        $customers = Customer::all();
+        $customers = Customer::where('role', '!=', 'Admin')->get();
 
         // Retrieve all merks
         $merks = Merk::all();
@@ -146,7 +146,7 @@ class AsetsController extends Controller
             ->first();
 
         $merks = Merk::all();
-        $customers = Customer::all();
+        $customers = Customer::where('role', '!=', 'Admin')->get();
         $inventories = Inventory::all();
 
         return view('assets.pindahtangan', compact('asset', 'merks', 'customers', 'inventories'));
@@ -351,9 +351,10 @@ class AsetsController extends Controller
                 'old_customer.name as nama_old',
                 'new_customer.name as nama_new',
                 'asset_history.changed_at',
-                'asset_history.action'
+                'asset_history.action',
+              
             )
-            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE']) 
+            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
             ->orderBy('asset_history.changed_at', 'DESC')
             ->get()
             ->groupBy('asset_tagging')
@@ -376,6 +377,12 @@ class AsetsController extends Controller
             });
 
         return view('assets.history', compact('history'));
+    }
+    public function clearHistory()
+    {
+        DB::table('asset_history')->truncate();
+
+        return redirect()->back()->with('success', 'All asset history records have been deleted.');
     }
 
     public function returnAsset($id)

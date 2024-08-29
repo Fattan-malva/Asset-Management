@@ -18,7 +18,7 @@
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center fw-bold display-6">Asset Total</h5>
-                            <div class="chart-container" style="position: relative; height: 300px; width: 100%; margin-left:70px;">
+                            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
                                 <canvas id="assetPieChart"></canvas>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center fw-bold display-6">Asset Location</h5>
-                            <div class="chart-container" style="position: relative; height: 300px; width: 100%; margin-left:70px;">
+                            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
                                 <canvas id="locationPieChart"></canvas>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
         <div class="col-md-7">
             <div class="row">
                 <!-- Summary Cards -->
-                <div class="col-lg-4 col-md-6 mb-4">
+                <div class="col-lg-4 col-md-6 mb-4 assettotal-padding">
                     <a href="{{ route('inventorys.total') }}" class="text-decoration-none">
                         <div class="card bg-primary text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center" style="height: 120px; padding: 15px;">
                             <div class="card-body d-flex align-items-center justify-content-center">
@@ -196,3 +196,4 @@
     <br><br>
 </div>
 @endsection
+
