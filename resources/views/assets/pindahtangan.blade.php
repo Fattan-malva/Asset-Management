@@ -22,17 +22,17 @@
                 </div>
                 <input type="hidden" name="approval_status" value="Pending">
                 <input type="hidden" name="aksi" value="Mutasi">
+
                 <div class="form-group">
                     <label for="nama">New Holder Name</label>
                     <select class="form-control" id="nama" name="nama" required>
-                        @foreach($customers as $customer)
-                            <option value="{{ $customer->id }}" {{ $customer->id == $asset->nama ? 'selected' : '' }}>
+                        @foreach($customers->filter(fn($customer) => $customer->id != $asset->nama) as $customer)
+                            <option value="{{ $customer->id }}">
                                 {{ $customer->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="lokasi">Lokasi</label>
                     <input type="text" class="form-control" id="lokasi" name="lokasi"
@@ -41,14 +41,13 @@
 
                 <div class="form-group">
 
-                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*"
-                        hidden>
+                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" hidden>
                     @if($asset->documentation)
-                        <p>Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a>
-                        </p>
+                        <p class="mt-2">Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
                     @endif
                 </div>
-                <div class="text-center">
+
+                <div class="text-center mt-4">
                     <button type="submit" class="btn btn-warning">Mutation</button>
                     <a href="{{ route('assets.indexmutasi') }}" class="btn btn-secondary ml-3">Cancel</a>
                 </div>

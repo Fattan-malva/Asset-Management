@@ -122,19 +122,29 @@ class AsetsController extends Controller
 
     public function edit($id)
     {
+        // Mengambil data aset beserta merk dan pelanggan terkait
         $asset = DB::table('assets')
             ->join('merk', 'assets.merk', '=', 'merk.id')
             ->join('customer', 'assets.nama', '=', 'customer.id')
             ->select('assets.*', 'merk.name as merk_name', 'customer.name as customer_name')
             ->where('assets.id', $id)
             ->first();
-
+    
+        // Mengambil semua merk
         $merks = Merk::all();
-        $customers = Customer::all();
+    
+        // Mengambil semua pelanggan dan memfilter yang sedang dipilih
+        $customers = Customer::all()->filter(function ($customer) use ($asset) {
+            return $customer->id != $asset->nama;
+        });
+    
+        // Mengambil semua inventaris
         $inventories = Inventory::all();
-
+    
+        // Mengirim data ke view
         return view('assets.edit', compact('asset', 'merks', 'customers', 'inventories'));
     }
+    
 
     public function pindah($id)
     {

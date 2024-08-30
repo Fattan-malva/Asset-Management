@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Agu 2024 pada 06.17
+-- Waktu pembuatan: 30 Agu 2024 pada 10.10
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -233,7 +233,7 @@ CREATE TABLE `asset_history` (
   `documentation_old` varchar(255) DEFAULT NULL,
   `documentation_new` varchar(255) DEFAULT NULL,
   `changed_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `action` enum('INSERT','UPDATE','DELETE') DEFAULT NULL
+  `action` enum('CREATE','UPDATE','DELETE') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -259,7 +259,9 @@ CREATE TABLE `customer` (
 INSERT INTO `customer` (`id`, `username`, `password`, `role`, `nrp`, `name`, `mapping`) VALUES
 (13, 'chairudin@gmail.com', 'admin', 'admin', '12345', 'ADMIN', 'IT SUPPORT'),
 (29, 'bagas@gmail.com', 'admin', 'admin', '1234', 'Dimas', 'DAD'),
-(34, 'fattan@gmail.com', 'admin', 'admin', '666', 'Fattan Malva', 'IT SUPPORT');
+(34, 'fattan@gmail.com', 'admin', 'admin', '666', 'Fattan Malva', 'IT SUPPORT'),
+(37, '123@gmail.com', '123', 'user', '123', 'Bocah Magang', 'magang IT'),
+(38, 'mutasi@gmail.com', '123', 'user', '123', 'haiihoo', 'w');
 
 -- --------------------------------------------------------
 
@@ -288,6 +290,13 @@ CREATE TABLE `merk` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `merk`
+--
+
+INSERT INTO `merk` (`id`, `name`) VALUES
+(11, 'Dell');
 
 -- --------------------------------------------------------
 
@@ -443,31 +452,31 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
 
 --
 -- AUTO_INCREMENT untuk tabel `asset_history`
 --
 ALTER TABLE `asset_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT untuk tabel `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT untuk tabel `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT untuk tabel `merk`
 --
 ALTER TABLE `merk`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `report`
