@@ -12,7 +12,8 @@ use App\Http\Controllers\{
     InventoryController,
     MappingController,
     InventoryTotalController,
-    UserController
+    UserController,
+    WebhookController
 };
 use Illuminate\Support\Facades\Route;
 use App\Events\DataUpdated;
@@ -26,6 +27,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/register', [UserController::class, 'register'])->name('auth.register');
 Route::post('/register', [UserController::class, 'storeregister'])->name('user.storeregister');
+Route::post('/webhook', [WebhookController::class, 'handle']);
 
 Route::middleware(['auth.check'])->group(function () {
     Route::get('/home/user', [HomeUserController::class, 'index'])->name('shared.homeUser');
