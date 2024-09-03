@@ -129,22 +129,22 @@ class AsetsController extends Controller
             ->select('assets.*', 'merk.name as merk_name', 'customer.name as customer_name')
             ->where('assets.id', $id)
             ->first();
-    
+
         // Mengambil semua merk
         $merks = Merk::all();
-    
+
         // Mengambil semua pelanggan dan memfilter yang sedang dipilih
         $customers = Customer::all()->filter(function ($customer) use ($asset) {
             return $customer->id != $asset->nama;
         });
-    
+
         // Mengambil semua inventaris
         $inventories = Inventory::all();
-    
+
         // Mengirim data ke view
         return view('assets.edit', compact('asset', 'merks', 'customers', 'inventories'));
     }
-    
+
 
     public function pindah($id)
     {
@@ -353,16 +353,15 @@ class AsetsController extends Controller
             ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
             ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
             ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
-            ->leftJoin('assets', 'asset_history.asset_id', '=', 'assets.id') // Join with assets table
             ->select(
+                'asset_history.asset_id', // Include asset_id
                 'inventory.tagging as asset_tagging',
                 'merk.name as merk',
                 'asset_history.jenis_aset_old',
                 'old_customer.name as nama_old',
                 'new_customer.name as nama_new',
                 'asset_history.changed_at',
-                'asset_history.action',
-              
+                'asset_history.action'
             )
             ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
             ->orderBy('asset_history.changed_at', 'DESC')
@@ -385,9 +384,15 @@ class AsetsController extends Controller
 
                 return $uniqueItems;
             });
+            
 
         return view('assets.history', compact('history'));
     }
+
+
+
+
+
     public function clearHistory()
     {
         DB::table('asset_history')->truncate();
@@ -534,35 +539,6 @@ class AsetsController extends Controller
 
         return redirect()->route('assets.index')->with('success', 'Asset name rolled back successfully.');
     }
-    // AsetsController.php
-    public function print($id)
-    {
-        // Retrieve the asset by ID with related foreign key data
-        $asset = DB::table('assets')
-            ->join('merk', 'assets.merk', '=', 'merk.id')
-            ->join('customer', 'assets.nama', '=', 'customer.id')
-            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id') // Join inventory to get tagging
-            ->select(
-                'assets.*',
-                'merk.name as merk_name',
-                'customer.name as customer_name',
-                'customer.mapping as customer_mapping', // Select the mapping from customer
-                'inventory.tagging as tagging' // Select the tagging from inventory
-            )
-            ->where('assets.id', $id)
-            ->first();
-
-        // Check if the asset exists
-        if (!$asset) {
-            abort(404, 'Asset not found.');
-        }
-
-        // Pass the asset data to the view for printing
-        return view('assets.print', compact('asset'));
-    }
-
-
-
 }
 
 

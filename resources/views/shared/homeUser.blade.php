@@ -44,9 +44,9 @@
                                                         <p class="card-text">
                                                             <span
                                                                 class="badge position-absolute top-0 end-0 m-2
-                                                                                                                {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }}
-                                                                                                                {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }}
-                                                                                                                {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
+                                                                {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }}
+                                                                {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }}
+                                                                {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
                                                                 {{ $asset->aksi }}
                                                             </span>
 
@@ -161,7 +161,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <a href="{{ route('assets.print', ['id' => $asset->id]) }}"
+                                                                <a href="{{ route('prints.handover', ['id' => $asset->tagging]) }}"
                                                                     class="btn btn-primary">Print</a>
                                                             </div>
                                                         </div>

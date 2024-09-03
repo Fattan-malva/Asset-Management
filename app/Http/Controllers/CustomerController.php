@@ -75,8 +75,16 @@ class CustomerController extends Controller
     // Remove the specified resource from storage
     public function destroy(Customer $customer)
     {
+        // Periksa apakah customer memiliki asset yang terkait
+        if ($customer->assets()->count() > 0) {
+            return redirect()->route('customer.index')->with('error', 'The user still has assets, please return assets first if you want to delete this user.');
+        }
+    
+        // Jika tidak ada asset terkait, hapus customer
         $customer->delete();
-
+    
         return redirect()->route('customer.index')->with('success', 'Customer deleted successfully.');
     }
+    
+
 }

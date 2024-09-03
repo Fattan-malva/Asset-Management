@@ -9,13 +9,18 @@
             <i class="bi bi-cloud-plus-fill"></i> Create
         </a>
     </div>
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif 
+    @if (session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="card">
         <div class="card-body">
-            @if (session('success'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
             <div class="table-responsive">
                 <table id="customerTable" class="table table-striped">
                     <thead>
@@ -35,15 +40,15 @@
                                 <td>{{ $customer->username }}</td>
                                 <td>{{ $customer->nrp }}</td>
                                 <td>{{ $customer->name }}</td>
-                                <td>{{ $customer->mapping }}</td> 
+                                <td>{{ $customer->mapping }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{{ route('customer.edit', ['id' => $customer->id]) }}"
-                                            class="btn btn-sm btn-primary" title="Edit">
+                                        <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-sm btn-primary"
+                                            title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <form action="{{ route('customer.delete', ['id' => $customer->id]) }}"
-                                            method="POST" style="display: inline;">
+                                        <form action="{{ route('customer.destroy', $customer->id) }}" method="POST"
+                                            style="display: inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" title="Delete"
@@ -56,7 +61,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center"style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No customer found.</td>
+                                <td colspan="6" class="text-center"
+                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
+                                    customer found.</td>
                             </tr>
                         @endforelse
                     </tbody>

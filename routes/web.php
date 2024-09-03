@@ -13,7 +13,7 @@ use App\Http\Controllers\{
     MappingController,
     InventoryTotalController,
     UserController,
-    WebhookController
+    PrintController
 };
 use Illuminate\Support\Facades\Route;
 use App\Events\DataUpdated;
@@ -27,7 +27,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/register', [UserController::class, 'register'])->name('auth.register');
 Route::post('/register', [UserController::class, 'storeregister'])->name('user.storeregister');
-Route::post('/webhook', [WebhookController::class, 'handle']);
 
 Route::middleware(['auth.check'])->group(function () {
     Route::get('/home/user', [HomeUserController::class, 'index'])->name('shared.homeUser');
@@ -39,12 +38,18 @@ Route::middleware(['auth.check'])->group(function () {
     Route::delete('/assets/{id}/return', [AssetUserController::class, 'returnAsset'])->name('assets.return');
     Route::post('/assets/reject/{id}', [AsetsController::class, 'reject'])->name('assets.reject');
     Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
-    Route::get('/assets/print/{id}', [AsetsController::class, 'print'])->name('assets.print');
+    Route::get('/prints/handover', [PrintController::class, 'handover'])->name('prints.handover');
+    Route::get('/prints/mutation', [PrintController::class, 'mutation'])->name('prints.mutation');
+    Route::get('/prints/return', [PrintController::class, 'return'])->name('prints.return');
     Route::get('/test-broadcast', function () {
         $data = ['message' => 'This is a test message'];
         event(new DataUpdated($data));
         return 'Broadcast event fired!';
     });
+
+
+
+
 
 
 });
@@ -78,6 +83,10 @@ Route::middleware(['auth.check:admin'])->group(function () {
     // web.php
     Route::get('/history', [AsetsController::class, 'history'])->name('history');
     Route::get('/history/data', [AsetsController::class, 'getData'])->name('history.data');
+    // web.php
+
+
+
 
 
 
