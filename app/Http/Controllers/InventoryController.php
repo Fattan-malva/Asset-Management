@@ -93,7 +93,7 @@ class InventoryController extends Controller
         try {
             $inventory = Inventory::findOrFail($id);
             $inventory->delete();
-    
+
             return redirect()->route('inventorys.index')->with('success', 'Asset deleted successfully.');
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == '23000') { // Foreign key constraint violation
@@ -102,4 +102,11 @@ class InventoryController extends Controller
             return redirect()->route('inventorys.index')->with('error', 'An error occurred while deleting the inventory.');
         }
     }
+    public function show($id)
+    {
+        $inventory = Inventory::findOrFail($id);
+        return view('inventory.show', compact('inventory'));
+    }
+    
+
 }

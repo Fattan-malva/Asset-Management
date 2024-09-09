@@ -26,6 +26,7 @@
                             <th scope="col">Process</th>
                             <th scope="col">Approval</th>
                             <th scope="col">Actions</th>
+                            <th scope="col">Track</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +40,8 @@
                                 <td>{{ $asset->lokasi }}</td>
                                 <td>{{ $asset->status }}</td>
                                 <td>{{ $asset->aksi }}</td>
+
+
                                 <td>
                                     <!-- Approval Status Badge -->
                                     @if ($asset->approval_status === 'Approved')
@@ -85,6 +88,13 @@
                                         @endif
                                     </div>
                                 </td>
+                                <td>
+                                    <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn btn-primary"
+                                        title="Track Asset">
+                                        <i class="bi bi-geo-alt"></i> Track
+                                    </a>
+                                </td>
+
                             </tr>
 
                             <!-- Modal -->

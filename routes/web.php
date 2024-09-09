@@ -18,6 +18,7 @@ use App\Http\Controllers\{
 use Illuminate\Support\Facades\Route;
 use App\Events\DataUpdated;
 
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -27,6 +28,8 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/register', [UserController::class, 'register'])->name('auth.register');
 Route::post('/register', [UserController::class, 'storeregister'])->name('user.storeregister');
+Route::get('/print/qr/{id}', [PrintController::class, 'print'])->name('prints.qr');
+Route::get('/auth/detailQR/{id}', [PrintController::class, 'showAssetDetail'])->name('auth.detailQR');
 
 Route::middleware(['auth.check'])->group(function () {
     Route::get('/home/user', [HomeUserController::class, 'index'])->name('shared.homeUser');
@@ -41,6 +44,7 @@ Route::middleware(['auth.check'])->group(function () {
     Route::get('/prints/handover', [PrintController::class, 'handover'])->name('prints.handover');
     Route::get('/prints/mutation', [PrintController::class, 'mutation'])->name('prints.mutation');
     Route::get('/prints/return', [PrintController::class, 'return'])->name('prints.return');
+
     Route::get('/test-broadcast', function () {
         $data = ['message' => 'This is a test message'];
         event(new DataUpdated($data));
@@ -80,6 +84,8 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('assets/{id}', [AsetsController::class, 'update'])->name('assets.update');
     Route::get('assets-history', [AsetsController::class, 'history'])->name('assets.history');
     Route::post('/asset-history/clear', [AsetsController::class, 'clearHistory'])->name('asset-history.clear');
+    Route::get('/assets/track/{id}', [AsetsController::class, 'track'])->name('assets.track');
+
     // web.php
     Route::get('/history', [AsetsController::class, 'history'])->name('history');
     Route::get('/history/data', [AsetsController::class, 'getData'])->name('history.data');
@@ -106,6 +112,7 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::post('inventorys', [InventoryController::class, 'store'])->name('inventorys.store');
     Route::get('inventorys/{id}/edit', [InventoryController::class, 'edit'])->name('inventorys.edit');
     Route::put('inventorys/{id}', [InventoryController::class, 'update'])->name('inventorys.update');
+    Route::get('/inventory/{id}/detail', [InventoryController::class, 'show'])->name('inventorys.show');
     Route::get('mapping', [MappingController::class, 'mapping'])->name('inventorys.mapping');
 
     Route::resource('merk', MerkController::class);

@@ -25,7 +25,9 @@ class Assets extends Model
         'aksi',
         'kondisi',
         'documentation',
-        'previous_customer_name'
+        'previous_customer_name',
+        // 'latitude',
+        // 'longitude'
     ];
 
     // Relationships

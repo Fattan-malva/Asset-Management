@@ -118,7 +118,7 @@
             </div>
             <div class="modal-footer">
                 <!-- Print Button -->
-                <button type="button" class="btn btn-primary" onclick="printDetail()">Print</button>
+                <button type="button" class="btn btn-primary" id="printButton"><i class="bi bi-printer"></i> Print</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -133,7 +133,7 @@ function confirmClear() {
 document.addEventListener('DOMContentLoaded', function () {
     var detailModal = document.getElementById('detailModal');
     detailModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
+        var button = event.relatedTarget; // Button that triggered the modal
         var assetTagging = button.getAttribute('data-asset');
         var merk = button.getAttribute('data-merk');
         var jenisAset = button.getAttribute('data-jenis');
@@ -142,56 +142,49 @@ document.addEventListener('DOMContentLoaded', function () {
         var changedAt = button.getAttribute('data-changedat');
         var action = button.getAttribute('data-action');
 
-        var modalAssetTagging = document.getElementById('modalAssetTagging');
-        var modalMerk = document.getElementById('modalMerk');
-        var modalJenisAset = document.getElementById('modalJenisAset');
-        var modalOldHolder = document.getElementById('modalOldHolder');
-        var modalNewHolder = document.getElementById('modalNewHolder');
-        var modalChangedAt = document.getElementById('modalChangedAt');
-        var modalAction = document.getElementById('modalAction');
+        // Update modal content
+        document.getElementById('modalAssetTagging').textContent = assetTagging;
+        document.getElementById('modalMerk').textContent = merk;
+        document.getElementById('modalJenisAset').textContent = jenisAset;
+        document.getElementById('modalOldHolder').textContent = oldHolder;
+        document.getElementById('modalNewHolder').textContent = newHolder;
+        document.getElementById('modalChangedAt').textContent = changedAt;
 
-        modalAssetTagging.textContent = assetTagging;
-        modalMerk.textContent = merk;
-        modalJenisAset.textContent = jenisAset;
-        modalOldHolder.textContent = oldHolder;
-        modalNewHolder.textContent = newHolder;
-        modalChangedAt.textContent = changedAt;
-        modalAction.textContent = action;
+        // Update action text based on action type
+        var actionText = '';
+        if (action === 'CREATE') {
+            actionText = 'Handover';
+        } else if (action === 'UPDATE') {
+            actionText = 'Mutasi';
+        } else if (action === 'DELETE') {
+            actionText = 'Return';
+        } else {
+            actionText = 'N/A';
+        }
+        document.getElementById('modalAction').textContent = actionText;
+
+        // Update the print button's data-action attribute
+        document.getElementById('printButton').setAttribute('data-action', action);
+    });
+
+    // Print button click event
+    document.getElementById('printButton').addEventListener('click', function () {
+        var action = this.getAttribute('data-action');
+        var assetTagging = document.getElementById('modalAssetTagging').textContent;
+        var route = '';
+
+        if (action === 'CREATE') {
+            route = '{{ route('prints.handover') }}';
+        } else if (action === 'UPDATE') {
+            route = '{{ route('prints.mutation') }}';
+        } else if (action === 'DELETE') {
+            route = '{{ route('prints.return') }}';
+        }
+
+        if (route) {
+            window.open(route + '?asset_tagging=' + assetTagging, '_blank');
+        }
     });
 });
-
-
-function printDetail() {
-    // Get the action type from the modal
-    var action = document.getElementById('modalAction').textContent.trim();
-
-    // Define the route based on the action
-    var route = '';
-    if (action === 'CREATE') {
-        route = '{{ route('prints.handover') }}';
-    } else if (action === 'UPDATE') {
-        route = '{{ route('prints.mutation') }}';
-    } else if (action === 'DELETE') {
-        route = '{{ route('prints.return') }}';
-    }
-
-    // Redirect to the appropriate route in a new tab
-    if (route) {
-        var assetTagging = encodeURIComponent(document.getElementById('modalAssetTagging').textContent);
-        var printUrl = route + '?asset_tagging=' + assetTagging;
-
-        // Open the print route in a new tab
-        var printWindow = window.open(printUrl, '_blank');
-
-        // Wait for the new window to load, then trigger print
-        printWindow.onload = function() {
-            printWindow.print();
-        };
-    } else {
-        alert('No matching print template found for this action.');
-    }
-}
-
-
 </script>
 @endsection

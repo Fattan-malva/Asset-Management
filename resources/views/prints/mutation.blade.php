@@ -175,7 +175,7 @@
                 </tr>
                 <tr>
                     <th>Computer Name</th>
-                    <td>{{ $mutation->asset_tagging_old }}</td>
+                    <td>{{ $tagging }}</td>
                 </tr>
 
                 <tr>
@@ -198,7 +198,7 @@
                         <table class="nested-table">
                             <tr>
                                 <th>Name</th>
-                                <td>{{ $mutation->new_customer_name }}</td>
+                                <td>{{ $mutation->old_customer_name }}</td>
                             </tr>
                             <tr>
                                 <th>Department</th>
@@ -217,7 +217,7 @@
                         <table class="nested-table">
                             <tr>
                                 <th>Name</th>
-                                <td>{{ $mutation->old_customer_name }}</td>
+                                <td>{{ $mutation->new_customer_name }}</td>
                             </tr>
                             <tr>
                                 <th>Department</th>

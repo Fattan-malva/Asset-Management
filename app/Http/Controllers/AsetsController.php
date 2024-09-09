@@ -17,12 +17,12 @@ class AsetsController extends Controller
         $assets = DB::table('assets')
             ->join('merk', 'assets.merk', '=', 'merk.id')
             ->join('customer', 'assets.nama', '=', 'customer.id')
-            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id') // Join inventory to get tagging
+            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id')
             ->select(
                 'assets.*',
                 'merk.name as merk_name',
                 'customer.name as customer_name',
-                'customer.mapping as customer_mapping', // Select the mapping from customer
+                'customer.mapping as customer_mapping',
                 'inventory.tagging as tagging'
             )
             ->get();
@@ -35,7 +35,7 @@ class AsetsController extends Controller
         $query = DB::table('assets')
             ->join('merk', 'assets.merk', '=', 'merk.id')
             ->join('customer', 'assets.nama', '=', 'customer.id')
-            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id') // Join inventory to get tagging
+            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id')
             ->select(
                 'assets.*',
                 'merk.name as merk_name',
@@ -263,6 +263,8 @@ class AsetsController extends Controller
     }
 
 
+
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -384,7 +386,7 @@ class AsetsController extends Controller
 
                 return $uniqueItems;
             });
-            
+
 
         return view('assets.history', compact('history'));
     }
@@ -495,30 +497,35 @@ class AsetsController extends Controller
         }
     }
 
-    // AsetsController.php
+
     public function reject($id)
     {
+
         $asset = Assets::findOrFail($id);
 
-        // Check the action type and handle accordingly
+
         switch ($asset->aksi) {
             case 'Handover':
-                // Return the asset to inventory
                 $asset->update(['approval_status' => 'Rejected']);
-                // Additional logic to return asset to inventory
                 break;
+
             case 'Mutasi':
-                // Keep the asset and don't change its name
                 $asset->update(['approval_status' => 'Rejected']);
                 break;
+
             case 'Return':
-                // Do not delete the asset
                 $asset->update(['approval_status' => 'Rejected']);
                 break;
+
+            default:
+
+                return redirect()->back()->with('error', 'Unexpected action type.');
         }
+
 
         return redirect()->back()->with('status', 'Asset has been rejected.');
     }
+
     public function rollbackMutasi($id)
     {
         // Find the asset
@@ -539,6 +546,13 @@ class AsetsController extends Controller
 
         return redirect()->route('assets.index')->with('success', 'Asset name rolled back successfully.');
     }
+    public function track($id)
+    {
+        $asset = Assets::findOrFail($id);
+
+        return view('assets.track', compact('asset'));
+    }
+
 }
 
 

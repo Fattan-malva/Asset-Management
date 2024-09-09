@@ -31,11 +31,20 @@
                             @endforeach
                         </select>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="lokasi">Location</label>
                         <input type="text" class="form-control" id="lokasi" name="lokasi" required>
                     </div>
+
+
+                    <!-- <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="lokasi" class="form-control" >
+                        <div id="map" style="height: 300px; width: 100%;"></div>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                    </div> -->
 
                     <div class="form-group">
                         <select class="form-control" id="status" name="status" hidden>
@@ -85,3 +94,46 @@
 <br>
 <br>
 @endsection
+
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIvvkiYPmKHviSe_toAk9SjJAvct_YBog&libraries=places"></script>
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -6.200000, lng: 106.816666},
+            zoom: 13
+        });
+
+        var input = document.getElementById('location-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        var marker = new google.maps.Marker({
+            map: map,
+            draggable: true
+        });
+
+        searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+            if (places.length == 0) {
+                return;
+            }
+
+            marker.setPosition(places[0].geometry.location);
+            map.setCenter(places[0].geometry.location);
+            map.setZoom(15);
+
+            document.getElementById('latitude').value = places[0].geometry.location.lat();
+            document.getElementById('longitude').value = places[0].geometry.location.lng();
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function() {
+            document.getElementById('latitude').value = marker.getPosition().lat();
+            document.getElementById('longitude').value = marker.getPosition().lng();
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+</script> -->

@@ -119,15 +119,15 @@ class UserController extends Controller
     {
         $username = $request->input('username');
         $password = $request->input('password');
-    
+
         // Cari pengguna berdasarkan username yang persis sama (case-sensitive)
         $customer = Customer::where('username', $username)->first();
-    
+
         // Periksa apakah pengguna ada dan password cocok secara persis (case-sensitive)
         if (!$customer || $password !== $customer->password) {
             return redirect()->back()->withInput()->with('error', 'Login failed. Username and Password do not match.');
         }
-    
+
         // Simpan ID pengguna, peran, dan nama dalam sesi
         $request->session()->put('user_id', $customer->id);
         $request->session()->put('user_username', $customer->username);
@@ -136,7 +136,7 @@ class UserController extends Controller
         $request->session()->put('user_nrp', $customer->nrp);
         $request->session()->put('user_mapping', $customer->mapping);
 
-    
+
         // Alihkan berdasarkan peran pengguna
         if ($customer->role === 'admin') {
             return redirect()->route('dashboard')->with('success', 'Success login.');
@@ -144,7 +144,7 @@ class UserController extends Controller
             return redirect()->route('shared.homeUser')->with('success', 'Success login.');
         }
     }
-    
+
 
 
 
@@ -162,7 +162,7 @@ class UserController extends Controller
     public function storeregister(Request $request): RedirectResponse
     {
         $request->validate([
-            'username' => 'required|string|max:50',
+            'username' => 'required|string|max:50|unique:customer,username',
             'password' => 'required|string|max:50',
             'role' => 'required|string|max:50',
             'nrp' => 'required|string|max:50',
@@ -181,6 +181,7 @@ class UserController extends Controller
 
         return redirect()->route('login')->with('success', 'Register successfully.');
     }
+
 
     /**
      * Handle user logout.
