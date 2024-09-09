@@ -2,32 +2,43 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>Live Tracking Asset: {{ $asset->jenis_aset }} ({{ $asset->serial_number }})</h2>
+    <h2>Tracking Asset: {{ $asset->jenis_aset }} ({{ $asset->serial_number }})</h2>
 
-    <!-- Display Google Map -->
+    <!-- Display Leaflet Map -->
     <div id="map" style="height: 500px; width: 100%;"></div>
 
+    <!-- Link to Open Location in Google Maps -->
+    <div class="text-center mt-3">
+        <a href="https://www.google.com/maps/search/?api=1&query={{ $asset->latitude }},{{ $asset->longitude }}" 
+           target="_blank" 
+           class="btn btn-primary">
+           Open in Google Maps
+        </a>
+    </div>
+
+    <!-- Leaflet and OpenStreetMap CSS/JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <script>
-        function initMap() {
-            // Initialize the map with the asset's latitude and longitude
-            var assetLocation = { lat: parseFloat('{{ $asset->latitude }}'), lng: parseFloat('{{ $asset->longitude }}') };
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ensure the asset latitude and longitude are set
+            var latitude = {{ $asset->latitude }};
+            var longitude = {{ $asset->longitude }};
+            
+            // Initialize the map centered on the asset's location
+            var map = L.map('map').setView([latitude, longitude], 15);
 
-            // Create a new map centered at the asset location
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: assetLocation
-            });
+            // Add tile layer from OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-            // Add a marker for the asset location
-            var marker = new google.maps.Marker({
-                position: assetLocation,
-                map: map,
-                title: '{{ $asset->jenis_aset }}'
-            });
-        }
+            // Add a marker to the map at the asset's location
+            var marker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup('{{ $asset->jenis_aset }}')
+                .openPopup();
+        });
     </script>
-
-    <!-- Include Google Maps JavaScript API with your API key -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDURZBEQM0-2QV40fngUMu9u1BxxVEt3sU&callback=initMap&libraries=places" async defer></script>
 </div>
 @endsection

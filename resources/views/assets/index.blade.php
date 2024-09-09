@@ -89,7 +89,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn btn-primary"
+                                    <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn btn-success"
                                         title="Track Asset">
                                         <i class="bi bi-geo-alt"></i> Track
                                     </a>

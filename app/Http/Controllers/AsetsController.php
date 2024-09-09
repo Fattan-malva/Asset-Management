@@ -191,6 +191,8 @@ class AsetsController extends Controller
             'nama' => $request->input('nama'),
             'mapping' => $customer->mapping,
             'lokasi' => $request->input('lokasi'),
+            'latitude' => $request->input('latitude'),
+            'longitude' => $request->input('longitude'),
             'approval_status' => $request->input('approval_status', ''),
             'aksi' => $request->input('aksi', ''),
         ];
@@ -218,49 +220,55 @@ class AsetsController extends Controller
 
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'asset_tagging' => 'required|exists:inventory,id',
-            'nama' => 'required|exists:customer,id',
-            'status' => 'required|string',
-            'o365' => 'required|string',
-            'kondisi' => 'required|in:Good,Exception,Bad',
-            'approval_status' => 'required|string',
-            'documentation' => 'nullable|image|max:2048', // Updated to nullable
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'asset_tagging' => 'required|exists:inventory,id',
+        'nama' => 'required|exists:customer,id',
+        'status' => 'required|string',
+        'o365' => 'required|string',
+        'kondisi' => 'required|in:Good,Exception,Bad',
+        'approval_status' => 'required|string',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+        'documentation' => 'nullable|image|max:2048', // Updated to nullable
+    ]);
 
-        $inventory = Inventory::find($request->input('asset_tagging'));
-        $customer = Customer::find($request->input('nama'));
+    $inventory = Inventory::find($request->input('asset_tagging'));
+    $customer = Customer::find($request->input('nama'));
 
-        $assetData = [
-            'asset_tagging' => $request->input('asset_tagging'),
-            'jenis_aset' => $inventory->asets,
-            'merk' => $inventory->merk,
-            'type' => $inventory->type,
-            'serial_number' => $inventory->seri,
-            'nama' => $request->input('nama'),
-            'mapping' => $customer->mapping,
-            'o365' => $request->input('o365'),
-            'lokasi' => $request->input('lokasi', ''),
-            'status' => $request->input('status'),
-            'kondisi' => $request->input('kondisi', ''),
-            'approval_status' => $request->input('approval_status', ''),
-            'aksi' => $request->input('aksi', ''),
-            'previous_customer_name' => $request->input('nama', ''),
-        ];
+    $assetData = [
+        'asset_tagging' => $request->input('asset_tagging'),
+        'jenis_aset' => $inventory->asets,
+        'merk' => $inventory->merk,
+        'type' => $inventory->type,
+        'serial_number' => $inventory->seri,
+        'nama' => $request->input('nama'),
+        'mapping' => $customer->mapping,
+        'o365' => $request->input('o365'),
+        'lokasi' => $request->input('lokasi', ''),
+        'detail_lokasi' => $request->input('detail_lokasi', ''),
+        'status' => $request->input('status'),
+        'kondisi' => $request->input('kondisi', ''),
+        'approval_status' => $request->input('approval_status', ''),
+        'aksi' => $request->input('aksi', ''),
+        'previous_customer_name' => $request->input('nama', ''),
+        'latitude' => $request->input('latitude'),
+        'longitude' => $request->input('longitude'),
+    ];
 
-        if ($request->hasFile('documentation')) {
-            $file = $request->file('documentation');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/documents', $filename);
-            $assetData['documentation'] = 'documents/' . $filename;
-        }
-
-        Assets::create($assetData);
-
-        return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree');
+    if ($request->hasFile('documentation')) {
+        $file = $request->file('documentation');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/documents', $filename);
+        $assetData['documentation'] = 'documents/' . $filename;
     }
+
+    Assets::create($assetData);
+
+    return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree');
+}
+
 
 
 
