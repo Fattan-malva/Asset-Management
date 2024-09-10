@@ -45,7 +45,7 @@
                                     <div class="action-buttons">
                                         <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-sm btn-primary"
                                             title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square"></i> Edit
                                         </a>
                                         <form action="{{ route('customer.destroy', $customer->id) }}" method="POST"
                                             style="display: inline;">
@@ -53,7 +53,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this customer?')">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i> Delete
                                             </button>
                                         </form>
                                     </div>

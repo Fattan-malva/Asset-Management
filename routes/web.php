@@ -83,7 +83,6 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('/assets/{id}/pindah', [AsetsController::class, 'pindahUpdate'])->name('assets.pindahUpdate');
     Route::put('assets/{id}', [AsetsController::class, 'update'])->name('assets.update');
     Route::get('assets-history', [AsetsController::class, 'history'])->name('assets.history');
-    Route::post('/asset-history/clear', [AsetsController::class, 'clearHistory'])->name('asset-history.clear');
     Route::get('/assets/track/{id}', [AsetsController::class, 'track'])->name('assets.track');
 
     // web.php

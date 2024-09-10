@@ -20,7 +20,7 @@ class Assets extends Model
         'mapping',
         'o365',
         'lokasi',
-        'detail_lokasi',
+   
         'status',
         'approval_status',
         'aksi',

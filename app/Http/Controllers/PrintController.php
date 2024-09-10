@@ -48,26 +48,27 @@ class PrintController extends Controller
     public function mutation(Request $request)
     {
         $tagNumber = $request->query('asset_tagging');
-
+    
         \Log::info('Tag Number: ' . $tagNumber);
-
+    
         // Ambil data inventory berdasarkan tagging
         $inventory = DB::table('inventory')
             ->where('tagging', $tagNumber)
             ->first();
-
+    
         if (!$inventory) {
             return view('prints.mutation')->with('error', 'Data not found in inventory');
         }
-
-        // Ambil data mutation dari tabel asset_history dengan kondisi yang diinginkan
+    
+        // Ambil data mutation terbaru dari tabel asset_history dengan kondisi yang diinginkan
         $mutation = DB::table('asset_history')
             ->join('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
             ->join('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
             ->join('merk', 'asset_history.merk_new', '=', 'merk.id')
             ->where('asset_history.asset_tagging_new', $inventory->id)
-            ->where('asset_history.action', 'UPDATE') // Filter by action 'UPDATE'
-            ->whereColumn('asset_history.nama_old', '!=', 'asset_history.nama_new') // Ensure nama_old and nama_new are different
+            ->where('asset_history.action', 'UPDATE') 
+            ->whereColumn('asset_history.nama_old', '!=', 'asset_history.nama_new') // Pastikan nama_old dan nama_new berbeda
+            ->orderBy('asset_history.changed_at', 'DESC') // Urutkan berdasarkan yang terbaru
             ->select(
                 'asset_history.*',
                 'old_customer.name as old_customer_name',
@@ -76,14 +77,14 @@ class PrintController extends Controller
                 'new_customer.nrp as new_customer_nrp',
                 'merk.name as merk_name'
             )
-            ->first();
-
+            ->first(); // Ambil hanya mutasi terbaru
+    
         \Log::info('Mutation Data: ', (array) $mutation);
-
+    
         if (!$mutation) {
             return view('prints.mutation')->with('error', 'Data not found in asset history');
         }
-
+    
         // Kirim data ke view
         return view('prints.mutation', [
             'mutation' => $mutation,
@@ -92,6 +93,7 @@ class PrintController extends Controller
             'isDifferent' => $mutation->old_customer_name !== $mutation->new_customer_name
         ]);
     }
+    
 
 
 

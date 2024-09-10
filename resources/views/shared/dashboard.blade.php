@@ -4,7 +4,8 @@
 <br>
 <div>
     <div class="container">
-        <h1 class="text-center animate__animated animate__fadeInDown display-4">Welcome back <b class="fw-bold">Admin</b>, let's manage assets!</h1>
+        <h1 class="text-center animate__animated animate__fadeInDown display-4">Welcome back <b
+                class="fw-bold">Admin</b>, let's manage assets!</h1>
     </div>
 </div>
 
@@ -18,7 +19,7 @@
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center fw-bold display-6">Asset Total</h5>
-                            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
+                            <div class="chart-container">
                                 <canvas id="assetPieChart"></canvas>
                             </div>
                         </div>
@@ -30,7 +31,7 @@
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center fw-bold display-6">Asset Location</h5>
-                            <div class="chart-container" style="position: relative; height: auto; width: 100%;">
+                            <div class="chart-container">
                                 <canvas id="locationPieChart"></canvas>
                             </div>
                         </div>
@@ -45,7 +46,8 @@
                 <!-- Summary Cards -->
                 <div class="col-lg-4 col-md-6 mb-4 assettotal-padding">
                     <a href="{{ route('inventorys.total') }}" class="text-decoration-none">
-                        <div class="card bg-primary text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center" style="height: 120px; padding: 15px;">
+                        <div class="card bg-primary text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center"
+                            style="height: 120px; padding: 15px;">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="me-3">
                                     <i class="fas fa-boxes fa-3x"></i>
@@ -61,7 +63,8 @@
 
                 <div class="col-lg-4 col-md-6 mb-4">
                     <a href="{{ route('inventorys.mapping') }}" class="text-decoration-none">
-                        <div class="card bg-success text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center" style="height: 120px; padding: 15px;">
+                        <div class="card bg-success text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center"
+                            style="height: 120px; padding: 15px;">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="me-3">
                                     <i class="fa-solid fa-location-dot fa-3x"></i>
@@ -77,7 +80,8 @@
 
                 <div class="col-lg-4 col-md-6 mb-4">
                     <a href="{{ route('inventorys.index') }}" class="text-decoration-none">
-                        <div class="card bg-info text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center" style="height: 120px; padding: 15px;">
+                        <div class="card bg-info text-white shadow-sm border-0 text-center d-flex flex-column justify-content-center align-items-center"
+                            style="height: 120px; padding: 15px;">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="me-3">
                                     <i class="fas fa-cogs fa-3x"></i>
@@ -143,10 +147,10 @@
                                     <tbody>
                                         @foreach($operationSummaryData as $data)
                                             <tr>
-                                                <td>{{ $data->lokasi }}</td>
+                                                <td>{{ explode(',', $data->lokasi)[0] }}</td>
                                                 <td>{{ $data->jenis_aset }}</td>
                                                 <td>{{ $data->merk }}</td>
-                                                <td>{!! $data->asset_tagging !!}</td>
+                                                <td>{{ $data->asset_tagging }}</td>
                                                 <td>{{ $data->total_assets }}</td>
                                             </tr>
                                         @endforeach
@@ -161,7 +165,7 @@
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Location Summary</h5>
-                            <div class="table-responsive">  
+                            <div class="table-responsive">
                                 <table id="mappingTable" class="table table-striped">
                                     <thead>
                                         <tr>
@@ -173,13 +177,14 @@
                                     <tbody>
                                         @forelse ($assetQuantitiesByLocation as $item)
                                             <tr>
-                                                <td>{{ $item->lokasi }}</td>
+                                                <td>{{ explode(',', $item->lokasi)[0] }}</td>
                                                 <td>{{ $item->jenis_aset }}</td>
                                                 <td>{{ $item->jumlah_aset }}</td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3" class="text-center" style="padding: 50px; font-size: 1.2em;">
+                                                <td colspan="3" class="text-center"
+                                                    style="padding: 50px; font-size: 1.2em;">
                                                     No Data found.
                                                 </td>
                                             </tr>
@@ -196,4 +201,3 @@
     <br><br>
 </div>
 @endsection
-

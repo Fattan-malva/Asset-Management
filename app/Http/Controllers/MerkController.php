@@ -63,9 +63,15 @@ class MerkController extends Controller
      */
     public function destroy($id)
     {
-        $merk = Merk::findOrFail($id);
-        $merk->delete();
+        try {
+            $merk = Merk::findOrFail($id);
+            $merk->delete();
 
-        return redirect()->route('merk.index')->with('success', 'Merk deleted successfully.');
+            return redirect()->route('merk.index')->with('success', 'Merk deleted successfully.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Catch the foreign key constraint exception
+            return redirect()->route('merk.index')->with('error', 'Unable to delete Merk. It is still referenced in other records.');
+        }
     }
+
 }

@@ -12,41 +12,37 @@
             }
             .sticker {
                 display: flex;
+                flex-direction: column;
                 align-items: center;
-                border: 5px solid #000;
+                border: 2px solid #000;
                 padding: 10px;
                 background-color: #f9f9f9;
-                width: 200mm; /* Width for A4 */
-                height: 100mm; /* Height for A4 */
-                position: relative;
+                width: 100mm; /* Adjust for your size */
+                height: 100mm; /* Adjust for your size */
                 box-sizing: border-box;
                 page-break-inside: avoid;
+                position: relative; /* Position relative to contain absolute elements */
+                overflow: hidden;
             }
             .qr-code {
-                margin-right: 10mm;
-                margin-left: 10mm;
+                position: relative; /* Position relative to contain the logo */
             }
             .qr-code img {
-                width: 40mm; /* Adjust size for print */
-                height: 40mm; /* Adjust size for print */
-            }
-            .details {
-                flex: 1;
-            }
-            .title {
-                font-size: 14pt; /* Adjust font size for print */
-                font-weight: bold;
-                margin-bottom: 5mm;
-            }
-            .instructions {
-                font-size: 10pt; /* Adjust font size for print */
-                color: #555;
+                width: 60mm; /* Adjust size for print */
+                height: 60mm; /* Adjust size for print */
             }
             .logo {
                 position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 40mm; /* Adjust size for print */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 20mm;
+                height: 20mm;
+            }
+            .serial-number {
+                font-size: 12pt; 
+                font-weight: bold;
+                margin-top: 5mm;
             }
         }
         .container {
@@ -59,39 +55,34 @@
         }
         .sticker {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            border: 5px solid #000;
-            padding: 5px;
+            border: 2px solid #000;
+            padding: 10px;
             background-color: #f9f9f9;
-            width: 600px;
-            height: 250px;
+            width: 250px; 
+            height: 265px;
+            box-sizing: border-box;
             position: relative;
         }
         .qr-code {
-            margin-right: 20px;
-            margin-left: 20px;
+            position: relative; 
         }
         .qr-code img {
-            width: 80px;
-            height: 80px;
-        }
-        .details {
-            flex: 1;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .instructions {
-            font-size: 16px;
-            color: #555;
+            width: 100px; /* Adjust size for screen */
+            height: 100px; /* Adjust size for screen */
         }
         .logo {
             position: absolute;
-            top: -3px;
-            right: 10px;
-            width: 100px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px; /* Adjust size for screen */
+            height: 30px; /* Adjust size for screen */
+        }
+        .serial-number {
+            font-size: 16px; /* Adjust font size for screen */
+            font-weight: bold;
         }
     </style>
 </head>
@@ -100,14 +91,11 @@
         <div class="sticker" id="sticker">
             <div class="qr-code">
                 {!! $qrCode !!}
+                <img src="{{ asset('assets/img/GSI.png') }}" alt="GSI Logo" class="logo">
             </div>
-            <div class="details">
-                <div class="title">Global Service Indonesia</div>
-                <div class="instructions">
-                    Harap tidak melepas, merobek, atau merusak label ini.
-                </div>
+            <div class="serial-number">
+            {{ $inventory->seri }}
             </div>
-            <img src="{{ asset('assets/img/GSI.png') }}" alt="Global Service Indonesia Logo" class="logo">
         </div>
     </div>
     <script>

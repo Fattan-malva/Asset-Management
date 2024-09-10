@@ -247,7 +247,7 @@ class AsetsController extends Controller
         'mapping' => $customer->mapping,
         'o365' => $request->input('o365'),
         'lokasi' => $request->input('lokasi', ''),
-        'detail_lokasi' => $request->input('detail_lokasi', ''),
+ 
         'status' => $request->input('status'),
         'kondisi' => $request->input('kondisi', ''),
         'approval_status' => $request->input('approval_status', ''),
@@ -399,16 +399,6 @@ class AsetsController extends Controller
         return view('assets.history', compact('history'));
     }
 
-
-
-
-
-    public function clearHistory()
-    {
-        DB::table('asset_history')->truncate();
-
-        return redirect()->back()->with('success', 'All asset history records have been deleted.');
-    }
 
     public function returnAsset($id)
     {

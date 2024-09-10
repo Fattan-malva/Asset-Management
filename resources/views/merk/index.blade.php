@@ -40,6 +40,9 @@
                     @if(session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
 
                     <table class="table table-bordered">
                         <thead>
@@ -100,9 +103,7 @@
     </div>
 </div>
 
-
 @endsection
-
 
 <script>
     function editMerk(id) {
@@ -119,6 +120,7 @@
             })
             .catch(error => console.error('Error:', error));
     }
+
     function confirmDelete(id) {
         if (confirm('Are you sure you want to delete this Merk?')) {
             document.getElementById('delete-form-' + id).submit();

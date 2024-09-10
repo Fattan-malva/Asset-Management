@@ -12,12 +12,6 @@
 
     <div class="card">
         <div class="card-body">
-            <!-- Form to clear history -->
-            <form action="{{ route('asset-history.clear') }}" method="POST" class="mb-4" id="clearHistoryForm">
-                @csrf
-                <button type="submit" class="btn btn-danger" onclick="return confirmClear()">Clear All History</button>
-            </form>
-
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -60,36 +54,37 @@
                                     </td>
                                     <td>
                                         @if ($item->action === 'CREATE')
-                                            New asset added. Holder: <span
-                                                class="badge badge-custom bg-primary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                            New asset added. Holder: <span class="badge badge-custom bg-primary"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
                                         @elseif ($item->action === 'UPDATE')
-                                            Mutation from <span class="badge badge-custom bg-secondary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
-                                            to <span class="badge badge-custom bg-primary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_new }}</span>
+                                            Mutation from <span class="badge badge-custom bg-secondary"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                            to <span class="badge badge-custom bg-primary"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_new }}</span>
                                         @elseif ($item->action === 'DELETE')
-                                            Asset returned by: <span
-                                                class="badge badge-custom bg-secondary" style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
+                                            Asset returned by: <span class="badge badge-custom bg-secondary"
+                                                style="font-size: 0.8rem; padding: 0.2em 1em; color: white; border-radius: 0.5em;">{{ $item->nama_old }}</span>
                                         @else
                                             N/A
                                         @endif
                                     </td>
                                     <td>
                                         <!-- Detail Button -->
-                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal" 
-                                                data-asset="{{ $item->asset_tagging }}" 
-                                                data-merk="{{ $item->merk }}"
-                                                data-jenis="{{ $item->jenis_aset_old }}"
-                                                data-oldholder="{{ $item->nama_old }}"
-                                                data-newholder="{{ $item->nama_new }}"
-                                                data-changedat="{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y H:i:s') }}"
-                                                data-action="{{ $item->action }}">
-                                            Detail
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal" data-asset="{{ $item->asset_tagging }}"
+                                            data-merk="{{ $item->merk }}" data-jenis="{{ $item->jenis_aset_old }}"
+                                            data-oldholder="{{ $item->nama_old }}" data-newholder="{{ $item->nama_new }}"
+                                            data-changedat="{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y H:i:s') }}"
+                                            data-action="{{ $item->action }}">
+                                            <i class="bi bi-file-earmark-text"></i> Detail
                                         </button>
                                     </td>
                                 </tr>
                             @endforeach
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center" style="padding: 50px; font-size: 1.2em;">No history found.</td>
+                                <td colspan="9" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
+                                    found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -101,90 +96,157 @@
 
 <!-- Detail Modal -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detailModalLabel">Asset Detail</h5>
+                <h4 class="modal-title text-center font-weight-bold" id="detailModalLabel">Asset Details
+                </h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Asset Tagging:</strong> <span id="modalAssetTagging"></span></p>
-                <p><strong>Merk:</strong> <span id="modalMerk"></span></p>
-                <p><strong>Jenis Aset:</strong> <span id="modalJenisAset"></span></p>
-                <p><strong>Old Holder:</strong> <span id="modalOldHolder"></span></p>
-                <p><strong>New Holder:</strong> <span id="modalNewHolder"></span></p>
-                <p><strong>Changed At:</strong> <span id="modalChangedAt"></span></p>
-                <p><strong>Action:</strong> <span id="modalAction"></span></p>
+                <table class="table table-borderless no-border-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Asset Tagging</th>
+                            <td id="modalAssetTagging"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Merk</th>
+                            <td id="modalMerk"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Jenis Aset</th>
+                            <td id="modalJenisAset"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Old Holder</th>
+                            <td id="modalOldHolder"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">New Holder</th>
+                            <td id="modalNewHolder"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Transfer Date</th>
+                            <td id="modalChangedAt"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Action</th>
+                            <td id="modalAction"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <!-- Print Button -->
-                <button type="button" class="btn btn-primary" id="printButton"><i class="bi bi-printer"></i> Print</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="printButton"><i class="bi bi-printer"></i>
+                    Print Proof</button>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* CSS untuk menghapus garis tabel pada modal */
+    .no-border-table th,
+    .no-border-table td {
+        border: none !important;
+        /* Menghapus garis tepi */
+        padding: 0.5rem;
+        /* Mengatur padding untuk ruang di dalam sel */
+    }
+
+    .no-border-table th {
+        font-weight: bold;
+        /* Menebalkan teks header tabel */
+        text-align: left;
+        /* Menyelaraskan teks header ke kiri */
+    }
+
+    .no-border-table td {
+        text-align: left;
+        /* Menyelaraskan teks sel ke kiri */
+    }
+
+    .modal-title {
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+        /* Memastikan elemen judul memanfaatkan lebar penuh */
+        margin: 0;
+        /* Menghapus margin default */
+        padding: 0;
+        /* Menghapus padding default jika ada */
+    }
+
+    /* CSS tambahan untuk memastikan tidak ada margin atau padding yang mengganggu */
+    .modal-header {
+        display: flex;
+        justify-content: center;
+        /* Menyelaraskan konten ke tengah secara horizontal */
+    }
+</style>
+
 <script>
-function confirmClear() {
-    return confirm("Are you sure you want to delete all asset history records?");
-}
+    function confirmClear() {
+        return confirm("Are you sure you want to delete all asset history records?");
+    }
 
-document.addEventListener('DOMContentLoaded', function () {
-    var detailModal = document.getElementById('detailModal');
-    detailModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget; // Button that triggered the modal
-        var assetTagging = button.getAttribute('data-asset');
-        var merk = button.getAttribute('data-merk');
-        var jenisAset = button.getAttribute('data-jenis');
-        var oldHolder = button.getAttribute('data-oldholder');
-        var newHolder = button.getAttribute('data-newholder');
-        var changedAt = button.getAttribute('data-changedat');
-        var action = button.getAttribute('data-action');
+    document.addEventListener('DOMContentLoaded', function () {
+        var detailModal = document.getElementById('detailModal');
+        detailModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var assetTagging = button.getAttribute('data-asset');
+            var merk = button.getAttribute('data-merk');
+            var jenisAset = button.getAttribute('data-jenis');
+            var oldHolder = button.getAttribute('data-oldholder');
+            var newHolder = button.getAttribute('data-newholder');
+            var changedAt = button.getAttribute('data-changedat');
+            var action = button.getAttribute('data-action');
 
-        // Update modal content
-        document.getElementById('modalAssetTagging').textContent = assetTagging;
-        document.getElementById('modalMerk').textContent = merk;
-        document.getElementById('modalJenisAset').textContent = jenisAset;
-        document.getElementById('modalOldHolder').textContent = oldHolder;
-        document.getElementById('modalNewHolder').textContent = newHolder;
-        document.getElementById('modalChangedAt').textContent = changedAt;
+            // Update modal content
+            document.getElementById('modalAssetTagging').textContent = assetTagging;
+            document.getElementById('modalMerk').textContent = merk;
+            document.getElementById('modalJenisAset').textContent = jenisAset;
+            document.getElementById('modalOldHolder').textContent = oldHolder;
+            document.getElementById('modalNewHolder').textContent = newHolder;
+            document.getElementById('modalChangedAt').textContent = changedAt;
 
-        // Update action text based on action type
-        var actionText = '';
-        if (action === 'CREATE') {
-            actionText = 'Handover';
-        } else if (action === 'UPDATE') {
-            actionText = 'Mutasi';
-        } else if (action === 'DELETE') {
-            actionText = 'Return';
-        } else {
-            actionText = 'N/A';
-        }
-        document.getElementById('modalAction').textContent = actionText;
+            // Update action text based on action type
+            var actionText = '';
+            if (action === 'CREATE') {
+                actionText = 'Handover';
+            } else if (action === 'UPDATE') {
+                actionText = 'Mutasi';
+            } else if (action === 'DELETE') {
+                actionText = 'Return';
+            } else {
+                actionText = 'N/A';
+            }
+            document.getElementById('modalAction').textContent = actionText;
 
-        // Update the print button's data-action attribute
-        document.getElementById('printButton').setAttribute('data-action', action);
+            // Update the print button's data-action attribute
+            document.getElementById('printButton').setAttribute('data-action', action);
+        });
+
+        // Print button click event
+        document.getElementById('printButton').addEventListener('click', function () {
+            var action = this.getAttribute('data-action');
+            var assetTagging = document.getElementById('modalAssetTagging').textContent;
+            var route = '';
+
+            if (action === 'CREATE') {
+                route = '{{ route('prints.handover') }}';
+            } else if (action === 'UPDATE') {
+                route = '{{ route('prints.mutation') }}';
+            } else if (action === 'DELETE') {
+                route = '{{ route('prints.return') }}';
+            }
+
+            if (route) {
+                window.open(route + '?asset_tagging=' + assetTagging, '_blank');
+            }
+        });
     });
-
-    // Print button click event
-    document.getElementById('printButton').addEventListener('click', function () {
-        var action = this.getAttribute('data-action');
-        var assetTagging = document.getElementById('modalAssetTagging').textContent;
-        var route = '';
-
-        if (action === 'CREATE') {
-            route = '{{ route('prints.handover') }}';
-        } else if (action === 'UPDATE') {
-            route = '{{ route('prints.mutation') }}';
-        } else if (action === 'DELETE') {
-            route = '{{ route('prints.return') }}';
-        }
-
-        if (route) {
-            window.open(route + '?asset_tagging=' + assetTagging, '_blank');
-        }
-    });
-});
 </script>
 @endsection

@@ -23,14 +23,12 @@
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Assets Tag</th>
-                            <th scope="col">Assets Name</th>
+                            <th scope="col">Asset Tag</th>
+                            <th scope="col">Asset Name</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Serial Number</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Condition</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            <th scope="col" style="width: 150px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,8 +39,6 @@
                                 <td>{{ $inventory->asets }}</td>
                                 <td>{{ $inventory->merk_name }}</td>
                                 <td>{{ $inventory->seri }}</td>
-                                <td>{{ $inventory->type }}</td>
-                                <td>{{ $inventory->kondisi }}</td>
                                 <td>
                                     <!-- Status Badge -->
                                     @if ($inventory->status === 'Inventory')
@@ -75,54 +71,72 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center"
+                                <td colspan="7" class="text-center"
                                     style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
                                     Assets found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal HTML Structure -->
 @foreach ($inventorys as $inventory)
     <div class="modal fade" id="detailsModal-{{ $inventory->id }}" tabindex="-1" aria-labelledby="detailsModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalLabel">Asset Details</h5>
+                    <h4 class="modal-title text-center fw-bold w-100" id="detailsModalLabel">Asset Details</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Assets Tag:</strong> {{ $inventory->tagging }}</p>
-                    <p><strong>Assets Name:</strong> {{ $inventory->asets }}</p>
-                    <p><strong>Merk:</strong> {{ $inventory->merk_name }}</p>
-                    <p><strong>Serial Number:</strong> {{ $inventory->seri }}</p>
-                    <p><strong>Type:</strong> {{ $inventory->type }}</p>
-
-                    <!-- QR Code Container -->
-                    <div id="qrcode-{{ $inventory->id }}" class="text-center my-3"></div>
-
+                    <table class="table no-border-table">
+                        <tr>
+                            <th style="width: 30%"><strong>Assets Tag</strong></th>
+                            <td>{{ $inventory->tagging }}</td>
+                        </tr>
+                        <tr>
+                            <th><strong>Assets Name</strong></th>
+                            <td>{{ $inventory->asets }}</td>
+                        </tr>
+                        <tr>
+                            <th><strong>Merk</strong></th>
+                            <td>{{ $inventory->merk_name }}</td>
+                        </tr>
+                        <tr>
+                            <th><strong>Serial Number</strong></th>
+                            <td>{{ $inventory->seri }}</td>
+                        </tr>
+                        <tr>
+                            <th><strong>Type</strong></th>
+                            <td>{{ $inventory->type }}</td>
+                        </tr>
+                        <tr>
+                            <th><strong>Condition</strong></th>
+                            <td>{{ $inventory->kondisi }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
                     <!-- Print Label Button -->
-                    <button type="button" class="btn btn-primary"
+                    <button type="button" class="btn btn-success"
                         onclick="window.open('{{ route('prints.qr', ['id' => $inventory->id]) }}', '_blank')">
                         <i class="bi bi-printer"></i> Print QR Code
                     </button>
-                </div>
-                <div class="modal-footer">
                     <a href="{{ route('inventorys.edit', ['id' => $inventory->id]) }}" class="btn btn-primary">
                         <i class="bi bi-pencil-square"></i> Edit
                     </a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 @endforeach
+
+
 
 @endsection
 
@@ -134,3 +148,13 @@
 
 
 @endsection
+
+<style>
+    .no-border-table th,
+    .no-border-table td {
+        border: none !important;
+        padding: 5px 12px;
+        /* Memberikan padding agar tetap rapi */
+    }
+
+</style>

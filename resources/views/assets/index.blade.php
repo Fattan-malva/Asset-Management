@@ -41,7 +41,6 @@
                                 <td>{{ $asset->status }}</td>
                                 <td>{{ $asset->aksi }}</td>
 
-
                                 <td>
                                     <!-- Approval Status Badge -->
                                     @if ($asset->approval_status === 'Approved')
@@ -60,7 +59,7 @@
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal"
                                             data-bs-target="#detailModal{{ $asset->id }}" title="View Details"
                                             style="margin-right:10px;">
-                                            <i class="bi bi-file-earmark-text"></i>
+                                            <i class="bi bi-file-earmark-text"></i> Detail
                                         </button>
                                         <!-- Conditional Button: Cancel Process -->
                                         @if ($asset->approval_status === 'Rejected' && $asset->aksi === 'Handover')
@@ -94,56 +93,10 @@
                                         <i class="bi bi-geo-alt"></i> Track
                                     </a>
                                 </td>
-
                             </tr>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="detailModal{{ $asset->id }}" tabindex="-1"
-                                aria-labelledby="detailModalLabel{{ $asset->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="detailModalLabel{{ $asset->id }}">Asset Details</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <strong>Asset Tagging:</strong> {{ $asset->tagging }}<br>
-                                                    <strong>Name Holder:</strong> {{ $asset->customer_name }}<br>
-                                                    <strong>Position:</strong> {{ $asset->customer_mapping }}<br>
-                                                    <strong>Location:</strong> {{ $asset->lokasi }}<br>
-                                                    <strong>Asset Type:</strong> {{ $asset->jenis_aset }}<br>
-                                                    <strong>Merk:</strong> {{ $asset->merk_name }}<br>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <strong>Serial Number:</strong> {{ $asset->serial_number }}<br>
-                                                    <strong>O365:</strong> {{ $asset->o365 }}<br>
-                                                    <strong>Status:</strong> {{ $asset->status }}<br>
-                                                    <strong>Condition:</strong> {{ $asset->kondisi }}<br>
-                                                    <strong>Transfer Date:</strong>
-                                                    {{ \Carbon\Carbon::parse($asset->created_at)->format('d-m-Y') }}<br>
-                                                    <strong>Documentation:</strong>
-                                                    @if($asset->documentation)
-                                                        <a href="{{ asset('storage/' . $asset->documentation) }}"
-                                                            target="_blank">View Document</a>
-                                                    @else
-                                                        No Document
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center" style="padding: 50px; font-size: 1.2em;">No assets
+                                <td colspan="11" class="text-center" style="padding: 50px; font-size: 1.2em;">No assets
                                     found.</td>
                             </tr>
                         @endforelse
@@ -153,4 +106,107 @@
         </div>
     </div>
 </div>
+
+<!-- Modals -->
+@foreach ($assets as $asset)
+    <div class="modal fade" id="detailModal{{ $asset->id }}" tabindex="-1"
+        aria-labelledby="detailModalLabel{{ $asset->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center font-weight-bold" id="detailModalLabel{{ $asset->id }}">Asset Details
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-borderless no-border-table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Asset Tagging</th>
+                                <td>{{ $asset->tagging }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Name Holder</th>
+                                <td>{{ $asset->customer_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Position</th>
+                                <td>{{ $asset->customer_mapping }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Location</th>
+                                <td>{{ $asset->lokasi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Asset Type</th>
+                                <td>{{ $asset->jenis_aset }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Merk</th>
+                                <td>{{ $asset->merk_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Serial Number</th>
+                                <td>{{ $asset->serial_number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">O365</th>
+                                <td>{{ $asset->o365 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Status</th>
+                                <td>{{ $asset->status }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Condition</th>
+                                <td>{{ $asset->kondisi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Transfer Date</th>
+                                <td>{{ \Carbon\Carbon::parse($asset->created_at)->format('d-m-Y') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Documentation</th>
+                                <td>
+                                    @if($asset->documentation)
+                                        <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View
+                                            Document</a>
+                                    @else
+                                        No Document
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="modal-footer">
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
 @endsection
+
+
+<style>
+    /* CSS to remove table borders in modals */
+    .no-border-table th,
+    .no-border-table td {
+        border: none !important;
+    }
+    .modal-title {
+    font-weight: bold;
+    text-align: center;
+    width: 100%; /* Memastikan elemen judul memanfaatkan lebar penuh */
+    margin: 0; /* Menghapus margin default */
+    padding: 0; /* Menghapus padding default jika ada */
+}
+
+/* CSS tambahan untuk memastikan tidak ada margin atau padding yang mengganggu */
+.modal-header {
+    display: flex;
+    justify-content: center; /* Menyelaraskan konten ke tengah secara horizontal */
+}
+</style>

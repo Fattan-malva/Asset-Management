@@ -5,7 +5,7 @@
     <h2>Tracking Asset: {{ $asset->jenis_aset }} ({{ $asset->serial_number }})</h2>
 
     <!-- Display Leaflet Map -->
-    <div id="map" style="height: 500px; width: 100%;"></div>
+    <div id="map" class="map-container"></div>
 
     <!-- Link to Open Location in Google Maps -->
     <div class="text-center mt-3">
@@ -36,9 +36,18 @@
 
             // Add a marker to the map at the asset's location
             var marker = L.marker([latitude, longitude]).addTo(map)
-                .bindPopup('{{ $asset->jenis_aset }}')
+                .bindPopup('{{ $asset->jenis_aset }} - {{ $asset->serial_number }}')
                 .openPopup();
         });
     </script>
 </div>
 @endsection
+
+<style>
+    .map-container {
+        height: 500px; /* Set a fixed height for the map */
+        width: 100%;   /* Full width */
+        margin-top: 20px; /* Space between header and map */
+        justify-content: center;
+    }
+</style>

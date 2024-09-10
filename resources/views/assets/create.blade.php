@@ -33,16 +33,19 @@
 
                     <div class="form-group">
                         <label for="location">Location</label>
-                        <input type="text" id="location-input" class="form-control" placeholder="Search for a location" required>
-                        <button type="button" class="btn btn-primary mt-2" id="enter-location">Enter Location</button>
-                        <div id="map" style="height: 300px; width: 100%;"></div>
+                        <div class="input-group">
+                            <input type="text" id="location-input" class="form-control" placeholder="Search for a location" required>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="enter-location">Search</button>
+                            </div>
+                        </div>
+                        <div id="map" style="height: 400px; width: 100%; margin-top:10px;"></div>
                         <input type="hidden" id="latitude" name="latitude">
                         <input type="hidden" id="longitude" name="longitude">
                     </div>
 
                     <div class="form-group">
-                        <label for="lokasi">Lokasi</label>
-                        <input type="text" id="lokasi" class="form-control" name="lokasi" placeholder="Lokasi will be set here" required>
+                        <input type="text" id="lokasi" class="form-control" name="lokasi" placeholder="Location details will be set here" required>
                     </div>
 
                     <div class="form-group">
@@ -53,8 +56,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="o365">Office 365</label>
-                        <select class="form-control" id="o365" name="o365" required>
+                        <select class="form-control" id="o365" name="o365" required hidden>
                             <option value="Partner License">Partner License</option>
                             <option value="Business">Business</option>
                             <option value="Business Standard">Business Standard</option>
@@ -78,7 +80,7 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-success">Give</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
                         <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
                     </div>
                 </form>
@@ -98,69 +100,93 @@
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var map = L.map('map').setView([-6.2088, 106.8456], 13); // Default coordinates for Jakarta
+    document.addEventListener('DOMContentLoaded', function () {
+        var map = L.map('map').setView([-6.2088, 106.8456], 13); // Default coordinates for Jakarta
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    var geocoder = L.Control.Geocoder.nominatim();
+        var geocoder = L.Control.Geocoder.nominatim();
 
-    function onGeocodeResult(results) {
-        if (results.length > 0) {
-            var result = results[0];
-            var latlng = result.center;
+        function onGeocodeResult(results) {
+            if (results.length > 0) {
+                var result = results[0];
+                var latlng = result.center;
 
-            // Update the input fields
+                // Update the input fields
+                document.getElementById('latitude').value = latlng.lat;
+                document.getElementById('longitude').value = latlng.lng;
+                document.getElementById('location-input').value = result.name;
+
+                // Also set the lokasi field with the location name
+                document.getElementById('lokasi').value = result.name;
+
+                // Add a marker on the map
+                L.marker(latlng).addTo(map)
+                    .bindPopup(result.name)
+                    .openPopup();
+
+                // Center the map on the result
+                map.setView(latlng, 13);
+            } else {
+                console.error('No results found');
+            }
+        }
+
+        var marker = L.marker([-6.2088, 106.8456], { draggable: true }).addTo(map);
+        marker.on('moveend', function (e) {
+            var latlng = e.target.getLatLng();
             document.getElementById('latitude').value = latlng.lat;
             document.getElementById('longitude').value = latlng.lng;
-            document.getElementById('location-input').value = result.name;
+        });
 
-            // Also set the lokasi field with the location name
-            document.getElementById('lokasi').value = result.name;
+        document.getElementById('enter-location').addEventListener('click', function () {
+            var location = document.getElementById('location-input').value;
+            geocoder.geocode(location, function (results) {
+                onGeocodeResult(results);
+            });
+        });
 
-            // Add a marker on the map
-            L.marker(latlng).addTo(map)
-                .bindPopup(result.name)
-                .openPopup();
-
-            // Center the map on the result
-            map.setView(latlng, 13);
-        } else {
-            console.error('No results found');
-        }
-    }
-
-    L.Control.geocoder({
-        defaultMarkGeocode: false
-    })
-    .on('markgeocode', function (e) {
-        onGeocodeResult([e.geocode]);
-    })
-    .addTo(map);
-
-    var marker = L.marker([-6.2088, 106.8456], { draggable: true }).addTo(map);
-    marker.on('moveend', function (e) {
-        var latlng = e.target.getLatLng();
-        document.getElementById('latitude').value = latlng.lat;
-        document.getElementById('longitude').value = latlng.lng;
-    });
-
-    document.getElementById('enter-location').addEventListener('click', function () {
-        var location = document.getElementById('location-input').value;
-        geocoder.geocode(location, function (results) {
-            onGeocodeResult(results);
+        document.getElementById('location-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('enter-location').click();
+            }
         });
     });
-
-    document.getElementById('location-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.getElementById('enter-location').click();
-        }
-    });
-});
 </script>
 
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-append {
+        margin-left: -1px;
+    }
+
+    #map {
+        height: 400px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        margin-top: 0; /* Remove extra margin if any */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .btn {
+        margin: 0 0.5rem;
+    }
+</style>
 @endsection

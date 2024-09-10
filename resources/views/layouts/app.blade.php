@@ -168,8 +168,41 @@
             });
         });
     </script>
+    <style>
+        /* Hide the dropdown menu from lengthMenu */
+        .dataTables_length select {
+            -webkit-appearance: none;
+            /* Remove default styles in Webkit browsers */
+            -moz-appearance: none;
+            /* Remove default styles in Firefox */
+            appearance: none;
+            /* Remove default styles in modern browsers */
+            background: transparent;
+            /* Make background transparent */
+            border: none;
+            /* Remove border */
+            padding: 0;
+            /* Remove padding */
+            font-size: 14px;
+            /* Set font size to match your design */
+        }
 
-    <!-- Initialize Echo for real-time updates -->
+        /* Add custom styling if needed */
+        .dataTables_length select:focus {
+            outline: none;
+            /* Remove outline on focus */
+        }
+
+        .dataTables_length {
+            display: flex;
+            /* Align the element using flex */
+            align-items: center;
+            /* Center items vertically */
+        }
+    </style>
+
+
+    <!-- 
     <script>
         window.Echo.channel('data-channel')
             .listen('DataUpdated', (e) => {
@@ -189,28 +222,44 @@
         }
 
         fetchData();
-    </script>
+    </script> -->
 
     @if(isset($assetData) && isset($locationData))
         <script>
+            // Fetch and format asset and location data
             const assetLabels = @json($assetData->pluck('jenis_aset'));
             const assetCounts = @json($assetData->pluck('total'));
 
             const locationLabels = @json($locationData->pluck('lokasi'));
             const locationCounts = @json($locationData->pluck('total'));
 
+            // Function to format labels by truncating text at the first comma
+            function formatLabels(labels) {
+                return labels.map(label => {
+                    const commaIndex = label.indexOf(',');
+                    return commaIndex !== -1 ? label.substring(0, commaIndex) : label;
+                });
+            }
+
+            // Format labels for the legend
+            const formattedLocationLabels = formatLabels(locationLabels);
+
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false, // This ensures that the chart will adjust its size on mobile
                 plugins: {
                     legend: {
-                        position: 'right',
+                        display: true,
+                        position: 'bottom', // Position legend at the bottom
                         labels: {
                             boxWidth: 20,
                             padding: 15,
                             font: {
                                 size: 14
-                            }
+                            },
+                            // Custom CSS class for legend
+                            usePointStyle: true,
+                            pointStyle: 'rectRounded'
                         }
                     },
                     tooltip: {
@@ -233,6 +282,7 @@
                 }
             };
 
+            // Initialize asset pie chart
             const ctxAsset = document.getElementById('assetPieChart').getContext('2d');
             new Chart(ctxAsset, {
                 type: 'pie',
@@ -246,11 +296,12 @@
                 options: commonOptions
             });
 
+            // Initialize location pie chart with formatted labels
             const ctxLocation = document.getElementById('locationPieChart').getContext('2d');
             new Chart(ctxLocation, {
                 type: 'pie',
                 data: {
-                    labels: locationLabels,
+                    labels: formattedLocationLabels, // Use formatted labels
                     datasets: [{
                         data: locationCounts,
                         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
@@ -259,13 +310,63 @@
                 options: commonOptions
             });
         </script>
+
         <style>
+            /* Custom styles for legend */
+            .chart-container {
+                position: relative;
+            }
+
+            .chart-container .chart-legend {
+                display: flex;
+                flex-direction: column;
+                /* Arrange items in a column */
+                align-items: center;
+                /* Center items horizontally */
+                margin-top: 40px;
+                /* Increased space between chart and legend */
+                /* Space between chart and legend */
+            }
+
+            .chart-container .chart-legend ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .chart-container .chart-legend li {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+                /* Space between legend items */
+            }
+
+            .chart-container .chart-legend li span {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                border-radius: 4px;
+                /* Rounded corners for color boxes */
+            }
+
+            .card {
+                border: 1px solid #dee2e6;
+                /* Border color */
+            }
+
+            .card-title {
+                font-weight: bold;
+                margin-bottom: 30px;
+            }
+
             @media (max-width: 768px) {
                 .assettotal-padding {
                     padding-top: 25px !important;
                 }
             }
         </style>
+
     @endif
 
 </body>

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Agu 2024 pada 10.10
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Generation Time: Sep 10, 2024 at 03:39 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `assets`
+-- Table structure for table `assets`
 --
 
 CREATE TABLE `assets` (
@@ -45,11 +45,13 @@ CREATE TABLE `assets` (
   `documentation` varchar(255) DEFAULT NULL,
   `previous_customer_name` varchar(200) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `latitude` decimal(10,7) NOT NULL,
+  `longitude` decimal(10,7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Trigger `assets`
+-- Triggers `assets`
 --
 DELIMITER $$
 CREATE TRIGGER `after_asset_create` AFTER INSERT ON `assets` FOR EACH ROW BEGIN
@@ -202,7 +204,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `asset_history`
+-- Table structure for table `asset_history`
 --
 
 CREATE TABLE `asset_history` (
@@ -236,10 +238,45 @@ CREATE TABLE `asset_history` (
   `action` enum('CREATE','UPDATE','DELETE') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `asset_history`
+--
+
+INSERT INTO `asset_history` (`id`, `asset_id`, `asset_tagging_old`, `asset_tagging_new`, `jenis_aset_old`, `jenis_aset_new`, `merk_old`, `merk_new`, `type_old`, `type_new`, `serial_number_old`, `serial_number_new`, `nama_old`, `nama_new`, `mapping_old`, `mapping_new`, `o365_old`, `o365_new`, `lokasi_old`, `lokasi_new`, `status_old`, `status_new`, `kondisi_old`, `kondisi_new`, `documentation_old`, `documentation_new`, `changed_at`, `action`) VALUES
+(1, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:21:22', 'CREATE'),
+(2, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 39, 'isuhad', 'isuhad', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', NULL, 'uploads/documentation/1725931317.png', '2024-09-10 01:21:58', 'UPDATE'),
+(3, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:21:58', 'UPDATE'),
+(4, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 40, 'isuhad', 'IT Infrastructure', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931317.png', 'uploads/documentation/1725931317.png', '2024-09-10 01:24:11', 'UPDATE'),
+(5, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:24:11', 'UPDATE'),
+(6, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 40, 40, 'IT Infrastructure', 'IT Infrastructure', 'Partner License', 'Partner License', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931317.png', 'uploads/documentation/1725931479.png', '2024-09-10 01:24:39', 'UPDATE'),
+(7, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 40, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:24:39', 'UPDATE'),
+(8, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 40, 41, 'IT Infrastructure', 'IT SUPPORT', 'Partner License', 'Partner License', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Yamaha Indonesia, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931479.png', 'uploads/documentation/1725931479.png', '2024-09-10 01:27:26', 'UPDATE'),
+(9, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 40, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:27:26', 'UPDATE'),
+(10, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 41, 41, 'IT SUPPORT', 'IT SUPPORT', 'Partner License', 'Partner License', 'Yamaha Indonesia, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Yamaha Indonesia, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931479.png', 'uploads/documentation/1725931679.png', '2024-09-10 01:27:59', 'UPDATE'),
+(11, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 41, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:27:59', 'UPDATE'),
+(12, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 41, 39, 'IT SUPPORT', 'isuhad', 'Partner License', 'Partner License', 'Yamaha Indonesia, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931679.png', 'uploads/documentation/1725931679.png', '2024-09-10 01:29:04', 'UPDATE'),
+(13, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 41, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:29:04', 'UPDATE'),
+(14, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 39, 'isuhad', 'isuhad', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931679.png', 'uploads/documentation/1725931770.png', '2024-09-10 01:29:30', 'UPDATE'),
+(15, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:29:30', 'UPDATE'),
+(16, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 39, 'isuhad', 'isuhad', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931770.png', 'uploads/documentation/1725931770.png', '2024-09-10 01:30:30', 'UPDATE'),
+(17, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:30:30', 'UPDATE'),
+(18, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 39, 'isuhad', 'isuhad', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931770.png', 'uploads/documentation/1725931770.png', '2024-09-10 01:30:51', 'UPDATE'),
+(19, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:30:51', 'UPDATE'),
+(20, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 39, 'isuhad', 'isuhad', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931770.png', 'uploads/documentation/1725931770.png', '2024-09-10 01:30:58', 'UPDATE'),
+(21, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 39, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:30:58', 'UPDATE'),
+(22, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 39, 41, 'isuhad', 'IT SUPPORT', 'Partner License', 'Partner License', 'PT UNITED TRACTOR, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931770.png', 'uploads/documentation/1725931770.png', '2024-09-10 01:31:13', 'UPDATE'),
+(23, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 39, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:31:13', 'UPDATE'),
+(24, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 41, 41, 'IT SUPPORT', 'IT SUPPORT', 'Partner License', 'Partner License', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931770.png', 'uploads/documentation/1725931894.png', '2024-09-10 01:31:34', 'UPDATE'),
+(25, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 41, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:31:34', 'UPDATE'),
+(26, 209, 74, 74, 'Laptop', 'Laptop', 11, 11, 'Windows 10 OHS i7-8324', 'Windows 10 OHS i7-8324', '831edg87e16', '831edg87e16', 41, 41, 'IT SUPPORT', 'IT SUPPORT', 'Partner License', 'Partner License', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', 'Operation', 'Operation', 'Good', 'Good', 'uploads/documentation/1725931894.png', 'uploads/documentation/1725931894.png', '2024-09-10 01:32:26', 'UPDATE'),
+(27, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 41, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:32:26', 'UPDATE'),
+(28, 209, 74, NULL, 'Laptop', NULL, 11, NULL, 'Windows 10 OHS i7-8324', NULL, '831edg87e16', NULL, 41, NULL, 'IT SUPPORT', NULL, 'Partner License', NULL, 'PT. PAMAPERSADA NUSANTARA, 9, Cakung, East Jakarta, Special capital Region of Jakarta, Java, Indonesia', NULL, 'Operation', NULL, 'Good', NULL, 'uploads/documentation/1725931894.png', NULL, '2024-09-10 01:32:39', 'DELETE'),
+(29, NULL, 74, NULL, 'Laptop', NULL, 11, NULL, NULL, NULL, NULL, NULL, 41, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10 01:32:39', 'DELETE');
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `customer`
+-- Table structure for table `customer`
 --
 
 CREATE TABLE `customer` (
@@ -253,20 +290,21 @@ CREATE TABLE `customer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `customer`
+-- Dumping data for table `customer`
 --
 
 INSERT INTO `customer` (`id`, `username`, `password`, `role`, `nrp`, `name`, `mapping`) VALUES
 (13, 'chairudin@gmail.com', 'admin', 'admin', '12345', 'ADMIN', 'IT SUPPORT'),
 (29, 'bagas@gmail.com', 'admin', 'admin', '1234', 'Dimas', 'DAD'),
 (34, 'fattan@gmail.com', 'admin', 'admin', '666', 'Fattan Malva', 'IT SUPPORT'),
-(37, '123@gmail.com', '123', 'user', '123', 'Bocah Magang', 'magang IT'),
-(38, 'mutasi@gmail.com', '123', 'user', '123', 'haiihoo', 'w');
+(39, 'umar@gmail.com', '123', 'user', '9o86', 'UMAR', 'isuhad'),
+(40, 'amin@gmail.com', '123', 'user', '76231936-', 'AMIN', 'IT Infrastructure'),
+(41, 'budi@gmail.com', '123', 'user', '238648248h287y', 'BUDI', 'IT SUPPORT');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `inventory`
+-- Table structure for table `inventory`
 --
 
 CREATE TABLE `inventory` (
@@ -280,10 +318,18 @@ CREATE TABLE `inventory` (
   `status` enum('Operation','Inventory') NOT NULL DEFAULT 'Inventory'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`id`, `tagging`, `asets`, `merk`, `seri`, `type`, `kondisi`, `status`) VALUES
+(74, 'LAP-001', 'Laptop', 11, '831edg87e16', 'Windows 10 OHS i7-8324', 'Good', 'Inventory'),
+(75, 'LAP-002', 'Laptop', 11, '34324325r43', 'Windows 10 OHS i7-8324', 'Good', 'Inventory');
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `merk`
+-- Table structure for table `merk`
 --
 
 CREATE TABLE `merk` (
@@ -292,7 +338,7 @@ CREATE TABLE `merk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `merk`
+-- Dumping data for table `merk`
 --
 
 INSERT INTO `merk` (`id`, `name`) VALUES
@@ -301,7 +347,7 @@ INSERT INTO `merk` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `report`
+-- Table structure for table `report`
 --
 
 CREATE TABLE `report` (
@@ -318,7 +364,7 @@ CREATE TABLE `report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `report`
+-- Dumping data for table `report`
 --
 
 INSERT INTO `report` (`id`, `asset_name`, `merk_name`, `location`, `total_quantity`, `operation`, `inventory`, `good`, `exception`, `bad`) VALUES
@@ -358,7 +404,7 @@ INSERT INTO `report` (`id`, `asset_name`, `merk_name`, `location`, `total_quanti
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -375,7 +421,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Trigger `user`
+-- Triggers `user`
 --
 DELIMITER $$
 CREATE TRIGGER `after_user_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
@@ -398,7 +444,7 @@ DELIMITER ;
 --
 
 --
--- Indeks untuk tabel `assets`
+-- Indexes for table `assets`
 --
 ALTER TABLE `assets`
   ADD PRIMARY KEY (`id`),
@@ -407,95 +453,95 @@ ALTER TABLE `assets`
   ADD KEY `nama` (`nama`);
 
 --
--- Indeks untuk tabel `asset_history`
+-- Indexes for table `asset_history`
 --
 ALTER TABLE `asset_history`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `customer`
+-- Indexes for table `customer`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `inventory`
+-- Indexes for table `inventory`
 --
 ALTER TABLE `inventory`
   ADD PRIMARY KEY (`id`),
   ADD KEY `merk` (`merk`);
 
 --
--- Indeks untuk tabel `merk`
+-- Indexes for table `merk`
 --
 ALTER TABLE `merk`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `report`
+-- Indexes for table `report`
 --
 ALTER TABLE `report`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_customer` (`customer_id`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `assets`
+-- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
 --
--- AUTO_INCREMENT untuk tabel `asset_history`
+-- AUTO_INCREMENT for table `asset_history`
 --
 ALTER TABLE `asset_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `customer`
+--
+ALTER TABLE `customer`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- AUTO_INCREMENT untuk tabel `customer`
---
-ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
-
---
--- AUTO_INCREMENT untuk tabel `inventory`
+-- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
--- AUTO_INCREMENT untuk tabel `merk`
+-- AUTO_INCREMENT for table `merk`
 --
 ALTER TABLE `merk`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT untuk tabel `report`
+-- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
--- AUTO_INCREMENT untuk tabel `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `assets`
+-- Constraints for table `assets`
 --
 ALTER TABLE `assets`
   ADD CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`asset_tagging`) REFERENCES `inventory` (`id`),
@@ -503,13 +549,13 @@ ALTER TABLE `assets`
   ADD CONSTRAINT `assets_ibfk_3` FOREIGN KEY (`nama`) REFERENCES `customer` (`id`);
 
 --
--- Ketidakleluasaan untuk tabel `inventory`
+-- Constraints for table `inventory`
 --
 ALTER TABLE `inventory`
   ADD CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`merk`) REFERENCES `merk` (`id`);
 
 --
--- Ketidakleluasaan untuk tabel `user`
+-- Constraints for table `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `fk_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`);
