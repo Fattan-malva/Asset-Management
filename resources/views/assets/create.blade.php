@@ -66,6 +66,7 @@
 
                     <div class="form-group">
                         <select class="form-control" id="kondisi" name="kondisi" hidden>
+                            <option value="New">New</option>
                             <option value="Good">Good</option>
                             <option value="Exception">Exception</option>
                             <option value="Bad">Bad</option>

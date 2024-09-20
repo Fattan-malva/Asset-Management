@@ -99,7 +99,6 @@
         </div>
     </div>
     <script>
-        // Trigger print dialog automatically
         window.onload = function() {
             window.print();
         }

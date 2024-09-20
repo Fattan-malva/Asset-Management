@@ -17,16 +17,14 @@
                 <table id="inventoryTable" class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">No.</th>
                             <th scope="col">Asets Name</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Total Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($inventorySummary as $index => $summary)
+                        @forelse ($inventorySummary as $summary)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
                                 <td>{{ $summary->asets }}</td>
                                 <td>{{ $summary->merk }}</td>
                                 <td>{{ $summary->total_quantity }}</td>

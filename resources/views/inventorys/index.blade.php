@@ -26,49 +26,82 @@
                             <th scope="col">Asset Tag</th>
                             <th scope="col">Asset Name</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Serial Number</th>
+                            <th scope="col">Entry Date</th>
+                            <th scope="col">Handover Date</th>
+                            <th scope="col">Location</th>
                             <th scope="col">Status</th>
                             <th scope="col" style="width: 150px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($inventorys as $index => $inventory)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $inventory->tagging }}</td>
-                                <td>{{ $inventory->asets }}</td>
-                                <td>{{ $inventory->merk_name }}</td>
-                                <td>{{ $inventory->seri }}</td>
-                                <td>
-                                    <!-- Status Badge -->
-                                    @if ($inventory->status === 'Inventory')
-                                        <span class="badge bg-warning" style="padding: 5px;">Available</span>
-                                    @elseif ($inventory->status === 'Operation')
-                                        <span class="badge bg-success" style="padding: 5px;">In Use</span>
-                                    @elseif ($inventory->status === 'Under Maintenance')
-                                        <span class="badge bg-secondary" style="padding: 5px;">Under Maintenance</span>
-                                    @else
-                                        <span class="badge bg-danger" style="padding: 5px;">Unavailable</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                            data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details">
-                                            <i class="bi bi-file-earmark-text"></i> Detail
-                                        </button>
-                                        <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
-                                            method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this inventory?')">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $inventory->tagging }}</td>
+                                                    <td>{{ $inventory->asets }}</td>
+                                                    <td>{{ $inventory->merk_name }}</td>
+                                                    <td>{{ $inventory->tanggalmasuk }}</td>
+                                                    <td>
+                                                        @php
+                                                            // Ambil nilai tanggal_diterima
+                                                            $tanggalDiterima = $inventory->tanggal_diterima ?? '-';
+
+                                                            // Jika tanggal_diterima adalah '0000-00-00 00:00:00' atau '-' maka tampilkan '-'
+                                                            if ($tanggalDiterima === '0000-00-00 00:00:00' || $tanggalDiterima === '-') {
+                                                                echo '-';
+                                                            } else {
+                                                                // Format tanggal menjadi tanggal-bulan-tahun (contoh: 19-09-2024)
+                                                                echo date('d-m-Y', strtotime($tanggalDiterima));
+                                                            }
+                                                        @endphp
+                                                    </td>
+
+                                                    <td>
+                                                        @php
+                                                            // Ambil nilai lokasi
+                                                            $lokasi = $inventory->lokasi ?? 'In Inventory';
+
+                                                            // Jika lokasi tidak kosong, ambil kata sebelum koma pertama
+                                                            if ($lokasi !== 'In Inventory') {
+                                                                $lokasi = strtok($lokasi, ',');
+                                                            }
+                                                        @endphp
+
+                                                        {{ $lokasi }}
+                                                    </td>
+
+                                                    <td class="text-center align-middle">
+                                                        <!-- Status Badge -->
+                                                        @if ($inventory->status === 'Inventory')
+                                                            <span class="badge bg-warning"
+                                                                style="padding: 5px; color: black; font-size: 0.9em;">Available</span>
+                                                        @elseif ($inventory->status === 'Operation')
+                                                            <span class="badge bg-success" style="padding: 5px; color: black; font-size: 0.9em;">In
+                                                                Use</span>
+                                                        @elseif ($inventory->status === 'Under Maintenance')
+                                                            <span class="badge bg-secondary" style="padding: 5px;">Under Maintenance</span>
+                                                        @else
+                                                            <span class="badge bg-danger" style="padding: 5px;">Unavailable</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="action-buttons">
+                                                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details">
+                                                                <i class="bi bi-file-earmark-text"></i> Detail
+                                                            </button>
+                                                            <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
+                                                                method="POST" style="display: inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete"
+                                                                    onclick="return confirm('Are you sure you want to delete this Asset?')">
+                                                                    <i class="bi bi-trash"></i> Scrap Asset
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center"
@@ -78,7 +111,19 @@
                         @endforelse
                     </tbody>
                 </table>
-
+                <!-- Legend for Status Badges -->
+                <div class="mt-4">
+                    <ul class="list-unstyled legend-list">
+                        <li>
+                            <span class="badge bg-warning legend-badge" style="color: black;">Available</span> : <span
+                                class="legend-description">Asset is available for use.</span>
+                        </li>
+                        <li>
+                            <span class="badge bg-success legend-badge" style="color: black;">In Use</span> : <span
+                                class="legend-description">Asset is currently in operation.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -154,7 +199,26 @@
     .no-border-table td {
         border: none !important;
         padding: 5px 12px;
-        /* Memberikan padding agar tetap rapi */
     }
 
+    .legend-list {
+        font-size: 0.875em;
+        line-height: 1.5;
+    }
+
+    .legend-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .legend-list li .badge {
+        min-width: 80px;
+        margin-right: 10px;
+    }
+
+    .legend-list li .legend-description {
+        margin-left: 10px;
+        text-align: left;
+    }
 </style>

@@ -150,7 +150,7 @@
                                                 <td>{{ explode(',', $data->lokasi)[0] }}</td>
                                                 <td>{{ $data->jenis_aset }}</td>
                                                 <td>{{ $data->merk }}</td>
-                                                <td>{{ $data->asset_tagging }}</td>
+                                                <td>{!! nl2br(e(str_replace(', ', "\n", $data->asset_tagging))) !!}</td>
                                                 <td>{{ $data->total_assets }}</td>
                                             </tr>
                                         @endforeach

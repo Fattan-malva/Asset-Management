@@ -26,9 +26,9 @@
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Email</th>
                             <th scope="col">NRP</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Position</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -37,9 +37,9 @@
                         @forelse ($customers as $index => $customer)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $customer->username }}</td>
                                 <td>{{ $customer->nrp }}</td>
                                 <td>{{ $customer->name }}</td>
+                                <td>{{ $customer->username }}</td>
                                 <td>{{ $customer->mapping }}</td>
                                 <td>
                                     <div class="action-buttons">

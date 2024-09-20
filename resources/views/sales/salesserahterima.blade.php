@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-body">
             @if($asset->aksi !== 'Return')
-                <form action="{{ route('assets.updateserahterima', $asset->id) }}" method="POST"
+                <form action="{{ route('assets.updateserahterimaSales', $asset->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -80,11 +80,6 @@
                         <input type="hidden" name="nama" value="{{ $asset->nama }}">
                     </div>
 
-                    <div class="form-group">
-                        <label for="keterangan">Reason</label>
-                        <input type="text" class="form-control" id="keterangan" name="keterangan"
-                            value="{{ old('keterangan', $asset->keterangan) }}" readonly>
-                    </div>
                     <div class="form-group">
                         <label for="lokasi">Location</label>
                         <input type="text" class="form-control" id="lokasi" name="lokasi"

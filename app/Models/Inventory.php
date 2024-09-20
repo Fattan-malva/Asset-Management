@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inventory extends Model
 {
     protected $table = 'inventory';
-    protected $fillable = ['tagging','asets', 'merk', 'seri', 'type', 'kondisi'];
+    protected $fillable = ['tagging','asets', 'merk', 'seri','tanggalmasuk', 'type', 'kondisi'];
 
     public function merk()
     {

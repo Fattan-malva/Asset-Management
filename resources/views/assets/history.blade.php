@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h1 class="text-center mb-4 fw-bold display-5">Asset History</h1>
+    <h1 class="text-center mb-4 fw-bold display-5">Activity History</h1>
     <br>
     @if (session('success'))
         <div class="alert alert-success" role="alert">
@@ -19,9 +19,7 @@
                             <th scope="col">Asset Tagging</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Jenis Aset</th>
-                            <th scope="col">Old Holder</th>
-                            <th scope="col">New Holder</th>
-                            <th scope="col">Changed At</th>
+                            <th scope="col">Transfer Date</th>
                             <th scope="col">Action</th>
                             <th scope="col">Description</th>
                             <th scope="col">Detail</th>
@@ -34,9 +32,7 @@
                                     <td>{{ $item->asset_tagging }}</td>
                                     <td>{{ $item->merk }}</td>
                                     <td>{{ $item->jenis_aset_old }}</td>
-                                    <td>{{ $item->nama_old }}</td>
-                                    <td>{{ $item->nama_new }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y H:i:s') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y') }}</td>
                                     <td>
                                         @if ($item->action === 'CREATE')
                                             <span class="badge badge-custom bg-success"
@@ -75,9 +71,10 @@
                                             data-merk="{{ $item->merk }}" data-jenis="{{ $item->jenis_aset_old }}"
                                             data-oldholder="{{ $item->nama_old }}" data-newholder="{{ $item->nama_new }}"
                                             data-changedat="{{ \Carbon\Carbon::parse($item->changed_at)->format('d-m-Y H:i:s') }}"
-                                            data-action="{{ $item->action }}">
+                                            data-action="{{ $item->action }}" data-keterangan="{{ $item->keterangan }}">
                                             <i class="bi bi-file-earmark-text"></i> Detail
                                         </button>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -89,6 +86,23 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-4">
+                    <ul class="list-unstyled legend-list">
+                        <li>
+                            <span class="badge bg-success legend-badge" style="color:black;">Handover</span> : <span
+                                class="legend-description">The asset has been approved by the user.</span>
+                        </li>
+                        <li>
+                            <span class="badge bg-warning legend-badge" style="color:black;">Mutation</span> : <span
+                                class="legend-description">Waiting for the asset to be approved
+                                by the user.</span>
+                        </li>
+                        <li>
+                            <span class="badge bg-danger legend-badge" style="color:black;">Return</span> : <span
+                                class="legend-description">The asset is rejected by the user.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -133,6 +147,10 @@
                         <tr>
                             <th scope="row">Action</th>
                             <td id="modalAction"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Reason</th>
+                            <td id="modalKeterangan"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -185,6 +203,27 @@
         justify-content: center;
         /* Menyelaraskan konten ke tengah secara horizontal */
     }
+
+    .legend-list {
+        font-size: 0.875em;
+        line-height: 1.5;
+    }
+
+    .legend-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .legend-list li .badge {
+        min-width: 80px;
+        margin-right: 10px;
+    }
+
+    .legend-list li .legend-description {
+        margin-left: 10px;
+        text-align: left;
+    }
 </style>
 
 <script>
@@ -203,6 +242,7 @@
             var newHolder = button.getAttribute('data-newholder');
             var changedAt = button.getAttribute('data-changedat');
             var action = button.getAttribute('data-action');
+            var keterangan = button.getAttribute('data-keterangan');
 
             // Update modal content
             document.getElementById('modalAssetTagging').textContent = assetTagging;
@@ -211,6 +251,7 @@
             document.getElementById('modalOldHolder').textContent = oldHolder;
             document.getElementById('modalNewHolder').textContent = newHolder;
             document.getElementById('modalChangedAt').textContent = changedAt;
+            document.getElementById('modalKeterangan').textContent = keterangan;
 
             // Update action text based on action type
             var actionText = '';
@@ -229,10 +270,14 @@
             document.getElementById('printButton').setAttribute('data-action', action);
         });
 
-        // Print button click event
         document.getElementById('printButton').addEventListener('click', function () {
             var action = this.getAttribute('data-action');
             var assetTagging = document.getElementById('modalAssetTagging').textContent;
+            var changedAt = document.getElementById('modalChangedAt').textContent; // Format: yyyy-mm-dd hh:mm:ss
+
+            // Extract the date part (yyyy-mm-dd)
+            var changedAtDate = changedAt.split(' ')[0];
+
             var route = '';
 
             if (action === 'CREATE') {
@@ -244,9 +289,13 @@
             }
 
             if (route) {
-                window.open(route + '?asset_tagging=' + assetTagging, '_blank');
+                var fullUrl = route + '?asset_tagging=' + encodeURIComponent(assetTagging) + '&changed_at=' + encodeURIComponent(changedAtDate);
+                console.log('Opening URL: ' + fullUrl); // Debug URL
+                window.open(fullUrl, '_blank');
             }
         });
+
+
     });
 </script>
 @endsection

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Inventory;
 use App\Models\Merk;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 
 class InventoryController extends Controller
 {
@@ -28,26 +30,36 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'tagging' => 'required|string|max:255|unique:inventory,tagging',
             'asets' => 'required|string|max:255',
             'merk' => 'required|exists:merk,id',
             'seri' => 'required|string|max:255',
+            'tanggalmasuk' => 'required|date',  // Validasi sebagai tanggal
             'type' => 'required|string|max:255',
-            'kondisi' => 'required|in:Good,Exception,Bad',
+            'kondisi' => 'required|in:Good,Exception,Bad,New',
         ]);
-
+    
+        // Konversi tanggal ke format yang diinginkan (jika perlu)
+        $formattedDate = Carbon::parse($request->tanggalmasuk)->format('d-m-Y');
+    
+        // Simpan data ke database
         Inventory::create([
             'asets' => $request->asets,
             'merk' => $request->merk,
             'tagging' => $request->tagging,
             'seri' => $request->seri,
+            'tanggalmasuk' => $formattedDate, // Menyimpan dalam format string
             'type' => $request->type,
             'kondisi' => $request->kondisi,
         ]);
-
+    
+        // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('inventorys.index')->with('success', 'Asset created successfully.');
     }
+    
+    
 
     public function edit($id)
     {
@@ -72,7 +84,7 @@ class InventoryController extends Controller
             'merk' => 'required|exists:merk,id',
             'seri' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'kondisi' => 'required|in:Good,Exception,Bad',
+            'kondisi' => 'required|in:Good,Exception,Bad,New',
         ]);
 
         $inventory = Inventory::findOrFail($id);
@@ -94,12 +106,12 @@ class InventoryController extends Controller
             $inventory = Inventory::findOrFail($id);
             $inventory->delete();
 
-            return redirect()->route('inventorys.index')->with('success', 'Asset deleted successfully.');
+            return redirect()->route('inventorys.index')->with('success', 'Asset scrapped successfully.');
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == '23000') { // Foreign key constraint violation
-                return redirect()->route('inventorys.index')->with('error', 'Cannot delete this inventory as it is being used by other records.');
+                return redirect()->route('inventorys.index')->with('error', 'Cannot delete this asset because it is in use by user . Please make a return first');
             }
-            return redirect()->route('inventorys.index')->with('error', 'An error occurred while deleting the inventory.');
+            return redirect()->route('inventorys.index')->with('error', 'An error occurred while deleting the asset.');
         }
     }
     public function show($id)

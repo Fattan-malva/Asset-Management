@@ -53,12 +53,14 @@
         }
 
         th {
-            width: 25%; /* Sesuaikan lebar kolom header */
+            width: 25%;
+            /* Sesuaikan lebar kolom header */
             background-color: #f2f2f2;
         }
 
         td {
-            width: 75%; /* Sesuaikan lebar kolom data */
+            width: 75%;
+            /* Sesuaikan lebar kolom data */
             background-color: #fff;
         }
 
@@ -195,7 +197,8 @@
 
             <!-- Return Statement -->
             <div class="content">
-                <p><strong>Tanggal Pengembalian:</strong> {{ \Carbon\Carbon::parse($return->changed_at)->format('d-m-Y') }}</p>
+                <p><strong>Tanggal Pengembalian:</strong> {{ \Carbon\Carbon::parse($return->changed_at)->format('d-m-Y') }}
+                </p>
             </div>
 
             <!-- Signatures Section -->
@@ -220,3 +223,8 @@
 </body>
 
 </html>
+<script>
+    window.onload = function () {
+        window.print();
+    }
+</script>

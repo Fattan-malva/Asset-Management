@@ -99,13 +99,13 @@
     <!-- Include header based on user role -->
     @if ($userRole === 'admin')
         @include('shared.header')
-    @elseif ($userRole === 'user')
+    @elseif ($userRole === 'user' || $userRole === 'sales')
         @include('shared.headeruser')
     @else
         @include('shared.header') <!-- Default or fallback header -->
     @endif
 
-    @if ($userRole === 'user')
+    @if ($userRole === 'user' || $userRole === 'sales')
         <main class="py-4">
             <div class="container form-container">
                 @yield('content')
@@ -163,11 +163,21 @@
                             next: ""
                         }
                     },
-                    dom: '<"top"f>rt<"bottom"lp><"clear">'
+                    dom: '<"top"f>rt<"bottom"lp><"clear">',
+                    createdRow: function (row, data, dataIndex) {
+                        // Apply 'text-center' and 'align-middle' class to every cell in the row
+                        $(row).find('td').addClass('text-center align-middle');
+                    },
+                    initComplete: function () {
+                        // Apply 'text-center' and 'align-middle' class to the header columns
+                        $(this).find('th').addClass('text-center align-middle');
+                    }
                 });
             });
         });
     </script>
+
+
     <style>
         /* Hide the dropdown menu from lengthMenu */
         .dataTables_length select {
@@ -198,6 +208,10 @@
             /* Align the element using flex */
             align-items: center;
             /* Center items vertically */
+        }
+
+        .align-middle {
+            vertical-align: middle !important;
         }
     </style>
 

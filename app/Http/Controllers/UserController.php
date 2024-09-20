@@ -136,14 +136,16 @@ class UserController extends Controller
         $request->session()->put('user_nrp', $customer->nrp);
         $request->session()->put('user_mapping', $customer->mapping);
 
-
         // Alihkan berdasarkan peran pengguna
         if ($customer->role === 'admin') {
             return redirect()->route('dashboard')->with('success', 'Success login.');
+        } elseif ($customer->role === 'sales') {
+            return redirect()->route('shared.homeSales')->with('success', 'Success login as Sales.');
         } else {
             return redirect()->route('shared.homeUser')->with('success', 'Success login.');
         }
     }
+
 
 
 

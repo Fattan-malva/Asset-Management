@@ -4,6 +4,7 @@ use App\Http\Controllers\{
     MerkController,
     HomeController,
     HomeUserController,
+    HomeSalesController,
     DashboardController,
     ReportController,
     AsetsController,
@@ -13,7 +14,10 @@ use App\Http\Controllers\{
     MappingController,
     InventoryTotalController,
     UserController,
-    PrintController
+    PrintController,
+    SalesController,
+    InventoryHistoryController
+
 };
 use Illuminate\Support\Facades\Route;
 use App\Events\DataUpdated;
@@ -33,7 +37,9 @@ Route::get('/auth/detailQR/{id}', [PrintController::class, 'showAssetDetail'])->
 
 Route::middleware(['auth.check'])->group(function () {
     Route::get('/home/user', [HomeUserController::class, 'index'])->name('shared.homeUser');
+    Route::get('/home/sales', [HomeSalesController::class, 'index'])->name('shared.homeSales');
     Route::get('/dashboard-User', [DashboardController::class, 'indexUser'])->name('dashboard.user');
+
     Route::get('/my-assets', [AssetUserController::class, 'indexuser'])->name('asset-user');
     Route::get('assets/{id}/serahterima', [AssetUserController::class, 'serahterima'])->name('assets.serahterima');
     Route::put('/assets/{id}/updateserahterima', [AssetUserController::class, 'updateserahterima'])->name('assets.updateserahterima');
@@ -41,22 +47,21 @@ Route::middleware(['auth.check'])->group(function () {
     Route::delete('/assets/{id}/return', [AssetUserController::class, 'returnAsset'])->name('assets.return');
     Route::post('/assets/reject/{id}', [AsetsController::class, 'reject'])->name('assets.reject');
     Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
+
     Route::get('/prints/handover', [PrintController::class, 'handover'])->name('prints.handover');
     Route::get('/prints/mutation', [PrintController::class, 'mutation'])->name('prints.mutation');
     Route::get('/prints/return', [PrintController::class, 'return'])->name('prints.return');
 
-    Route::get('/test-broadcast', function () {
-        $data = ['message' => 'This is a test message'];
-        event(new DataUpdated($data));
-        return 'Broadcast event fired!';
-    });
-
-
-
-
-
-
 });
+
+Route::middleware(['auth.check:sales'])->group(function () {
+    Route::get('sales/{id}/salesserahterima', [SalesController::class, 'salesserahterima'])->name('sales.salesserahterima');
+    Route::put('/assets/{id}/updateserahterimaSales', [SalesController::class, 'updateserahterimaSales'])->name('assets.updateserahterimaSales');
+    Route::resource('sales', SalesController::class);
+    Route::get('/saless/create', [SalesController::class, 'create'])->name('sales.create');
+    Route::post('/saless', [SalesController::class, 'store'])->name('sales.store');
+});
+
 
 Route::middleware(['auth.check:admin'])->group(function () {
     Route::get('home', [HomeController::class, 'index'])->name('shared.home');
@@ -84,15 +89,13 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('assets/{id}', [AsetsController::class, 'update'])->name('assets.update');
     Route::get('assets-history', [AsetsController::class, 'history'])->name('assets.history');
     Route::get('/assets/track/{id}', [AsetsController::class, 'track'])->name('assets.track');
-
-    // web.php
     Route::get('/history', [AsetsController::class, 'history'])->name('history');
     Route::get('/history/data', [AsetsController::class, 'getData'])->name('history.data');
-    // web.php
 
-
-
-
+    Route::get('/saless', [SalesController::class, 'index'])->name('sales.index');
+    Route::get('/saless/{id}/edit', [SalesController::class, 'edit'])->name('sales.edit');
+    Route::put('/saless/{id}', [SalesController::class, 'update'])->name('sales.update');
+    Route::delete('/saless/{id}', [SalesController::class, 'destroy'])->name('sales.destroy');
 
 
     Route::get('/assets/return/{id}', [AsetsController::class, 'returnAsset'])->name('assets.return');
@@ -113,6 +116,7 @@ Route::middleware(['auth.check:admin'])->group(function () {
     Route::put('inventorys/{id}', [InventoryController::class, 'update'])->name('inventorys.update');
     Route::get('/inventory/{id}/detail', [InventoryController::class, 'show'])->name('inventorys.show');
     Route::get('mapping', [MappingController::class, 'mapping'])->name('inventorys.mapping');
+    Route::get('/asset-history', [InventoryHistoryController::class, 'index'])->name('inventory.history');
 
     Route::resource('merk', MerkController::class);
     Route::get('/merks', [MerkController::class, 'index'])->name('merk.index');

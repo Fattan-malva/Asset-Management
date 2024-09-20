@@ -10,8 +10,8 @@
                 @csrf
                 <div class="form-group">
                     <label for="tagging" class="form-label">Asset Tag</label>
-                    <input type="text" class="form-control @error('tagging') is-invalid @enderror" id="tagging" name="tagging"
-                        value="{{ old('tagging') }}" placeholder="Enter asset tag">
+                    <input type="text" class="form-control @error('tagging') is-invalid @enderror" id="tagging"
+                        name="tagging" value="{{ old('tagging') }}" placeholder="Enter asset tag">
                     @error('tagging')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -61,7 +61,9 @@
 
                 <div class="form-group">
                     <label for="kondisi" class="form-label">Condition</label>
-                    <select class="form-select @error('kondisi') is-invalid @enderror" id="kondisi" name="kondisi" required>
+                    <select class="form-select @error('kondisi') is-invalid @enderror" id="kondisi" name="kondisi"
+                        required>
+                        <option value="New" {{ old('kondisi') == 'New' ? 'selected' : '' }}>New</option>
                         <option value="Good" {{ old('kondisi') == 'Good' ? 'selected' : '' }}>Good</option>
                         <option value="Exception" {{ old('kondisi') == 'Exception' ? 'selected' : '' }}>Exception</option>
                         <option value="Bad" {{ old('kondisi') == 'Bad' ? 'selected' : '' }}>Bad</option>
@@ -70,6 +72,17 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="form-group">
+                    <label for="tanggalmasuk" class="form-label">Entry Date</label>
+                    <input type="date" class="form-control @error('tanggalmasuk') is-invalid @enderror"
+                        id="tanggalmasuk" name="tanggalmasuk" value="{{ old('tanggalmasuk') }}"
+                        placeholder="Enter the entry date">
+                    @error('tanggalmasuk')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
 
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary">Create</button>

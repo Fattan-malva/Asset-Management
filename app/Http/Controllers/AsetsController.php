@@ -118,8 +118,6 @@ class AsetsController extends Controller
         return view('assets.create', compact('merks', 'customers', 'inventories', 'assetTaggingAvailable', 'namesAvailable'));
     }
 
-
-
     public function edit($id)
     {
         // Mengambil data aset beserta merk dan pelanggan terkait
@@ -193,6 +191,7 @@ class AsetsController extends Controller
             'lokasi' => $request->input('lokasi'),
             'latitude' => $request->input('latitude'),
             'longitude' => $request->input('longitude'),
+            'keterangan' => $request->input('keterangan'),
             'approval_status' => $request->input('approval_status', ''),
             'aksi' => $request->input('aksi', ''),
         ];
@@ -227,11 +226,12 @@ class AsetsController extends Controller
         'nama' => 'required|exists:customer,id',
         'status' => 'required|string',
         'o365' => 'required|string',
-        'kondisi' => 'required|in:Good,Exception,Bad',
+        'kondisi' => 'required|in:Good,Exception,Bad,New',
         'approval_status' => 'required|string',
         'latitude' => 'required|numeric',
         'longitude' => 'required|numeric',
         'documentation' => 'nullable|image|max:2048', // Updated to nullable
+        'keterangan' => 'nullable|string',
     ]);
 
     $inventory = Inventory::find($request->input('asset_tagging'));
@@ -255,6 +255,7 @@ class AsetsController extends Controller
         'previous_customer_name' => $request->input('nama', ''),
         'latitude' => $request->input('latitude'),
         'longitude' => $request->input('longitude'),
+        'keterangan' => $request->input('keterangan'),
     ];
 
     if ($request->hasFile('documentation')) {
@@ -280,7 +281,8 @@ class AsetsController extends Controller
             'nama' => 'required|exists:customer,id',
             'status' => 'required|string',
             'o365' => 'required|string',
-            'kondisi' => 'required|in:Good,Exception,Bad',
+            'keterangan' => 'nullable|string',
+            'kondisi' => 'required|in:Good,Exception,Bad,New',
             'approval_status' => 'nullable|string|in:Pending,Approved', // Ensure valid status
             'documentation' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Updated to nullable
         ]);
@@ -300,6 +302,7 @@ class AsetsController extends Controller
             'o365' => $request->input('o365'),
             'lokasi' => $request->input('lokasi', ''),
             'status' => $request->input('status'),
+            'keterangan' => $request->input('keterangan'),
             'kondisi' => $request->input('kondisi', ''),
             'approval_status' => $request->input('approval_status', ''), // Use input value
         ];
@@ -357,47 +360,62 @@ class AsetsController extends Controller
         return view('assets.show', compact('asset'));
     }
     public function history()
-    {
-        $history = DB::table('asset_history')
-            ->leftJoin('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
-            ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
-            ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
-            ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
-            ->select(
-                'asset_history.asset_id', // Include asset_id
-                'inventory.tagging as asset_tagging',
-                'merk.name as merk',
-                'asset_history.jenis_aset_old',
-                'old_customer.name as nama_old',
-                'new_customer.name as nama_new',
-                'asset_history.changed_at',
-                'asset_history.action'
-            )
-            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
-            ->orderBy('asset_history.changed_at', 'DESC')
-            ->get()
-            ->groupBy('asset_tagging')
-            ->map(function ($items) {
-                // Filter out unchanged updates
-                $filteredItems = $items->filter(function ($item) {
-                    return $item->action === 'CREATE' ||
-                        ($item->action === 'UPDATE' && $item->nama_old !== $item->nama_new) ||
-                        $item->action === 'DELETE';
-                });
-
-                // Group by changed_at to remove duplicates
-                $uniqueItems = $filteredItems->groupBy('changed_at')->map(function ($itemsByTime) {
-                    return $itemsByTime->unique(function ($item) {
-                        return $item->asset_tagging . '-' . $item->action;
-                    })->values();
-                })->flatten()->sortBy('changed_at');
-
-                return $uniqueItems;
+{
+    $history = DB::table('asset_history')
+        ->leftJoin('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
+        ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
+        ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
+        ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
+        ->select(
+            'asset_history.asset_id', // Include asset_id
+            'inventory.tagging as asset_tagging',
+            'merk.name as merk',
+            'asset_history.jenis_aset_old',
+            'old_customer.name as nama_old',
+            'new_customer.name as nama_new',
+            'asset_history.changed_at',
+            'asset_history.action',
+            'asset_history.keterangan',
+            'asset_history.documentation_old' // Field untuk pengecekan nanti
+        )
+        ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
+        ->orderBy('asset_history.changed_at', 'DESC')
+        ->get()
+        ->groupBy('asset_tagging')
+        ->map(function ($items) {
+            // Filter out unchanged updates
+            $filteredItems = $items->filter(function ($item) {
+                // Ambil data DELETE hanya jika documentation_old kosong
+                return $item->action === 'CREATE' ||
+                    ($item->action === 'UPDATE' && $item->nama_old !== $item->nama_new) ||
+                    ($item->action === 'DELETE' && empty($item->documentation_old));
             });
 
+            // Jika ada record DELETE dengan documentation_old kosong, ambil nilai keterangan
+            $keterangan = $filteredItems->filter(function ($item) {
+                return $item->action === 'DELETE' && empty($item->documentation_old);
+            })->pluck('keterangan')->first(); // Ambil keterangan pertama yang memenuhi kondisi
 
-        return view('assets.history', compact('history'));
-    }
+            // Group by changed_at to remove duplicates
+            $uniqueItems = $filteredItems->groupBy('changed_at')->map(function ($itemsByTime) {
+                return $itemsByTime->unique(function ($item) {
+                    return $item->asset_tagging . '-' . $item->action;
+                })->values();
+            })->flatten()->sortBy('changed_at');
+
+            // Tambahkan field keterangan dari DELETE jika ada
+            $uniqueItems->each(function ($item) use ($keterangan) {
+                if ($item->action === 'DELETE') {
+                    $item->keterangan = $keterangan; // Ganti dengan keterangan dari DELETE
+                }
+            });
+
+            return $uniqueItems;
+        });
+
+    return view('assets.history', compact('history'));
+}
+
 
 
     public function returnAsset($id)
@@ -430,6 +448,7 @@ class AsetsController extends Controller
         $request->validate([
             'nama' => 'required|exists:customer,id',
             'lokasi' => 'required|string',
+            'keterangan' => 'required|string',
             'documentation' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
@@ -455,6 +474,7 @@ class AsetsController extends Controller
             'lokasi' => $request->input('lokasi'),
             'approval_status' => 'Pending', // Status set to "Pending"
             'aksi' => $request->input('aksi'),
+            'keterangan' => $request->input('keterangan'),
         ];
 
         // Handle documentation file

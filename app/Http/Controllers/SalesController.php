@@ -2,58 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use App\Models\Assets;
-use App\Models\Inventory;
+use Illuminate\Http\Request;
+use App\Models\Sales;
 use App\Models\Merk;
 use App\Models\Customer;
-use Illuminate\Http\Request;
+use App\Models\Inventory;
+use App\Models\Assets;
+use Illuminate\Support\Facades\DB;
 
-class AssetUserController extends Controller
+
+class SalesController extends Controller
 {
-    public function indexuser()
-    {
-        // Retrieve user ID from session
-        $userId = session('user_id');
-
-        if (!$userId) {
-            return redirect()->route('shared.home')->with('error', 'User is not logged in.');
-        }
-
-        // Fetch approved assets related to the logged-in user and join related tables
-        $assets = DB::table('assets')
-            ->join('merk', 'assets.merk', '=', 'merk.id')
-            ->join('customer', 'assets.nama', '=', 'customer.id')
-            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id')
-            ->select(
-                'assets.*',
-                'merk.name as merk_name',
-                'customer.name as customer_name',
-                'inventory.tagging as tagging'
-            )
-            ->where('assets.nama', $userId) // Filter by user ID
-            ->where('assets.approval_status', 'Approved') // Only get approved assets
-            ->get();
-
-        // Fetch pending assets related to the logged-in user and join related tables
-        $pendingAssets = DB::table('assets')
-            ->join('merk', 'assets.merk', '=', 'merk.id')
-            ->join('customer', 'assets.nama', '=', 'customer.id')
-            ->join('inventory', 'assets.asset_tagging', '=', 'inventory.id')
-            ->select(
-                'assets.*',
-                'merk.name as merk_name',
-                'customer.name as customer_name',
-                'inventory.tagging as tagging'
-            )
-            ->where('assets.nama', $userId) // Filter by user ID
-            ->where('assets.approval_status', 'Pending') // Only get pending assets
-            ->get();
-
-        return view('assets.assetuser', compact('assets', 'pendingAssets'));
-    }
-
-    public function serahterima($id)
+    public function salesserahterima($id)
     {
         $asset = DB::table('assets')
             ->join('merk', 'assets.merk', '=', 'merk.id')
@@ -66,10 +26,9 @@ class AssetUserController extends Controller
         $customers = Customer::all();
         $inventories = Inventory::all();
 
-        return view('assets.serahterima', compact('asset', 'merks', 'customers', 'inventories'));
+        return view('sales.salesserahterima', compact('asset', 'merks', 'customers', 'inventories'));
     }
-
-    public function updateserahterima(Request $request, $id)
+    public function updateserahterimaSales(Request $request, $id)
     {
         // Validate input
         $validatedData = $request->validate([
@@ -122,7 +81,7 @@ class AssetUserController extends Controller
             $asset->update($assetData);
 
             // Redirect with success message
-            return redirect()->route('shared.homeUser')->with('success', 'Asset Approved successfully.');
+            return redirect()->route('shared.homeSales')->with('success', 'Asset Approved successfully.');
 
         } catch (\Exception $e) {
             // Log error and redirect with error message
@@ -131,25 +90,73 @@ class AssetUserController extends Controller
         }
     }
 
-
-    public function destroyasset($id)
+    public function index()
     {
-        $asset = Assets::findOrFail($id);
-        $asset->delete();
+        $saleses = Sales::all();  // Fetch sales data
+        $inventories = Inventory::all();  // Fetch inventories data
+        $customers = Customer::all();  // Fetch customers data
 
-        return redirect()->route('shared.homeUser')->with('success', 'Asset has been returned successfully.');
-    }
-    // AssetsController.php
-// AssetsController.php
-    public function returnAsset($id)
-    {
-        $asset = Assets::findOrFail($id);
-
-        // Assuming `user` is a relationship method on the Asset model
-        $asset->user()->delete();
-
-        return redirect()->back()->with('success', 'Asset returned successfully.');
+        return view('sales.index', compact('saleses', 'inventories', 'customers'));
     }
 
+    public function create()
+    {
+        return view('sales.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'departement' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'nama_asset' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        try {
+            Sales::create($validatedData);
+
+            // Return JSON response for success
+            return response()->json(['success' => true, 'message' => 'Sales created successfully.']);
+        } catch (\Exception $e) {
+            // Return JSON response for error with detailed message
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
+        }
+    }
+
+    public function edit($id)
+    {
+        $sales = Sales::findOrFail($id);
+        return response()->json($sales);
+    }
+
+    public function update(Request $request, $id)
+{
+    $sales = Sales::find($id);
+    if ($sales) {
+        $sales->status = 'Approved'; // Set the status to 'Approved'
+        // Update other fields if needed
+        $sales->save();
+        
+        return redirect()->route('sales.index')->with('success', 'Status updated successfully!');
+    }
+
+    return redirect()->route('sales.index')->with('error', 'Sales record not found.');
+}
+
+    public function destroy($id)
+    {
+        try {
+            $sales = Sales::findOrFail($id);
+            $sales->delete();
+
+            return redirect()->route('sales.index')->with('success', 'Sales deleted successfully.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Catch the foreign key constraint exception
+            return redirect()->route('sales.index')->with('error', 'Unable to delete Sales. It is still referenced in other records.');
+        }
+    }
 
 }

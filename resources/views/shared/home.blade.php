@@ -7,7 +7,7 @@
         <div class="carousel-inner" role="listbox">
 
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: url(assets/img/slide/slide1.jpg)">
+            <div class="carousel-item active" style="background-image: url(assets/img/slide/BackgroundLogin.jpeg)">
                 <div class="carousel-container">
                     <div class="container">
                         <h2 class="animate__animated animate__fadeInDown"><span>Global Service Indonesia</span></h2>
@@ -123,8 +123,8 @@
 
 <style>
     #clients .img-fluid {
-    margin-top: 80px;
-    max-width: 100%;
-    height: auto;
-}
+        margin-top: 80px;
+        max-width: 100%;
+        height: auto;
+    }
 </style>

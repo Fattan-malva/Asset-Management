@@ -27,14 +27,15 @@
                             @if ($pendingAssets->isEmpty())
                                 <p class="text-center">No assets waiting for approval.</p>
                             @else
+
                                 <div class="row">
                                     @foreach ($pendingAssets as $asset)
                                         <div class="col-md-12 mb-3">
                                             <div class="card" style="background-color: rgba(
-                                                            {{ $asset->aksi == 'Handover' ? '40, 167, 69, 0.2' : '' }}
-                                                            {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }}
-                                                            {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }});
-                                                            border: 3px solid black;">
+                                                                                    {{ $asset->aksi == 'Handover' ? '40, 167, 69, 0.2' : '' }}
+                                                                                    {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }}
+                                                                                    {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }});
+                                                                                    border: 3px solid black;">
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center mb-4">
                                                         <img src="{{ asset('assets/img/pending.png') }}"
@@ -43,9 +44,9 @@
                                                         <p class="card-text">
                                                             <span
                                                                 class="badge position-absolute top-0 end-0 m-2
-                                                                        {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }}
-                                                                        {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }}
-                                                                        {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
+                                                                                                {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }}
+                                                                                                {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }}
+                                                                                                {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
                                                                 {{ $asset->aksi }}
                                                             </span>
 
@@ -71,6 +72,7 @@
                                     @endforeach
                                 </div>
                             @endif
+
                         </div>
                     </div>
                 </div>
@@ -85,6 +87,7 @@
                             @if ($assets->isEmpty())
                                 <p class="text-center">No approved assets found.</p>
                             @else
+
                                                     <div class="row">
                                                         @foreach ($assets as $index => $asset)
                                                                                     <div class="col-md-5 mb-3">
@@ -118,8 +121,6 @@
                                                                                                     </button>
                                                                                                 </div>
                                                                                             </div>
-
-
                                                                                             <!-- Modal -->
                                                                                             <div class="modal fade" id="detailModal{{ $asset->id }}" tabindex="-1"
                                                                                                 aria-labelledby="detailModalLabel{{ $asset->id }}" aria-hidden="true">
@@ -133,52 +134,98 @@
                                                                                                         </div>
                                                                                                         <div class="modal-body">
                                                                                                             <div class="row">
-                                                                                                                <div class="col-md-6">
-                                                                                                                    <strong>Asset Tagging:</strong>
-                                                                                                                    {{ $asset->tagging }}<br>
-                                                                                                                    <strong>Jenis Aset:</strong>
-                                                                                                                    {{ $asset->jenis_aset }}<br>
-                                                                                                                    <strong>Merk:</strong> {{ $asset->merk_name }}<br>
-                                                                                                                    <strong>Location:</strong> {{ $asset->lokasi }}<br>
-                                                                                                                    <strong>Approval Status:</strong>
-                                                                                                                    {{ $asset->approval_status }}<br>
-                                                                                                                </div>
-                                                                                                                <div class="col-md-6">
-                                                                                                                    <strong>Serial Number:</strong>
-                                                                                                                    {{ $asset->serial_number }}<br>
-                                                                                                                    <strong>O365:</strong> {{ $asset->o365 }}<br>
-                                                                                                                    <strong>Action:</strong> {{ $asset->aksi }}<br>
-                                                                                                                    <strong>Kondisi:</strong> {{ $asset->kondisi }}<br>
-                                                                                                                    <strong>Documentation:</strong>
-                                                                                                                    @if($asset->documentation)
-                                                                                                                        <a href="{{ asset('storage/' . $asset->documentation) }}"
-                                                                                                                            target="_blank">View Documentation</a>
-                                                                                                                    @else
-                                                                                                                        No documentation available.
-                                                                                                                    @endif
-                                                                                                                </div>
+                                                                                                            <div class="col-md-6">
+    <table class="table" style="border-collapse: collapse; border: none;">
+        <tbody>
+            <tr>
+                <td style="border: none;"><strong>Asset Tagging:</strong></td>
+                <td style="border: none;">{{ $asset->tagging }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Jenis Aset:</strong></td>
+                <td style="border: none;">{{ $asset->jenis_aset }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Merk:</strong></td>
+                <td style="border: none;">{{ $asset->merk_name }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Location:</strong></td>
+                <td style="border: none;">{{ $asset->lokasi }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Approval Status:</strong></td>
+                <td style="border: none;">{{ $asset->approval_status }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="col-md-6">
+    <table class="table" style="border-collapse: collapse; border: none;">
+        <tbody>
+            <tr>
+                <td style="border: none;"><strong>Serial Number:</strong></td>
+                <td style="border: none;">{{ $asset->serial_number }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>O365:</strong></td>
+                <td style="border: none;">{{ $asset->o365 }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Action:</strong></td>
+                <td style="border: none;">{{ $asset->aksi }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Kondisi:</strong></td>
+                <td style="border: none;">{{ $asset->kondisi }}</td>
+            </tr>
+            <tr>
+                <td style="border: none;"><strong>Documentation:</strong></td>
+                <td style="border: none;">
+                    @if($asset->documentation)
+                        <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank" class="text-decoration-underline">View Documentation</a>
+                    @else
+                        No documentation available.
+                    @endif
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                        <div class="modal-footer">
-    @if($asset->aksi == 'Handover')
-        <a href="{{ route('prints.handover', ['asset_tagging' => $asset->tagging]) }}" class="btn btn-primary"><i class="bi bi-printer"></i> Print</a>
-    @elseif($asset->aksi == 'Mutasi')
-        <a href="{{ route('prints.mutation', ['asset_tagging' => $asset->tagging]) }}" class="btn btn-primary"><i class="bi bi-printer"></i> Print</a>
-    @elseif($asset->aksi == 'Return')
-        <a href="{{ route('prints.return', ['asset_tagging' => $asset->tagging]) }}" class="btn btn-primary"><i class="bi bi-printer"></i> Print</a>
-    @else
-        <!-- Optionally, you can include a fallback or default route -->
-        <a href="#" class="btn btn-secondary" disabled>Print Not Available</a>
-    @endif
-</div>
+                                                                                                        <!-- <div class="modal-footer">
+                                                                                                            @if($asset->aksi == 'Handover')
+                                                                                                                <a href="{{ route('prints.handover', ['asset_tagging' => $asset->tagging]) }}"
+                                                                                                                    class="btn btn-primary"><i class="bi bi-printer"></i>
+                                                                                                                    Print</a>
+                                                                                                            @elseif($asset->aksi == 'Mutasi')
+                                                                                                                <a href="{{ route('prints.mutation', ['asset_tagging' => $asset->tagging]) }}"
+                                                                                                                    class="btn btn-primary"><i class="bi bi-printer"></i>
+                                                                                                                    Print</a>
+                                                                                                            @elseif($asset->aksi == 'Return')
+                                                                                                                <a href="{{ route('prints.return', ['asset_tagging' => $asset->tagging]) }}"
+                                                                                                                    class="btn btn-primary"><i class="bi bi-printer"></i>
+                                                                                                                    Print</a>
+                                                                                                            @else
+
+                                                                                                
+                                                                                                                <a href="#" class="btn btn-secondary" disabled>Print Not
+                                                                                                                    Available</a>
+                                                                                                            @endif
+
+                                                                                                        </div> -->
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
+
                                                                                         </div>
                                                                                     </div>
                                                         @endforeach
                                                     </div>
                             @endif
+
                         </div>
                     </div>
                 </div>
@@ -237,6 +284,29 @@
         .card-body {
             background-color: rgba(255, 193, 7, 0.5);
             /* Light yellow background with transparency */
+        }
+
+        .modal-body .table {
+            margin-bottom: 0;
+            border-collapse: collapse;
+        }
+
+        .modal-body .table td {
+            border: none;
+            padding: 8px;
+        }
+
+        .modal-body .table thead {
+            display: none;
+        }
+
+        .modal-body .table tr {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .no-border-table td,
+        .no-border-table th {
+            border: none !important;
         }
     </style>
 @endpush

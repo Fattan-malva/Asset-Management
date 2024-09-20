@@ -92,7 +92,7 @@ class DashboardController extends Controller
                 'a.lokasi',
                 'a.jenis_aset',
                 'm.name AS merk',
-                DB::raw('GROUP_CONCAT(i.tagging ORDER BY i.tagging ASC SEPARATOR "<br>") AS asset_tagging'),
+                DB::raw('GROUP_CONCAT(i.tagging ORDER BY i.tagging ASC SEPARATOR ", ") AS asset_tagging'), // Pakai separator koma
                 DB::raw('COUNT(a.id) AS total_assets')
             )
             ->where('a.approval_status', 'Approved')
@@ -100,7 +100,8 @@ class DashboardController extends Controller
             ->orderBy('a.lokasi')
             ->orderBy('a.jenis_aset')
             ->orderBy('m.name')
-            ->get(); // Ensure this returns results
+            ->get();
+
 
         // Additional query to display asset quantities by location and type
         $data = DB::table('assets')

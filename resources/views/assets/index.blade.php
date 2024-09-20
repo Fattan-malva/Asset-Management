@@ -4,14 +4,23 @@
 <div class="container mt-4">
     <h1 class="text-center mb-4 fw-bold display-5">List Status Approval</h1>
     <br>
-    @if (session('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <div class="card">
+        <!-- Button Section -->
+
+
         <div class="card-body">
+            @if (session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+            <div class="mb-3">
+                <div class="d-flex justify-content-start">
+                    <a href="{{ route('assets.create') }}" class="btn btn-success btn-sm me-2">Handover Asset</a>
+                    <a href="{{ route('assets.indexreturn') }}" class="btn btn-danger btn-sm">Return Asset</a>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table id="assetTable" class="table table-striped table-bordered">
                     <thead>
@@ -21,8 +30,6 @@
                             <th scope="col">Name Holder</th>
                             <th scope="col">Asset Type</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Process</th>
                             <th scope="col">Approval</th>
                             <th scope="col">Actions</th>
@@ -37,10 +44,7 @@
                                 <td>{{ $asset->customer_name }}</td>
                                 <td>{{ $asset->jenis_aset }}</td>
                                 <td>{{ $asset->merk_name }}</td>
-                                <td>{{ $asset->lokasi }}</td>
-                                <td>{{ $asset->status }}</td>
                                 <td>{{ $asset->aksi }}</td>
-
                                 <td>
                                     <!-- Approval Status Badge -->
                                     @if ($asset->approval_status === 'Approved')
@@ -96,12 +100,30 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11" class="text-center" style="padding: 50px; font-size: 1.2em;">No assets
-                                    found.</td>
+                                <td colspan="9" class="text-center" style="padding: 50px; font-size: 1.2em;">No approval
+                                    status found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+                <!-- Legend for Status Badges -->
+                <div class="mt-4">
+                    <ul class="list-unstyled legend-list">
+                        <li>
+                            <span class="badge bg-success legend-badge">Approved</span> : <span
+                                class="legend-description">The asset has been approved by the user.</span>
+                        </li>
+                        <li>
+                            <span class="badge bg-primary legend-badge" style="margin-right: 11px;">Waiting
+                                Approval</span> : <span class="legend-description">Waiting for the asset to be approved
+                                by the user.</span>
+                        </li>
+                        <li>
+                            <span class="badge bg-danger legend-badge">Rejected</span> : <span
+                                class="legend-description">The asset is rejected by the user.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -119,94 +141,138 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-borderless no-border-table">
-                        <tbody>
-                            <tr>
-                                <th scope="row">Asset Tagging</th>
-                                <td>{{ $asset->tagging }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Name Holder</th>
-                                <td>{{ $asset->customer_name }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Position</th>
-                                <td>{{ $asset->customer_mapping }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Location</th>
-                                <td>{{ $asset->lokasi }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Asset Type</th>
-                                <td>{{ $asset->jenis_aset }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Merk</th>
-                                <td>{{ $asset->merk_name }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Serial Number</th>
-                                <td>{{ $asset->serial_number }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">O365</th>
-                                <td>{{ $asset->o365 }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Status</th>
-                                <td>{{ $asset->status }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Condition</th>
-                                <td>{{ $asset->kondisi }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Transfer Date</th>
-                                <td>{{ \Carbon\Carbon::parse($asset->created_at)->format('d-m-Y') }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Documentation</th>
-                                <td>
-                                    @if($asset->documentation)
-                                        <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View
-                                            Document</a>
-                                    @else
-                                        No Document
-                                    @endif
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="modal-footer">
-                        <br>
+                    <div class="row">
+                        <!-- Tabel Kiri -->
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Asset Tagging</th>
+                                        <td>{{ $asset->tagging }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Name Holder</th>
+                                        <td>{{ $asset->customer_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Position</th>
+                                        <td>{{ $asset->customer_mapping }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Location</th>
+                                        <td>{{ $asset->lokasi }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Asset Type</th>
+                                        <td>{{ $asset->jenis_aset }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Merk</th>
+                                        <td>{{ $asset->merk_name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Tabel Kanan -->
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Serial Number</th>
+                                        <td>{{ $asset->serial_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">O365</th>
+                                        <td>{{ $asset->o365 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Status</th>
+                                        <td>{{ $asset->status }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Condition</th>
+                                        <td>{{ $asset->kondisi }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Transfer Date</th>
+                                        <td>{{ \Carbon\Carbon::parse($asset->created_at)->format('d-m-Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Documentation</th>
+                                        <td>
+                                            @if($asset->documentation)
+                                                <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank"
+                                                    class="text-decoration-underline">View
+                                                    Document</a>
+                                            @else
+                                                No Document
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <br>
                 </div>
             </div>
         </div>
     </div>
 @endforeach
 
-@endsection
-
-
 <style>
-    /* CSS to remove table borders in modals */
-    .no-border-table th,
-    .no-border-table td {
-        border: none !important;
+    /* CSS for tables without borders */
+    .table-borderless {
+        border-collapse: collapse;
+        width: 100%;
     }
-    .modal-title {
-    font-weight: bold;
-    text-align: center;
-    width: 100%; /* Memastikan elemen judul memanfaatkan lebar penuh */
-    margin: 0; /* Menghapus margin default */
-    padding: 0; /* Menghapus padding default jika ada */
-}
 
-/* CSS tambahan untuk memastikan tidak ada margin atau padding yang mengganggu */
-.modal-header {
-    display: flex;
-    justify-content: center; /* Menyelaraskan konten ke tengah secara horizontal */
-}
+    .table-borderless th,
+    .table-borderless td {
+        border: none;
+        /* Remove table borders */
+        padding: 10px;
+        /* Padding within cells */
+        vertical-align: middle;
+        /* Center align vertically */
+    }
+
+    .table-borderless th {
+        width: 40%;
+        /* Width for header cells */
+        text-align: left;
+        /* Align text to the left */
+    }
+
+    .table-borderless td {
+        width: 60%;
+        /* Width for data cells */
+        text-align: left;
+        /* Align text to the left */
+    }
+
+    .legend-list {
+        font-size: 0.875em;
+        line-height: 1.5;
+    }
+
+    .legend-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .legend-list li .badge {
+        min-width: 80px;
+        margin-right: 40px;
+    }
+
+    .legend-list li .legend-description {
+        margin-left: 10px;
+        text-align: left;
+    }
 </style>
+@endsection

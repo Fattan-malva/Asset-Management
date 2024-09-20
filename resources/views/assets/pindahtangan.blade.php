@@ -21,6 +21,17 @@
                         @endforeach
                     </select>
                 </div>
+
+                     <!-- Documentation Field -->
+                <div class="form-group">
+                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" hidden>
+                    @if($asset->documentation)
+                        <p class="mt-4" style="display: inline-block; background-color: rgba(128, 128, 128, 0.3); padding: 4px 10px; border-radius: 4px; font-weight: bold;">
+                            Current file:<a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank" class="text-decoration-underline">View</a>
+                        </p>
+                    @endif
+                </div>
+
                 
                 <input type="hidden" name="approval_status" value="Pending">
                 <input type="hidden" name="aksi" value="Mutasi">
@@ -37,11 +48,12 @@
                     </select>
                 </div>
 
+                  
                 <!-- Location Input and Map -->
                 <div class="form-group">
                     <label for="location">Location</label>
                     <input type="text" id="location-input" class="form-control" placeholder="Search for a location" required>
-                    <button type="button" class="btn btn-primary mt-2" id="enter-location">Enter Location</button>
+                    <button type="button" class="btn btn-primary mt-2 mb-2" id="enter-location">Enter Location</button>
                     <div id="map" style="height: 300px; width: 100%;"></div>
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
@@ -54,13 +66,7 @@
                         value="{{ old('lokasi', $asset->lokasi) }}" required>
                 </div>
 
-                <!-- Documentation Field -->
-                <div class="form-group">
-                    <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" hidden>
-                    @if($asset->documentation)
-                        <p class="mt-2">Current file: <a href="{{ asset('storage/' . $asset->documentation) }}" target="_blank">View</a></p>
-                    @endif
-                </div>
+         
 
                 <!-- Submit and Cancel Buttons -->
                 <div class="text-center mt-4">
