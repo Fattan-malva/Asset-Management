@@ -53,92 +53,118 @@ class AssetUserController extends Controller
         return view('assets.assetuser', compact('assets', 'pendingAssets'));
     }
 
-    public function serahterima($id)
+    public function serahterima($ids)
     {
-        $asset = DB::table('assets')
+        $idsArray = explode(',', $ids); // Convert the comma-separated string to an array
+    
+        $assets = DB::table('assets')
             ->join('merk', 'assets.merk', '=', 'merk.id')
             ->join('customer', 'assets.nama', '=', 'customer.id')
             ->select('assets.*', 'merk.name as merk_name', 'customer.name as customer_name')
-            ->where('assets.id', $id)
-            ->first();
-
+            ->whereIn('assets.id', $idsArray)
+            ->get(); // Use get() to retrieve multiple records
+    
         $merks = Merk::all();
         $customers = Customer::all();
         $inventories = Inventory::all();
-
-        return view('assets.serahterima', compact('asset', 'merks', 'customers', 'inventories'));
+    
+        return view('assets.serahterima', compact('assets', 'merks', 'customers', 'inventories'));
     }
+    
+    
+    public function updateserahterima(Request $request)
+{
+    // Validate input
+    $validatedData = $request->validate([
+        'assets' => 'required|array',
+        'assets.*' => 'exists:assets,id',
+        'documentation' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048' // Single file for all assets
+    ]);
 
-    public function updateserahterima(Request $request, $id)
-    {
-        // Validate input
-        $validatedData = $request->validate([
-            'asset_tagging' => 'required|exists:inventory,id',
-            'nama' => 'required|exists:customer,id',
-            'status' => 'required|string',
-            'o365' => 'required|string',
-            'kondisi' => 'required|in:Good,Exception,Bad,New',
-            'lokasi' => 'nullable|string',
-            'documentation' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
-        try {
-            // Find the asset by ID
-            $asset = Assets::findOrFail($id);
-            $inventory = Inventory::findOrFail($validatedData['asset_tagging']);
-            $customer = Customer::findOrFail($validatedData['nama']);
-
-            // Prepare data for update
-            $assetData = [
-                'asset_tagging' => $validatedData['asset_tagging'],
-                'jenis_aset' => $inventory->asets,
-                'merk' => $inventory->merk,
-                'type' => $inventory->type,
-                'serial_number' => $inventory->seri,
-                'nama' => $validatedData['nama'],
-                'mapping' => $customer->mapping,
-                'o365' => $validatedData['o365'],
-                'lokasi' => $validatedData['lokasi'] ?? '',
-                'status' => $validatedData['status'],
-                'kondisi' => $validatedData['kondisi'],
-                'approval_status' => $request->input('approval_status', ''),
-            ];
-
-            // Handle documentation file if present
-            if ($request->hasFile('documentation')) {
+    try {
+        // Process documentation if present
+        if ($validatedData['documentation']) {
+            foreach ($validatedData['assets'] as $id) {
+                // Find the asset by ID
+                $asset = Assets::findOrFail($id);
+                
                 // Delete old documentation if exists
                 if ($asset->documentation && \Storage::exists('public/' . $asset->documentation)) {
                     \Storage::delete('public/' . $asset->documentation);
                 }
 
                 // Save new documentation
-                $file = $request->file('documentation');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file = $validatedData['documentation'];
+                $filename = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->storeAs('public/uploads/documentation', $filename);
-                $assetData['documentation'] = 'uploads/documentation/' . $filename;
+                $asset->documentation = 'uploads/documentation/' . $filename; // Update asset documentation path
+                $asset->approval_status = 'Approved'; // Set approval status
+                $asset->save(); // Save updated asset
             }
-
-            // Update the asset with new data
-            $asset->update($assetData);
-
-            // Redirect with success message
-            return redirect()->route('shared.homeUser')->with('success', 'Asset Approved successfully.');
-
-        } catch (\Exception $e) {
-            // Log error and redirect with error message
-            \Log::error('Failed to update asset:', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors('Failed to approve asset. Please try again.');
+        } else {
+            // If no new documentation is provided, just approve the assets
+            foreach ($validatedData['assets'] as $id) {
+                $asset = Assets::findOrFail($id);
+                $asset->approval_status = 'Approved';
+                $asset->save();
+            }
         }
+
+        // Redirect with success message
+        return redirect()->route('shared.homeUser')->with('success', 'Assets approved successfully.');
+
+    } catch (\Exception $e) {
+        // Log error and redirect with error message
+        \Log::error('Failed to update assets:', ['error' => $e->getMessage()]);
+        return redirect()->back()->withErrors('Failed to approve assets. Please try again.');
     }
+}
+
+// return submit all tapi up doc satu satu
+    
+// public function returnMultiple(Request $request)
+// {
+//     $assetIds = $request->input('assets', []);  // Retrieve array of asset IDs
+//     $documentations = $request->file('documentation', []);  // Retrieve file uploads
+
+//     foreach ($assetIds as $key => $assetId) {
+//         $asset = Assets::findOrFail($assetId);
+        
+//         // Save documentation if uploaded
+//         if (isset($documentations[$key])) {
+//             $path = $documentations[$key]->store('assets/documentation', 'public');
+//             $asset->documentation = $path;
+//         }
+
+//         $asset->delete();  // Delete the asset (since we're returning it)
+//     }
+
+//     return redirect()->route('shared.homeUser')->with('success', 'All selected assets have been returned successfully.');
+// }
 
 
-    public function destroyasset($id)
-    {
-        $asset = Assets::findOrFail($id);
+public function returnMultiple(Request $request)
+{
+    $assetIds = $request->input('assets', []);  // Ambil array ID asset
+    $documentations = $request->file('documentation', []);  // Ambil array file yang diunggah
+
+    foreach ($assetIds as $key => $assetId) {
+        $asset = Assets::findOrFail($assetId);
+
+        // Cek apakah ada file yang diunggah untuk asset ini
+        if (isset($documentations[$key])) {
+            // Simpan file ke storage
+            $path = $documentations[$key]->store('assets/documentation', 'public');
+            $asset->documentation = $path;
+        }
+
+        // Hapus asset setelah dokumentasi disimpan
         $asset->delete();
-
-        return redirect()->route('shared.homeUser')->with('success', 'Asset has been returned successfully.');
     }
+
+    return redirect()->route('shared.homeUser')->with('success', 'All selected assets have been returned successfully.');
+}
+
     // AssetsController.php
 // AssetsController.php
     public function returnAsset($id)

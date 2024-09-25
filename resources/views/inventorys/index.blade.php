@@ -34,81 +34,81 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($inventorys as $index => $inventory)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $inventory->tagging }}</td>
-                                                    <td>{{ $inventory->asets }}</td>
-                                                    <td>{{ $inventory->merk_name }}</td>
-                                                    <td>{{ $inventory->tanggalmasuk }}</td>
-                                                    <td>
-                                                        @php
-                                                            // Ambil nilai tanggal_diterima
-                                                            $tanggalDiterima = $inventory->tanggal_diterima ?? '-';
+                    @foreach ($inventorys as $index => $inventory)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $inventory->tagging }}</td>
+        <td>{{ $inventory->asets }}</td>
+        <td>{{ $inventory->merk_name }}</td>
+        <td>
+            @php
+                $tanggalMasuk = $inventory->tanggalmasuk;
+                echo date('d-m-Y', strtotime($tanggalMasuk));
+            @endphp
+        </td>
+        <td>
+            @php
+                // Ambil nilai tanggal_diterima
+                $tanggalDiterima = $inventory->tanggal_diterima ?? '-';
 
-                                                            // Jika tanggal_diterima adalah '0000-00-00 00:00:00' atau '-' maka tampilkan '-'
-                                                            if ($tanggalDiterima === '0000-00-00 00:00:00' || $tanggalDiterima === '-') {
-                                                                echo '-';
-                                                            } else {
-                                                                // Format tanggal menjadi tanggal-bulan-tahun (contoh: 19-09-2024)
-                                                                echo date('d-m-Y', strtotime($tanggalDiterima));
-                                                            }
-                                                        @endphp
-                                                    </td>
+                // Jika tanggal_diterima adalah '0000-00-00 00:00:00' atau '-' maka tampilkan '-'
+                if ($tanggalDiterima === '0000-00-00 00:00:00' || $tanggalDiterima === '-') {
+                    echo '-';
+                } else {
+                    // Format tanggal menjadi tanggal-bulan-tahun (contoh: 19-09-2024)
+                    echo date('d-m-Y', strtotime($tanggalDiterima));
+                }
+            @endphp
+        </td>
+        <td>
+            @php
+                // Ambil nilai lokasi
+                $lokasi = $inventory->lokasi ?? 'In Inventory';
 
-                                                    <td>
-                                                        @php
-                                                            // Ambil nilai lokasi
-                                                            $lokasi = $inventory->lokasi ?? 'In Inventory';
+                // Jika lokasi tidak kosong, ambil kata sebelum koma pertama
+                if ($lokasi !== 'In Inventory') {
+                    $lokasi = strtok($lokasi, ',');
+                }
+            @endphp
 
-                                                            // Jika lokasi tidak kosong, ambil kata sebelum koma pertama
-                                                            if ($lokasi !== 'In Inventory') {
-                                                                $lokasi = strtok($lokasi, ',');
-                                                            }
-                                                        @endphp
+            {{ $lokasi }}
+        </td>
+        <td class="text-center align-middle">
+            <!-- Status Badge -->
+            @if ($inventory->status === 'Inventory')
+                <span class="badge bg-warning" style="padding: 5px; color: black; font-size: 0.9em;">Available</span>
+            @elseif ($inventory->status === 'Operation')
+                <span class="badge bg-success" style="padding: 5px; color: black; font-size: 0.9em;">In Use</span>
+            @elseif ($inventory->status === 'Under Maintenance')
+                <span class="badge bg-secondary" style="padding: 5px;">Under Maintenance</span>
+            @else
+                <span class="badge bg-danger" style="padding: 5px;">Unavailable</span>
+            @endif
+            <!-- Notification for Maintenance -->
+            @if (now()->diffInMonths($tanggalMasuk) >= 1)
+                <span class="badge bg-danger" style="padding: 5px; font-size: 0.9em; margin-top:10px; color:black;">Need Maintenance</span>
+            @endif
+        </td>
+        <td>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                        data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details">
+                    <i class="bi bi-file-earmark-text"></i> Detail
+                </button>
+                <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
+                      method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger" title="Delete"
+                            onclick="return confirm('Are you sure you want to delete this Asset?')">
+                        <i class="bi bi-trash"></i> Scrap Asset
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+@endforeach
 
-                                                        {{ $lokasi }}
-                                                    </td>
-
-                                                    <td class="text-center align-middle">
-                                                        <!-- Status Badge -->
-                                                        @if ($inventory->status === 'Inventory')
-                                                            <span class="badge bg-warning"
-                                                                style="padding: 5px; color: black; font-size: 0.9em;">Available</span>
-                                                        @elseif ($inventory->status === 'Operation')
-                                                            <span class="badge bg-success" style="padding: 5px; color: black; font-size: 0.9em;">In
-                                                                Use</span>
-                                                        @elseif ($inventory->status === 'Under Maintenance')
-                                                            <span class="badge bg-secondary" style="padding: 5px;">Under Maintenance</span>
-                                                        @else
-                                                            <span class="badge bg-danger" style="padding: 5px;">Unavailable</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <div class="action-buttons">
-                                                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details">
-                                                                <i class="bi bi-file-earmark-text"></i> Detail
-                                                            </button>
-                                                            <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
-                                                                method="POST" style="display: inline;">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                                    onclick="return confirm('Are you sure you want to delete this Asset?')">
-                                                                    <i class="bi bi-trash"></i> Scrap Asset
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    Assets found.</td>
-                            </tr>
-                        @endforelse
                     </tbody>
                 </table>
                 <!-- Legend for Status Badges -->

@@ -13,15 +13,17 @@
                     <input type="hidden" name="approval_status" value="Pending">
                     <input type="hidden" name="aksi" value="Handover">
 
+
                     <div class="form-group">
                         <label for="asset_tagging">Asset Tagging</label>
-                        <select class="form-control" id="asset_tagging" name="asset_tagging" required>
+                        <select class="form-control" id="asset_tagging" name="asset_tagging[]" multiple="multiple" required>
                             @foreach($inventories as $inventory)
                                 <option value="{{ $inventory->id }}">{{ $inventory->tagging }}</option>
                             @endforeach
                         </select>
                     </div>
 
+     
                     <div class="form-group">
                         <label for="nama">Name</label>
                         <select class="form-control" id="nama" name="nama" required>
@@ -34,7 +36,8 @@
                     <div class="form-group">
                         <label for="location">Location</label>
                         <div class="input-group">
-                            <input type="text" id="location-input" class="form-control" placeholder="Search for a location" required>
+                            <input type="text" id="location-input" class="form-control" placeholder="Search for a location"
+                                required>
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-primary" id="enter-location">Search</button>
                             </div>
@@ -45,7 +48,8 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="text" id="lokasi" class="form-control" name="lokasi" placeholder="Location details will be set here" required>
+                        <input type="text" id="lokasi" class="form-control" name="lokasi"
+                            placeholder="Location details will be set here" required>
                     </div>
 
                     <div class="form-group">
@@ -74,7 +78,8 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*" capture="camera" hidden>
+                        <input type="file" class="form-control" id="documentation" name="documentation" accept="image/*"
+                            capture="camera" hidden>
                         @if ($errors->has('documentation'))
                             <span class="text-danger">{{ $errors->first('documentation') }}</span>
                         @endif
@@ -100,7 +105,11 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
+
+
+
 <script>
+    // The rest of your JavaScript for the map and geocoding remains unchanged
     document.addEventListener('DOMContentLoaded', function () {
         var map = L.map('map').setView([-6.2088, 106.8456], 13); // Default coordinates for Jakarta
 
@@ -159,8 +168,12 @@
 </script>
 
 <style>
-    .form-group {
+     .form-group {
         margin-bottom: 1rem;
+    }
+
+    .list-group-item {
+        cursor: pointer;
     }
 
     .input-group {
@@ -179,7 +192,8 @@
     }
 
     .btn-primary {
-        margin-top: 0; /* Remove extra margin if any */
+        margin-top: 0;
+        /* Remove extra margin if any */
     }
 
     .text-center {
@@ -188,6 +202,9 @@
 
     .btn {
         margin: 0 0.5rem;
+    }
+    .select2-container {
+        width: 100% !important; /* Ensure Select2 takes full width */
     }
 </style>
 @endsection

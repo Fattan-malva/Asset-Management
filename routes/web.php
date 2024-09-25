@@ -41,16 +41,22 @@ Route::middleware(['auth.check'])->group(function () {
     Route::get('/dashboard-User', [DashboardController::class, 'indexUser'])->name('dashboard.user');
 
     Route::get('/my-assets', [AssetUserController::class, 'indexuser'])->name('asset-user');
-    Route::get('assets/{id}/serahterima', [AssetUserController::class, 'serahterima'])->name('assets.serahterima');
-    Route::put('/assets/{id}/updateserahterima', [AssetUserController::class, 'updateserahterima'])->name('assets.updateserahterima');
-    Route::delete('assets-user/{id}', [AssetUserController::class, 'destroyasset'])->name('assets-user.delete');
+    Route::get('/assets/serahterima/{ids}', [AssetUserController::class, 'serahterima'])->name('assets.serahterima');
+    Route::put('/assets/updateserahterima', [AssetUserController::class, 'updateserahterima'])->name('assets.updateserahterima');
+    Route::delete('/assets-user/returnmultiple', [AssetUserController::class, 'returnMultiple'])->name('assets-user.returnmultiple');
+
     Route::delete('/assets/{id}/return', [AssetUserController::class, 'returnAsset'])->name('assets.return');
     Route::post('/assets/reject/{id}', [AsetsController::class, 'reject'])->name('assets.reject');
     Route::delete('assets/{id}', [AsetsController::class, 'destroy'])->name('assets.delete');
+    Route::post('/assets/approve-multiple', [AsetsController::class, 'approveMultiple'])->name('assets.approve_multiple');
+    Route::post('/assets/bulk-action', [AsetsController::class, 'bulkAction'])->name('assets.bulkAction');
 
     Route::get('/prints/handover', [PrintController::class, 'handover'])->name('prints.handover');
     Route::get('/prints/mutation', [PrintController::class, 'mutation'])->name('prints.mutation');
     Route::get('/prints/return', [PrintController::class, 'return'])->name('prints.return');
+    Route::post('/assets/approve-selected', [AssetUserController::class, 'approveSelected'])->name('assets.approveSelected');
+
+
 
 });
 

@@ -219,59 +219,62 @@ class AsetsController extends Controller
 
 
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'asset_tagging' => 'required|exists:inventory,id',
-        'nama' => 'required|exists:customer,id',
-        'status' => 'required|string',
-        'o365' => 'required|string',
-        'kondisi' => 'required|in:Good,Exception,Bad,New',
-        'approval_status' => 'required|string',
-        'latitude' => 'required|numeric',
-        'longitude' => 'required|numeric',
-        'documentation' => 'nullable|image|max:2048', // Updated to nullable
-        'keterangan' => 'nullable|string',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'asset_tagging' => 'required|array', // Change to array
+            'asset_tagging.*' => 'exists:inventory,id', // Validate each selected asset
+            'nama' => 'required|exists:customer,id',
+            'status' => 'required|string',
+            'o365' => 'required|string',
+            'kondisi' => 'required|in:Good,Exception,Bad,New',
+            'approval_status' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'documentation' => 'nullable|image|max:2048', // Updated to nullable
+            'keterangan' => 'nullable|string',
+        ]);
 
-    $inventory = Inventory::find($request->input('asset_tagging'));
-    $customer = Customer::find($request->input('nama'));
+        $customer = Customer::find($request->input('nama'));
+        $documentationPath = null;
 
-    $assetData = [
-        'asset_tagging' => $request->input('asset_tagging'),
-        'jenis_aset' => $inventory->asets,
-        'merk' => $inventory->merk,
-        'type' => $inventory->type,
-        'serial_number' => $inventory->seri,
-        'nama' => $request->input('nama'),
-        'mapping' => $customer->mapping,
-        'o365' => $request->input('o365'),
-        'lokasi' => $request->input('lokasi', ''),
- 
-        'status' => $request->input('status'),
-        'kondisi' => $request->input('kondisi', ''),
-        'approval_status' => $request->input('approval_status', ''),
-        'aksi' => $request->input('aksi', ''),
-        'previous_customer_name' => $request->input('nama', ''),
-        'latitude' => $request->input('latitude'),
-        'longitude' => $request->input('longitude'),
-        'keterangan' => $request->input('keterangan'),
-    ];
+        if ($request->hasFile('documentation')) {
+            $file = $request->file('documentation');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/documents', $filename);
+            $documentationPath = 'documents/' . $filename;
+        }
 
-    if ($request->hasFile('documentation')) {
-        $file = $request->file('documentation');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/documents', $filename);
-        $assetData['documentation'] = 'documents/' . $filename;
+        // Loop through each selected asset tagging
+        foreach ($request->input('asset_tagging') as $assetId) {
+            $inventory = Inventory::find($assetId);
+
+            $assetData = [
+                'asset_tagging' => $assetId,
+                'jenis_aset' => $inventory->asets,
+                'merk' => $inventory->merk,
+                'type' => $inventory->type,
+                'serial_number' => $inventory->seri,
+                'nama' => $request->input('nama'),
+                'mapping' => $customer->mapping,
+                'o365' => $request->input('o365'),
+                'lokasi' => $request->input('lokasi', ''),
+                'status' => $request->input('status'),
+                'kondisi' => $request->input('kondisi', ''),
+                'approval_status' => $request->input('approval_status', ''),
+                'aksi' => $request->input('aksi', ''),
+                'previous_customer_name' => $request->input('nama', ''),
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude'),
+                'keterangan' => $request->input('keterangan'),
+                'documentation' => $documentationPath,
+            ];
+
+            Assets::create($assetData); // Create an asset record for each selected tagging
+        }
+
+        return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree.');
     }
-
-    Assets::create($assetData);
-
-    return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree');
-}
-
-
-
 
 
     public function update(Request $request, $id)
@@ -360,61 +363,61 @@ class AsetsController extends Controller
         return view('assets.show', compact('asset'));
     }
     public function history()
-{
-    $history = DB::table('asset_history')
-        ->leftJoin('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
-        ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
-        ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
-        ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
-        ->select(
-            'asset_history.asset_id', // Include asset_id
-            'inventory.tagging as asset_tagging',
-            'merk.name as merk',
-            'asset_history.jenis_aset_old',
-            'old_customer.name as nama_old',
-            'new_customer.name as nama_new',
-            'asset_history.changed_at',
-            'asset_history.action',
-            'asset_history.keterangan',
-            'asset_history.documentation_old' // Field untuk pengecekan nanti
-        )
-        ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
-        ->orderBy('asset_history.changed_at', 'DESC')
-        ->get()
-        ->groupBy('asset_tagging')
-        ->map(function ($items) {
-            // Filter out unchanged updates
-            $filteredItems = $items->filter(function ($item) {
-                // Ambil data DELETE hanya jika documentation_old kosong
-                return $item->action === 'CREATE' ||
-                    ($item->action === 'UPDATE' && $item->nama_old !== $item->nama_new) ||
-                    ($item->action === 'DELETE' && empty($item->documentation_old));
+    {
+        $history = DB::table('asset_history')
+            ->leftJoin('inventory', 'asset_history.asset_tagging_old', '=', 'inventory.id')
+            ->leftJoin('merk', 'asset_history.merk_old', '=', 'merk.id')
+            ->leftJoin('customer as old_customer', 'asset_history.nama_old', '=', 'old_customer.id')
+            ->leftJoin('customer as new_customer', 'asset_history.nama_new', '=', 'new_customer.id')
+            ->select(
+                'asset_history.asset_id', // Include asset_id
+                'inventory.tagging as asset_tagging',
+                'merk.name as merk',
+                'asset_history.jenis_aset_old',
+                'old_customer.name as nama_old',
+                'new_customer.name as nama_new',
+                'asset_history.changed_at',
+                'asset_history.action',
+                'asset_history.keterangan',
+                'asset_history.documentation_old' // Field untuk pengecekan nanti
+            )
+            ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
+            ->orderBy('asset_history.changed_at', 'DESC')
+            ->get()
+            ->groupBy('asset_tagging')
+            ->map(function ($items) {
+                // Filter out unchanged updates
+                $filteredItems = $items->filter(function ($item) {
+                    // Ambil data DELETE hanya jika documentation_old kosong
+                    return $item->action === 'CREATE' ||
+                        ($item->action === 'UPDATE' && $item->nama_old !== $item->nama_new) ||
+                        ($item->action === 'DELETE' && empty($item->documentation_old));
+                });
+
+                // Jika ada record DELETE dengan documentation_old kosong, ambil nilai keterangan
+                $keterangan = $filteredItems->filter(function ($item) {
+                    return $item->action === 'DELETE' && empty($item->documentation_old);
+                })->pluck('keterangan')->first(); // Ambil keterangan pertama yang memenuhi kondisi
+    
+                // Group by changed_at to remove duplicates
+                $uniqueItems = $filteredItems->groupBy('changed_at')->map(function ($itemsByTime) {
+                    return $itemsByTime->unique(function ($item) {
+                        return $item->asset_tagging . '-' . $item->action;
+                    })->values();
+                })->flatten()->sortBy('changed_at');
+
+                // Tambahkan field keterangan dari DELETE jika ada
+                $uniqueItems->each(function ($item) use ($keterangan) {
+                    if ($item->action === 'DELETE') {
+                        $item->keterangan = $keterangan; // Ganti dengan keterangan dari DELETE
+                    }
+                });
+
+                return $uniqueItems;
             });
 
-            // Jika ada record DELETE dengan documentation_old kosong, ambil nilai keterangan
-            $keterangan = $filteredItems->filter(function ($item) {
-                return $item->action === 'DELETE' && empty($item->documentation_old);
-            })->pluck('keterangan')->first(); // Ambil keterangan pertama yang memenuhi kondisi
-
-            // Group by changed_at to remove duplicates
-            $uniqueItems = $filteredItems->groupBy('changed_at')->map(function ($itemsByTime) {
-                return $itemsByTime->unique(function ($item) {
-                    return $item->asset_tagging . '-' . $item->action;
-                })->values();
-            })->flatten()->sortBy('changed_at');
-
-            // Tambahkan field keterangan dari DELETE jika ada
-            $uniqueItems->each(function ($item) use ($keterangan) {
-                if ($item->action === 'DELETE') {
-                    $item->keterangan = $keterangan; // Ganti dengan keterangan dari DELETE
-                }
-            });
-
-            return $uniqueItems;
-        });
-
-    return view('assets.history', compact('history'));
-}
+        return view('assets.history', compact('history'));
+    }
 
 
 
@@ -497,7 +500,7 @@ class AsetsController extends Controller
         $asset->update($assetData);
 
         // Redirect to the index page with a success message
-        return redirect()->route('assets.index')->with('success', 'The asset return request has been successfully submitted and is awaiting approval.');
+        return redirect()->route('assets.indexreturn')->with('success', 'The asset return request has been successfully submitted and is awaiting approval.');
     }
 
     public function data(Request $request)
@@ -518,31 +521,67 @@ class AsetsController extends Controller
 
     public function reject($id)
     {
-
         $asset = Assets::findOrFail($id);
 
+        // Define the valid actions for rejection
+        $validActions = ['Handover', 'Mutasi', 'Return'];
 
-        switch ($asset->aksi) {
-            case 'Handover':
-                $asset->update(['approval_status' => 'Rejected']);
-                break;
-
-            case 'Mutasi':
-                $asset->update(['approval_status' => 'Rejected']);
-                break;
-
-            case 'Return':
-                $asset->update(['approval_status' => 'Rejected']);
-                break;
-
-            default:
-
-                return redirect()->back()->with('error', 'Unexpected action type.');
+        if (in_array($asset->aksi, $validActions)) {
+            $asset->update(['approval_status' => 'Rejected']);
+            return redirect()->back()->with('status', 'Asset has been rejected.');
         }
 
-
-        return redirect()->back()->with('status', 'Asset has been rejected.');
+        // Handle invalid or unexpected actions
+        return redirect()->back()->with('error', 'Unexpected action type.');
     }
+    public function approveMultiple(Request $request)
+    {
+        $selectedAssets = $request->input('assets'); // Get the selected asset IDs
+
+        // Validate that at least one asset was selected
+        if (empty($selectedAssets)) {
+            return redirect()->back()->with('error', 'Please select at least one asset to approve.');
+        }
+
+        // Ensure the asset IDs exist in the database (optional)
+        $assets = Assets::whereIn('id', $selectedAssets)->get();
+
+        if ($assets->isEmpty()) {
+            return redirect()->back()->with('error', 'Selected assets do not exist.');
+        }
+
+        // Redirect to the serahterima view with the selected asset IDs
+        return redirect()->route('assets.serahterima', ['ids' => implode(',', $selectedAssets)]);
+    }
+    public function bulkAction(Request $request)
+    {
+        $selectedAssets = $request->input('assets'); // Get the selected asset IDs
+    
+        // Validate that at least one asset was selected
+        if (empty($selectedAssets)) {
+            return redirect()->back()->with('error', 'Please select at least one asset.');
+        }
+    
+        // Determine the action (approve or reject)
+        if ($request->input('action') === 'approve') {
+            // Redirect to serahterima for approval
+            return redirect()->route('assets.serahterima', ['ids' => implode(',', $selectedAssets)]);
+        } elseif ($request->input('action') === 'reject') {
+            // Reject the selected assets
+            foreach ($selectedAssets as $id) {
+                $asset = Assets::find($id);
+                if ($asset) {
+                    $asset->update(['approval_status' => 'Rejected']);
+                }
+            }
+            return redirect()->back()->with('status', 'Selected assets have been rejected.');
+        }
+    
+        return redirect()->back()->with('error', 'Unexpected action.');
+    }
+    
+
+
 
     public function rollbackMutasi($id)
     {

@@ -51,9 +51,7 @@ class HomeUserController extends Controller
             ->where('assets.approval_status', 'Pending') // Only get pending assets
             ->get();
 
-        // Memicu event setelah data diambil
-        event(new DataUpdated(['assets' => $assets, 'pendingAssets' => $pendingAssets]));
-
+      
         // Return view with the fetched data
         return response(view('shared.homeUser', compact('assets', 'pendingAssets')));
     }

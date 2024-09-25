@@ -8,8 +8,9 @@
     <title>@yield('title', 'GLOBAL SERVICE INDONESIA')</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Additional CSS -->
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -21,36 +22,17 @@
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
-    <!-- Optional Bootstrap Slider -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Chart.js and DataLabels Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
     <!-- Custom CSS -->
     <style>
-        .form-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 2rem;
-            border-radius: 8px;
-        }
 
-        .form-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-section:last-child {
-            margin-bottom: 0;
-        }
 
         .form-group {
             margin-bottom: 1rem;
@@ -82,102 +64,8 @@
             background-color: #0056b3;
         }
 
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 1rem;
-                max-width: 100%;
-            }
-        }
     </style>
-</head>
-
-<body>
-    @php
-        $userRole = session('user_role');
-    @endphp
-
-    <!-- Include header based on user role -->
-    @if ($userRole === 'admin')
-        @include('shared.header')
-    @elseif ($userRole === 'user' || $userRole === 'sales')
-        @include('shared.headeruser')
-    @else
-        @include('shared.header') <!-- Default or fallback header -->
-    @endif
-
-    @if ($userRole === 'user' || $userRole === 'sales')
-        <main class="py-4">
-            <div class="container form-container">
-                @yield('content')
-            </div>
-        </main>
-    @endif
-
-    <!-- Vendor JS Files -->
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
-    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.0.7/dist/countUp.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- jQuery (make sure this is included only once) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Optional Bootstrap Slider JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
-
-    <!-- Your Custom Scripts -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
-    <!-- Initialize DataTables for all responsive tables -->
-    <script>
-        $(document).ready(function () {
-            $('.table-responsive').each(function () {
-                $(this).find('table').DataTable({
-                    paging: true,
-                    searching: true,
-                    ordering: true,
-                    info: true,
-                    lengthChange: true,
-                    pageLength: 5,
-                    lengthMenu: [
-                        [5, 50, 100],
-                        [5, 50, 100]
-                    ],
-                    language: {
-                        search: "Search:",
-                        lengthMenu: "_MENU_ entries per page",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        infoEmpty: "No entries available",
-                        infoFiltered: "(filtered from _MAX_ total entries)",
-                        paginate: {
-                            previous: "",
-                            next: ""
-                        }
-                    },
-                    dom: '<"top"f>rt<"bottom"lp><"clear">',
-                    createdRow: function (row, data, dataIndex) {
-                        // Apply 'text-center' and 'align-middle' class to every cell in the row
-                        $(row).find('td').addClass('text-center align-middle');
-                    },
-                    initComplete: function () {
-                        // Apply 'text-center' and 'align-middle' class to the header columns
-                        $(this).find('th').addClass('text-center align-middle');
-                    }
-                });
-            });
-        });
-    </script>
-
-
+    
     <style>
         /* Hide the dropdown menu from lengthMenu */
         .dataTables_length select {
@@ -214,30 +102,120 @@
             vertical-align: middle !important;
         }
     </style>
+</head>
 
+<body>
+    @php
+        $userRole = session('user_role');
+    @endphp
 
-    <!-- 
+    <!-- Include header based on user role -->
+    @if ($userRole === 'admin')
+        @include('shared.header')
+    @elseif ($userRole === 'user' || $userRole === 'sales')
+        @include('shared.headeruser')
+    @else
+        @include('shared.header') <!-- Default or fallback header -->
+    @endif
+
+    @if ($userRole === 'user' || $userRole === 'sales')
+        <main class="py-4">
+            <div class="container form-container">
+                @yield('content')
+            </div>
+        </main>
+    @endif
+
+    <!-- Vendor JS Files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Custom Scripts -->
     <script>
-        window.Echo.channel('data-channel')
-            .listen('DataUpdated', (e) => {
-                console.log('Data updated:', e.data);
-                const dataContainer = document.getElementById('data-container');
-                if (dataContainer) {
-                    dataContainer.innerHTML = JSON.stringify(e.data);
-                }
+        $(document).ready(function () {
+            // Initialize DataTables
+            $('.table-responsive').each(function () {
+                $(this).find('table').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 5,
+                    lengthMenu: [
+                        [5, 50, 100],
+                        [5, 50, 100]
+                    ],
+                    language: {
+                        search: "Search:",
+                        lengthMenu: "_MENU_ entries per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "No entries available",
+                        infoFiltered: "(filtered from _MAX_ total entries)",
+                        paginate: {
+                            previous: "Prev",  // Customize previous button text
+                            next: "Next"       // Customize next button text
+                        }
+                    },
+                    dom: '<"top"f>rt<"bottom"lp><"clear">', // Search on top, paginate on bottom
+                    createdRow: function (row, data, dataIndex) {
+                        // Apply 'text-center' and 'align-middle' class to every cell in the row
+                        $(row).find('td').addClass('text-center align-middle');
+                    },
+                    initComplete: function () {
+                        // Apply 'text-center' and 'align-middle' class to the header columns
+                        $(this).find('th').addClass('text-center align-middle');
+                    }
+                });
             });
 
-        function fetchData() {
-            fetch('{{ url('/fetch-data') }}')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('data-container').innerHTML = JSON.stringify(data);
+            // Initialize Select2
+            $('#asset_tagging').select2({
+                placeholder: "Select asset tagging",
+                allowClear: true
+            }).on('change', function () {
+                updateSelectedAssets();
+            });
+
+            function updateSelectedAssets() {
+                var selectedOptions = $('#asset_tagging').val();
+                $('#selected-assets-list').empty();
+
+                if (selectedOptions) {
+                    selectedOptions.forEach(function (option) {
+                        var optionText = $('#asset_tagging option[value="' + option + '"]').text();
+                        addAssetToList(option, optionText);
+                    });
+                }
+            }
+
+            function addAssetToList(assetId, assetText) {
+                if ($('#selected-assets-list').find(`li[data-id="${assetId}"]`).length === 0) {
+                    $('#selected-assets-list').append(`<li class="list-group-item" data-id="${assetId}">${assetText}</li>`);
+                }
+            }
+
+            // Double-click to remove item from list
+            $('#selected-assets-list').on('dblclick', 'li', function () {
+                var assetId = $(this).data('id');
+                var selectElement = $('#asset_tagging');
+
+                var currentValues = selectElement.val();
+                currentValues = currentValues.filter(function (value) {
+                    return value !== assetId.toString();
                 });
-        }
-
-        fetchData();
-    </script> -->
-
+                selectElement.val(currentValues).trigger('change');
+                $(this).remove();
+            });
+        });
+    </script>
     @if(isset($assetData) && isset($locationData))
         <script>
             // Fetch and format asset and location data
@@ -382,7 +360,6 @@
         </style>
 
     @endif
-
 </body>
 
 </html>

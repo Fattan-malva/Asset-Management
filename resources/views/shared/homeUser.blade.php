@@ -16,66 +16,72 @@
         <br>
         <div class="container">
             <div class="row">
-                <!-- User Profile Card -->
-                <!-- Section for Pending Assets -->
-                <div class="col-md-4 mb-4">
-                    <div class="card border-secondary">
+<div class="col-md-4 mb-4">
+<div class="card border-secondary">
                         <div class="card-header bg-secondary text-white">
                             <h2>Waiting for Approval</h2>
                         </div>
+
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" id="selectAll" class="form-check-input">
+                                <label for="selectAll" class="form-check-label">Select All</label>
+                            </div>
+                        </div>
+
                         <div class="card-body">
                             @if ($pendingAssets->isEmpty())
                                 <p class="text-center">No assets waiting for approval.</p>
                             @else
-
-                                <div class="row">
-                                    @foreach ($pendingAssets as $asset)
-                                        <div class="col-md-12 mb-3">
-                                            <div class="card" style="background-color: rgba(
-                                                                                    {{ $asset->aksi == 'Handover' ? '40, 167, 69, 0.2' : '' }}
-                                                                                    {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }}
-                                                                                    {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }});
-                                                                                    border: 3px solid black;">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center mb-4">
-                                                        <img src="{{ asset('assets/img/pending.png') }}"
-                                                            alt="Pending Asset Icon" class="me-3"
-                                                            style="width: 80px; height: 80px;">
-                                                        <p class="card-text">
-                                                            <span
-                                                                class="badge position-absolute top-0 end-0 m-2
-                                                                                                {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }}
-                                                                                                {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }}
-                                                                                                {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
-                                                                {{ $asset->aksi }}
-                                                            </span>
-
-                                                            <strong>Asset Tag:</strong> {{ $asset->tagging }}<br>
-                                                            <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
-                                                            <strong>Merk:</strong> {{ $asset->merk_name }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="d-flex justify-content-between mt-4"
-                                                        style="margin-bottom:-15px;">
-                                                        <a href="{{ route('assets.serahterima', ['id' => $asset->id]) }}"
-                                                            class="btn btn-success" style="margin-bottom:15px;">Approve</a>
-                                                        <form action="{{ route('assets.reject', ['id' => $asset->id]) }}"
-                                                            method="POST" onsubmit="return confirmReject();">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-danger">Reject</button>
-                                                        </form>
+                                <form action="{{ route('assets.bulkAction') }}" method="POST" id="bulkActionForm">
+                                    @csrf
+                                    <div class="row">
+                                        @foreach ($pendingAssets as $asset)
+                                            <div class="col-md-12 mb-3">
+                                                <div class="card"
+                                                    style="background-color: rgba({{ $asset->aksi == 'Handover' ? '40, 167, 69, 0.2' : '' }} {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }} {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }}); border: 3px solid black;">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center mb-4">
+                                                            <img src="{{ asset('assets/img/pending.png') }}"
+                                                                alt="Pending Asset Icon" class="me-3"
+                                                                style="width: 80px; height: 80px;">
+                                                            <p class="card-text flex-grow-1">
+                                                                <span
+                                                                    class="badge position-absolute top-0 end-0 m-2 {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }} {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }} {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
+                                                                    {{ $asset->aksi }}
+                                                                </span>
+                                                                <strong>Asset Tag:</strong> {{ $asset->tagging }}<br>
+                                                                <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
+                                                                <strong>Merk:</strong> {{ $asset->merk_name }}
+                                                            </p>
+                                                            <div class="form-check ms-auto" style="margin-left: auto;">
+                                                                <input type="checkbox" class="form-check-input" name="assets[]"
+                                                                    value="{{ $asset->id }}" id="asset-{{ $asset->id }}"
+                                                                    style="transform: scale(1.5);">
+                                                                <label class="form-check-label"
+                                                                    for="asset-{{ $asset->id }}"></label>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                        @endforeach
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button id="approveButton" type="button" class="btn btn-success"
+                                            onclick="submitApproveForm()" style="display: none;">Approve</button>
+                                        <button id="rejectButton" type="button" class="btn btn-danger"
+                                            onclick="confirmReject()" style="display: none;">Reject</button>
 
+                                    </div>
+                                    <input type="hidden" name="action" id="action" value="">
+                                </form>
+                            @endif
                         </div>
                     </div>
-                </div>
+
+</div>
+
                 <!-- Assets Section -->
                 <div class="col-md-8">
                     <!-- Section for Approved Assets -->
@@ -114,12 +120,13 @@
                                                                                                     </p>
                                                                                                 </div>
 
-                                                                                                <div class="action-buttons">
-                                                                                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                                                                        data-bs-target="#detailModal{{ $asset->id }}" title="View Details">
-                                                                                                        <i class="bi bi-file-earmark-text"></i> Detail
-                                                                                                    </button>
-                                                                                                </div>
+                                                                                                <div class="action-buttons d-flex justify-content-end">
+                                                                                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                                                                    data-bs-target="#detailModal{{ $asset->id }}" title="View Details">
+                                                                                                    <i class="bi bi-file-earmark-text"></i> Detail
+                                                                                                </button>
+                                                                                            </div>
+
                                                                                             </div>
                                                                                             <!-- Modal -->
                                                                                             <div class="modal fade" id="detailModal{{ $asset->id }}" tabindex="-1"
@@ -239,12 +246,54 @@
 
 @endsection
 
-<script>
-    function confirmReject() {
-        return confirm("Are you sure you want to reject this asset? This action cannot be undone.");
-    }
-</script>
 
+
+
+
+<script>
+    // Toggle "Select All" functionality
+    document.getElementById('selectAll').addEventListener('click', function () {
+        const checkboxes = document.querySelectorAll('input[name="assets[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        toggleActionButtons(); // Update button visibility after toggling
+    });
+
+    function submitApproveForm() {
+        document.getElementById('action').value = 'approve';
+        document.getElementById('bulkActionForm').submit();
+    }
+
+    function confirmReject() {
+        const confirmation = confirm("Are you sure you want to reject the selected assets?");
+        if (confirmation) {
+            document.getElementById('action').value = 'reject';
+            document.getElementById('bulkActionForm').submit();
+        }
+    }
+
+    function toggleActionButtons() {
+        const selectedAssets = document.querySelectorAll('input[name="assets[]"]:checked');
+        const approveButton = document.getElementById('approveButton');
+        const rejectButton = document.getElementById('rejectButton');
+
+        // Show or hide buttons based on selection
+        if (selectedAssets.length > 0) {
+            approveButton.style.display = 'inline-block'; // Show buttons
+            rejectButton.style.display = 'inline-block';
+        } else {
+            approveButton.style.display = 'none'; // Hide buttons
+            rejectButton.style.display = 'none';
+        }
+    }
+
+    // Call toggleActionButtons on page load and when checkboxes change
+    document.addEventListener('DOMContentLoaded', toggleActionButtons);
+    document.querySelectorAll('input[name="assets[]"]').forEach(checkbox => {
+        checkbox.addEventListener('change', toggleActionButtons);
+    });
+</script>
 
 
 @push('styles')
