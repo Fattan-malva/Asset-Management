@@ -1,4 +1,5 @@
 @extends('layouts.plain')
+@section('title', 'Asset Tagging')
 
 @section('content')
 <div style="margin-top: 50px; display: flex; justify-content: center; padding: 10px;">

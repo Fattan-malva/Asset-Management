@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Return Documentation</title>
+    <title>@yield('title', 'Return Documentation')</title>
+    <link rel="icon" href="{{ asset('assets/img/velaris.png') }}" type="image/png">
     <style>
         /* General Styles */
         body {

@@ -1,14 +1,20 @@
 @extends('layouts.app')
-
+@section('title', 'Approval Status')
 @section('content')
-<div class="container mt-4">
-    <h1 class="text-center mb-4 fw-bold display-5">List Status Approval</h1>
-    <br>
+<div class="container">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; margin-top: 54px;">
+        <i class='bx bx-arrow-back' id="back-icon" style="cursor:pointer; background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35); margin-right: auto;">
+        </i>
+        <h3 style="font-weight: bold; font-size: 1.125rem;">
+            Approval Status&nbsp;&nbsp;
+            <span style="background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35);">
+                <i class="fas fa-2xs fa-list" style="font-size: 16px;"></i>
+            </span>
+        </h3>
+    </div>
 
     <div class="card">
         <!-- Button Section -->
-
-
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
@@ -17,12 +23,12 @@
             @endif
             <div class="mb-3">
                 <div class="d-flex justify-content-start">
-                    <a href="{{ route('assets.create') }}" class="btn btn-success btn-sm me-2">Handover Asset</a>
-                    <a href="{{ route('assets.indexreturn') }}" class="btn btn-danger btn-sm">Return Asset</a>
+                    <a href="{{ route('assets.create') }}" class="btn btn-sm me-2" style="background-color: #1BCFB4; color: #fff; font-weight: bold">Handover Asset</a>
+                    <a href="{{ route('assets.indexreturn') }}" class="btn btn-sm" style="background-color: #FE7C96; color: #fff; font-weight: bold">Return Asset</a>
                 </div>
             </div>
             <div class="table-responsive">
-                <table id="assetTable" class="table table-striped table-bordered">
+                <table id="assetTable" class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
@@ -33,7 +39,7 @@
                             <th scope="col">Process</th>
                             <th scope="col">Approval</th>
                             <th scope="col">Actions</th>
-                            <th scope="col">Track</th>
+                            <!-- <th scope="col">Track</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -48,11 +54,11 @@
                                 <td>
                                     <!-- Approval Status Badge -->
                                     @if ($asset->approval_status === 'Approved')
-                                        <span class="badge bg-success" style="padding: 5px;">Approved</span>
+                                        <span class="badge" style="padding: 6px 10px; background-color: #1BCFB4;">Approved</span>
                                     @elseif ($asset->approval_status === 'Pending')
-                                        <span class="badge bg-primary" style="padding: 5px;">Waiting Approval</span>
+                                        <span class="badge" style="padding: 6px 10px; background-color: #FED713;">Waiting Approval</span>
                                     @elseif ($asset->approval_status === 'Rejected')
-                                        <span class="badge bg-danger" style="padding: 5px;">Rejected</span>
+                                        <span class="badge" style="padding: 6px 10px; background-color: #FE7C96;">Rejected</span>
                                     @else
                                         <span class="badge bg-secondary" style="padding: 5px;">Unknown</span>
                                     @endif
@@ -60,7 +66,7 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <!-- Button to View Details -->
-                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                        <button class="btn btn-sm" style="background-color: #4FB0F1; color: #fff; font-weight:500;" data-bs-toggle="modal"
                                             data-bs-target="#detailModal{{ $asset->id }}" title="View Details"
                                             style="margin-right:10px;">
                                             <i class="bi bi-file-earmark-text"></i> Detail
@@ -90,9 +96,8 @@
                                             </form>
                                         @endif
                                     </div>
-                                </td>
-                                <td>
-                                    <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn btn-success"
+                                
+                                    <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn" style="background-color: #CB95E1; color: #fff; font-weight:500;"
                                         title="Track Asset">
                                         <i class="bi bi-geo-alt"></i> Track
                                     </a>
@@ -110,16 +115,16 @@
                 <div class="mt-4">
                     <ul class="list-unstyled legend-list">
                         <li>
-                            <span class="badge bg-success legend-badge">Approved</span> : <span
+                            <span class="badge legend-badge" style="padding: 5px 28px; background-color: #1BCFB4;">Approved</span> : <span
                                 class="legend-description">The asset has been approved by the user.</span>
                         </li>
                         <li>
-                            <span class="badge bg-primary legend-badge" style="margin-right: 11px;">Waiting
+                            <span class="badge legend-badge" style="padding: 5px 7px; background-color: #FED713">Waiting
                                 Approval</span> : <span class="legend-description">Waiting for the asset to be approved
                                 by the user.</span>
                         </li>
                         <li>
-                            <span class="badge bg-danger legend-badge">Rejected</span> : <span
+                            <span class="badge legend-badge"style="padding: 5px 31px; background-color: #FE7C96;">Rejected</span> : <span
                                 class="legend-description">The asset is rejected by the user.</span>
                         </li>
                     </ul>
@@ -224,20 +229,9 @@
 @endforeach
 
 <style>
-    /* CSS for tables without borders */
-    .table-borderless {
-        border-collapse: collapse;
-        width: 100%;
-    }
 
-    .table-borderless th,
-    .table-borderless td {
-        border: none;
-        /* Remove table borders */
-        padding: 10px;
-        /* Padding within cells */
-        vertical-align: middle;
-        /* Center align vertically */
+    .card {
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
     }
 
     .table-borderless th {
@@ -257,6 +251,7 @@
     .legend-list {
         font-size: 0.875em;
         line-height: 1.5;
+        margin-top: 33px;
     }
 
     .legend-list li {
@@ -274,5 +269,28 @@
         margin-left: 10px;
         text-align: left;
     }
+
+    /* CSS for table row borders */
+    .table-hover tbody tr td,
+    .table-hover thead tr th {
+        border-bottom: 1px solid #ebedf2; /* Add a border to the bottom of each row */
+        background-color: #fff;
+    }
+
+    .table-hover tbody tr td {
+        font-weight: 300;
+    }
+
+    .table-hover thead tr th {
+        font-weight: 600;
+    }
+
+    /* Remove any cell borders */
+    .table-hover th,
+    .table-hover td {
+        border: none; /* Remove borders from cells */
+        padding: 10px; /* Keep padding for cells */
+    }
+
 </style>
 @endsection

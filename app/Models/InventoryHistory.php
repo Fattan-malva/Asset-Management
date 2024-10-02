@@ -1,22 +1,33 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Merk;
 
 class InventoryHistory extends Model
 {
-    protected $table = 'inventory_history'; // Sesuaikan dengan nama tabel yang ada di database
+    use HasFactory;
+
+    protected $table = 'inventory_history'; // Specify the table name
 
     protected $fillable = [
-        // tambahkan field yang diperlukan
+        'inventory_id',
+        'action',
+        'tagging',
+        'asets',
+        'merk',
+        'seri',
+        'tanggalmasuk',
+        'type',
+        'kondisi',
+        'status',
+        'lokasi',
+        'tanggal_diterima',
+        'documentation',
     ];
-
-    // Mendapatkan nama merk berdasarkan ID
-    public function getMerkNameAttribute()
+    public function merkDetail()
     {
-        $merk = Merk::find($this->merk); // Ganti 'merk_id' dengan nama kolom ID merk Anda
-        return $merk ? $merk->name : 'N/A'; // Mengembalikan nama merk atau 'N/A' jika tidak ditemukan
+        return $this->belongsTo(Merk::class, 'merk'); // Adjust 'merk' to the column in the inventory_history table
     }
+    public $timestamps = false;
 }

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Tracking Asset')
 
 @section('content')
 <div class="container mt-4">

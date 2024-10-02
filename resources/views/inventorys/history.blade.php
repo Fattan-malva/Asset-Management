@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Entry & Scrap')
 
 @section('content')
 <div class="container mt-4">
@@ -22,6 +23,7 @@
                             <th scope="col">Seri</th>
                             <th scope="col">Date</th>
                             <th scope="col">Action</th>
+                            <th scope="col">Documentation</th> <!-- New Documentation column -->
                         </tr>
                     </thead>
                     <tbody>
@@ -29,26 +31,29 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $history->tagging }}</td>
-                                <td>{{ $history->merk_name }}</td>
+                                <td>{{ $history->merkDetail->name ?? 'N/A' }}</td> <!-- Ensure to use the correct property for merk -->
                                 <td>{{ $history->seri }}</td>
                                 <td>{{ \Carbon\Carbon::parse($history->action_time)->format('d-m-Y') }}</td>
                                 <td>
                                     @if ($history->action === 'INSERT')
-                                        <span class="badge bg-success"
-                                            style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;"">Entry</span>
+                                        <span class="badge bg-success" style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Entry</span>
                                     @elseif ($history->action === 'DELETE')
-                                                        <span class=" badge bg-danger"
-                                        style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Scrap</span>
+                                        <span class="badge bg-danger" style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">Scrap</span>
                                     @else
-                                        <span class="badge bg-secondary"
-                                            style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">N/A</span>
+                                        <span class="badge bg-secondary" style="font-size: 0.8rem; padding: 0.2em 1em; color: black; border-radius: 0.5em;">N/A</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($history->documentation)
+                                        <a href="{{ asset($history->documentation) }}" target="_blank" class="btn btn-info btn-sm">View Document</a>
+                                    @else
+                                        <span class="text-muted">No Document</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
-                                    found.</td>
+                                <td colspan="7" class="text-center" style="padding: 50px; font-size: 1.2em;">No history found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -56,12 +61,10 @@
                 <div class="mt-4">
                     <ul class="list-unstyled legend-list">
                         <li>
-                            <span class="badge bg-success legend-badge" style="color:black;">Entry</span> : <span
-                                class="legend-description">Assets added.</span>
+                            <span class="badge bg-success legend-badge" style="color:black;">Entry</span> : <span class="legend-description">Assets added.</span>
                         </li>
                         <li>
-                            <span class="badge bg-danger legend-badge" style="color:black;">Scrap</span> : <span
-                                class="legend-description">assets have been removed or destroyed</span>
+                            <span class="badge bg-danger legend-badge" style="color:black;">Scrap</span> : <span class="legend-description">Assets have been removed or destroyed.</span>
                         </li>
                     </ul>
                 </div>
@@ -69,6 +72,7 @@
         </div>
     </div>
 </div>
+
 <style>
     /* CSS untuk menghapus garis tabel pada modal */
     .no-border-table th,

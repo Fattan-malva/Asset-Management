@@ -1,8 +1,8 @@
 @extends('layouts.app')
+@section('title', 'Home')
 
 @section('content')
-
-
+<link rel="icon" href="{{ asset('assets/img/velaris.png') }}" type="image/png">
 <main id="main">
     <!-- ======= User Assets Section ======= -->
     <section id="user-assets" class="user-assets">

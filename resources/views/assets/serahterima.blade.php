@@ -1,9 +1,10 @@
 @extends('layouts.app')
+@section('title', 'Approve Assets')
 
 @section('content')
 <br>
 <br>
-<h1 class="mt-4 text-center fw-bold display-5">Approve Asset</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Approve Assets</h1>
 <br>
 <div class="container form-container">
     <div class="card">

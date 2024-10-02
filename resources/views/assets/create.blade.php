@@ -1,9 +1,17 @@
 @extends('layouts.app')
-
+@section('title', 'Handover')
 @section('content')
-<h1 class="mt-4 text-center fw-bold display-5">Handover</h1>
-<br>
 <div class="container">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; margin-top: 54px;">
+        <i class='bx bx-arrow-back' id="back-icon" style="cursor:pointer; background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35); margin-right: auto;">
+        </i>
+        <h3 style="font-weight: bold; font-size: 1.125rem;">
+            Handover&nbsp;&nbsp;
+            <span style="background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35);">
+                <i class="fas fa-2xs fa-list" style="font-size: 16px;"></i>
+            </span>
+        </h3>
+    </div>
     <div class="card">
         <div class="card-body">
             @if ($assetTaggingAvailable && $namesAvailable)

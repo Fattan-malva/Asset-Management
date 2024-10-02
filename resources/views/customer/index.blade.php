@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Users')
 
 @section('content')
 <h1 class="mt-4 text-center fw-bold display-5">Users</h1>

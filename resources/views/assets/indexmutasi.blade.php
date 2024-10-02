@@ -1,7 +1,8 @@
 @extends('layouts.app')
+@section('title', 'Assets Mutation')
 
 @section('content')
-<h1 class="mt-4 text-center fw-bold display-5">Asset Mutation</h1>
+<h1 class="mt-4 text-center fw-bold display-5">Assets Mutation</h1>
 <br>
 <br>
 <br>

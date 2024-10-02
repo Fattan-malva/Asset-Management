@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>QR Code</title>
+    <title>@yield('title', 'QR Code')</title>
+    <link rel="icon" href="{{ asset('assets/img/velaris.png') }}" type="image/png">
     <style>
         @media print {
             .container {

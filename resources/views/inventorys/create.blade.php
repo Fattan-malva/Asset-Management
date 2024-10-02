@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Add Asset')
 
 @section('content')
 <h1 class="mt-4 text-center fw-bold display-5">Add Asset</h1>
@@ -6,7 +7,7 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('inventorys.store') }}" method="POST">
+            <form action="{{ route('inventorys.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <label for="tagging" class="form-label">Asset Tag</label>
@@ -83,6 +84,14 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="documentation" class="form-label">Documentation</label>
+                    <input type="file" class="form-control @error('documentation') is-invalid @enderror" id="documentation"
+                        name="documentation" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    @error('documentation')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary">Create</button>

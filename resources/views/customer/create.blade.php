@@ -1,16 +1,13 @@
 <!-- resources/views/customers/create.blade.php -->
 @extends('layouts.app')
-
+@section('title', 'User Create')
 @section('content')
 <br>
 <br>
-<h1 class="mt-4 text-center">Create Customer</h1>
+<h1 class="mt-4 text-center">User Create</h1>
 <br>
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h2>Create Customer</h2>
-        </div>
         <div class="card-body">
             <form action="{{ route('customer.store') }}" method="POST">
                 @csrf

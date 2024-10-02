@@ -1,10 +1,11 @@
 @extends('layouts.app')
+@section('title', 'User Update')
 
 @section('content')
 <div class="container">
     <br>
     <br>
-    <h1 class="mt-4 text-center">Update Customer</h1>
+    <h1 class="mt-4 text-center">User Update</h1>
     <br>
     <div class="card">
         <div class="card-body">
