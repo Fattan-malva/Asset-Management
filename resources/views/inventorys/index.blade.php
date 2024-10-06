@@ -2,11 +2,30 @@
 @section('title', 'Assets List')
 
 @section('content')
-<h1 class="mt-4 text-center fw-bold display-5">Assets List</h1>
 <br>
-<br>
-<br>
+
+
+
 <div class="container">
+    <div>
+        <div class="container">
+            <div class="header-container">
+                <div class="back-wrapper">
+                    <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
+                    <div class="back-text">
+                        <span class="title">Back</span>
+                        <span class="small-text">to previous page</span>
+                    </div>
+                </div>
+                <h3 class="dashboard-title">
+                    Assets List&nbsp;&nbsp;
+                    <span class="icon-wrapper">
+                        <i class="fa-solid fa-2xs fa-list-ul previous-icon"></i>
+                    </span>
+                </h3>
+            </div>
+        </div>
+    </div>
     <div class="card">
         <div class="card-body">
             @if (session('success'))
@@ -20,7 +39,7 @@
                 </div>
             @endif
             <div class="table-responsive">
-                <table id="inventoryTable" class="table table-striped">
+                <table id="inventoryTable" class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
@@ -69,13 +88,13 @@
 
 
                                                         @if ($bulanSejakAcuan >= 1)
-                                                            <span class="badge bg-danger text-center align-middle"
-                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px; color:black;">
+                                                            <span class="badge text-center align-middle"
+                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px;  background-color:#FE7C96;">
                                                                 Need Maintenance
                                                             </span>
                                                         @else
-                                                            <span class="badge bg-info text-center align-middle"
-                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px; color:black;">
+                                                            <span class="badge text-center align-middle"
+                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px;  background-color:#B46EFF;">
                                                                 Under Maintenance
                                                             </span>
                                                         @endif
@@ -86,27 +105,27 @@
                                                         <!-- Status Badge -->
                                                         @if ($inventory->status === 'Inventory')
                                                             <span class="badge bg-warning"
-                                                                style="padding: 5px; color: black; font-size: 0.9em;">Available</span>
+                                                                style="padding: 5px;  font-size: 0.9em; background-color:#FED713;">Available</span>
                                                         @elseif ($inventory->status === 'Operation')
-                                                            <span class="badge bg-success" style="padding: 5px; color: black; font-size: 0.9em;">In
+                                                            <span class="badge" style="padding: 5px;  font-size: 0.9em; background-color:#1BCFB4;">In
                                                                 Use</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         <div class="action-buttons">
-                                                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
-                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details">
+                                                            <button type="button" class="btn btn-sm" data-bs-toggle="modal"
+                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details" style="background-color:#4FB0F1;">
                                                                 <i class="bi bi-file-earmark-text"></i> Detail
                                                             </button>
                                                             <!-- <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
-                                                                method="POST" style="display: inline;">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                                    onclick="return confirm('Are you sure you want to delete this Asset?')">
-                                                                    <i class="bi bi-trash"></i> Scrap Asset
-                                                                </button>
-                                                            </form> -->
+                                                                                                                                                                                                                                                    method="POST" style="display: inline;">
+                                                                                                                                                                                                                                                    @csrf
+                                                                                                                                                                                                                                                    @method('DELETE')
+                                                                                                                                                                                                                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete"
+                                                                                                                                                                                                                                                        onclick="return confirm('Are you sure you want to delete this Asset?')">
+                                                                                                                                                                                                                                                        <i class="bi bi-trash"></i> Scrap Asset
+                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                </form> -->
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -119,19 +138,19 @@
                     <ul class="list-unstyled legend-list">
                         <li>
                             <span class="badge bg-warning legend-badge"
-                                style="color: black; margin-right: 55px;">Available</span> : <span
+                                style=" margin-right: 55px;">Available</span> : <span
                                 class="legend-description">Asset is available for use.</span>
                         </li>
                         <li>
-                            <span class="badge bg-success legend-badge" style="color: black; margin-right: 55px;">In
+                            <span class="badge legend-badge" style=" margin-right: 55px; background-color:#1BCFB4;">In
                                 Use</span> : <span class="legend-description">Asset is currently in operation.</span>
                         </li>
                         <li>
-                            <span class="badge bg-danger legend-badge" style="color: black; margin-right: 20px;">Need
+                            <span class="badge legend-badge" style=" margin-right: 20px; background-color:#FE7C96;">Need
                                 Maintenance</span> : <span class="legend-description">Assets need maintenance.</span>
                         </li>
                         <li>
-                            <span class="badge bg-info legend-badge" style="color: black; margin-right: 15px;">Under
+                            <span class="badge legend-badge" style=" margin-right: 15px; background-color:#B46EFF;">Under
                                 Maintenance</span> : <span class="legend-description">Assets have been
                                 maintained.</span>
                         </li>
@@ -234,14 +253,14 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-success"
-                        onclick="window.open('{{ route('prints.qr', ['id' => $inventory->id]) }}', '_blank')">
+                    <button type="button" class="btn"
+                        onclick="window.open('{{ route('prints.qr', ['id' => $inventory->id]) }}', '_blank')" style="background-color:#1BCFB4;">
                         <i class="bi bi-qr-code"></i> Print QR Code
                     </button>
                     <a href="{{ route('inventorys.edit', ['id' => $inventory->id]) }}" class="btn btn-warning">
                         <i class="bi bi-tools"></i> Maintenance
                     </a>
-                    <button type="button" class="btn btn-secondary open-history-modal"
+                    <button type="button" class="btn  open-history-modal " style="background-color: #dddcde;"
                         data-tagging="{{ $inventory->tagging }}" data-inventory-id="{{ $inventory->id }}"
                         data-bs-toggle="modal" data-bs-target="#historyModal-{{ $inventory->id }}">
                         <i class="bi bi-clock-history"></i>
@@ -349,23 +368,23 @@
                             if (actionBadge) {
                                 // Print button
                                 printButton = `<button type="button" class="btn btn-success btn-sm printButton" 
-                            data-action="${item.action}" 
-                            data-tagging="${item.asset_tagging}" 
-                            data-changed-at="${item.changed_at}">
-                            <i class="bi bi-printer"></i> Print Proof
-                        </button>`;
+                                                            data-action="${item.action}" 
+                                                            data-tagging="${item.asset_tagging}" 
+                                                            data-changed-at="${item.changed_at}">
+                                                            <i class="bi bi-printer"></i> Print Proof
+                                                        </button>`;
 
                                 // Generate the row
                                 const row = `<tr>
-                                <td>${actionBadge}</td>
-                                <td>${item.changed_at}</td>
-                                <td>${item.nama_old || '-'}</td>
-                                <td>${item.keterangan || '-'}</td>
-                                <td>
-                                    ${documentationLink}
-                                    ${printButton}
-                                </td>
-                            </tr>`;
+                                                                <td>${actionBadge}</td>
+                                                                <td>${item.changed_at}</td>
+                                                                <td>${item.nama_old || '-'}</td>
+                                                                <td>${item.keterangan || '-'}</td>
+                                                                <td>
+                                                                    ${documentationLink}
+                                                                    ${printButton}
+                                                                </td>
+                                                            </tr>`;
 
                                 historyBody.innerHTML += row;
                             }
@@ -417,8 +436,6 @@
 
 
 
-@endsection
-
 @section('scripts')
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
@@ -426,6 +443,7 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 
+@endsection
 @endsection
 
 <style>
@@ -454,5 +472,78 @@
     .legend-list li .legend-description {
         margin-left: 10px;
         text-align: left;
+    }
+
+    /* Container styles */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        margin-top: 30px;
+    }
+
+    .back-wrapper {
+        display: flex;
+        align-items: center;
+        margin-right: auto;
+    }
+
+    .back-icon {
+        cursor: pointer;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+        padding-top: 9px;
+        padding-left: 9px;
+        transition: background 0.3s ease;
+    }
+
+    .back-icon:hover {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) -13%, #B100FF);
+    }
+
+    .back-text {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+    }
+
+    .back-text .title {
+        font-weight: 600;
+        font-size: 17px;
+    }
+
+    .back-text .small-text {
+        font-size: 0.8rem;
+        color: #aaa;
+        margin-top: -3px;
+    }
+
+    .dashboard-title {
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+
+    .icon-wrapper {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .previous-icon {
+        font-size: 16px;
     }
 </style>

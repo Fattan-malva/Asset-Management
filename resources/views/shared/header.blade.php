@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Global Service Indonesia isa</title>
+    <title>GSI</title>
     <link rel="stylesheet" href="style.css">
     <!-- Boxicons CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
@@ -60,6 +60,8 @@
                             class="{{ request()->routeIs('assets.create') ? 'active' : '' }}">Handover</a></li>
                     <li><a href="{{ route('assets.indexreturn') }}"
                             class="{{ request()->routeIs('assets.indexreturn') ? 'active' : '' }}">Return</a></li>
+                    <li><a href="{{ route('inventorys.scrap') }}"
+                            class="{{ request()->routeIs('inventorys.scrap') ? 'active' : '' }}">Scrap</a></li>
                     <!-- <li><a href="{{ route('assets.indexmutasi') }}">Mutasi</a></li> -->
                 </ul>
             </li>
@@ -108,6 +110,26 @@
                             class="{{ request()->routeIs('merk.index') ? 'active' : '' }}">Add Merk</a></li>
                 </ul>
             </li>
+            <div class="bottom-section">
+                <li>
+                    <a href="https://helpdesk.globalservice.co.id/" target="_blank"
+                        class="{{ request()->routeIs('sales.index') ? 'active' : '' }}">
+                        <i class="fa-solid fa-headset"></i>
+                        <span class="link_name" style="font-size:19px;  margin-left:-10px; text-decoration: underline;">Help Center</span>
+                    </a>
+                    <a href="#">
+                        <i class="fa-solid fa-moon" style="margin-top:-20px"></i>
+                        <span class="link_name"
+                            style="font-size:19px; margin-top:-20px; margin-left:-10px; margin-right:10px;">Dark
+                            Mode</span>
+                        <button onclick="toggleNightMode()" id="nightModeToggle" class="toggle-switch"
+                            style="margin-top:-20px ">
+                            <i id="modeIcon" class='bx bx-moon'></i>
+                            <div class="slider"></div>
+                        </button>
+                    </a>
+                </li>
+            </div>
         </ul>
     </div>
 
@@ -123,16 +145,22 @@
                 <div class="profile_name">Admin</div>
                 <div class="job">Infrastructure</div>
             </div>
-            <i class='bx bxs-chevron-down' id="logout-icon"></i>
+            <!-- Ganti icon logout menjadi lebih umum, misalnya, icon power-off -->
+            <i class='fa-solid fa-power-off' id="logout-icon" style="cursor: pointer;"></i>
+
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
             </form>
+
+
         </div>
+
+
     </div>
     <section class="home-section">
         <div>
             <main class="py-4">
-            @yield('content')
+                @yield('content')
             </main>
         </div>
     </section>
@@ -140,7 +168,368 @@
 
 </html>
 
+
+<script>
+    // Function to toggle dark mode and handle switch movement
+    function toggleNightMode() {
+        const body = document.body;
+        const icon = document.getElementById('modeIcon');
+        const logoName = document.querySelector('.logo_name');
+        const toggleSwitch = document.getElementById('nightModeToggle'); // Reference to the switch
+
+        // Toggle dark mode class
+        body.classList.toggle('dark-mode');
+        toggleSwitch.classList.toggle('active'); // Add 'active' class to move the slider
+
+        // Check if dark mode is now enabled or disabled
+        if (body.classList.contains('dark-mode')) {
+            icon.classList.remove('bx-moon');
+            icon.classList.add('bx-sun');
+            logoName.style.color = 'white'; // Change logo text color when dark mode is enabled
+            localStorage.setItem('dark-mode', 'enabled'); // Save dark mode state
+        } else {
+            icon.classList.remove('bx-sun');
+            icon.classList.add('bx-moon');
+            logoName.style.color = ''; // Reset logo text color when dark mode is disabled
+            localStorage.setItem('dark-mode', 'disabled'); // Save dark mode state
+        }
+    }
+
+    // Check if dark mode is already enabled when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        const body = document.body;
+        const icon = document.getElementById('modeIcon');
+        const logoName = document.querySelector('.logo_name');
+        const toggleSwitch = document.getElementById('nightModeToggle'); // Reference to the switch
+
+        // Check the saved dark mode preference from localStorage
+        const darkModeState = localStorage.getItem('dark-mode');
+
+        if (darkModeState === 'enabled') {
+            body.classList.add('dark-mode');
+            toggleSwitch.classList.add('active'); // Add 'active' class to move the slider
+            icon.classList.remove('bx-moon');
+            icon.classList.add('bx-sun');
+            logoName.style.color = 'white'; // Set logo text color to white when dark mode is enabled
+        } else {
+            toggleSwitch.classList.remove('active'); // Remove 'active' class when dark mode is disabled
+            icon.classList.remove('bx-sun');
+            icon.classList.add('bx-moon');
+            logoName.style.color = ''; // Reset logo text color when dark mode is disabled
+        }
+    });
+</script>
+
+
 <style>
+    /* Dark Mode Styles */
+    body.dark-mode {
+        background-color: #1d1b31;
+        color: #fff;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        background: #fff;
+        /* Default background for light mode */
+        transition: background-color 0.3s ease;
+    }
+
+    body.dark-mode .sidebar {
+        background: #2c2b47;
+        /* Dark background for dark mode */
+    }
+
+    .sidebar .nav-links li:hover {
+        background: #f8f9fa;
+        /* Hover color for light mode */
+    }
+
+    body.dark-mode .sidebar .nav-links li:hover {
+        background: #3e3d58;
+        /* Hover color for dark mode */
+    }
+
+    /* Sidebar Links */
+    .sidebar .nav-links li a {
+        color: #000;
+        /* Default link color for light mode */
+        transition: color 0.3s ease;
+    }
+
+    body.dark-mode .sidebar .nav-links li a {
+        color: #fff;
+        /* Link color for dark mode */
+    }
+
+    .sidebar .nav-links li a .link_name {
+        color: #000;
+        /* Default link text color */
+    }
+
+    body.dark-mode .sidebar .nav-links li a .link_name {
+        color: #fff;
+        /* Link text color for dark mode */
+    }
+
+    /* Active State Links in Sidebar */
+    .sidebar .nav-links li a.active .link_name,
+    .sidebar .nav-links li a.active i {
+        color: #B66DFF;
+        /* Purple color for active state */
+    }
+
+    /* Sub-menu Links */
+    .sub-menu a {
+        color: #000;
+        /* Default sub-menu link color for light mode */
+    }
+
+    body.dark-mode .sub-menu a {
+        color: #fff;
+        /* Sub-menu link color for dark mode */
+    }
+
+    /* Hover State for Sub-menu Links */
+    .sub-menu a:hover {
+        color: #B66DFF;
+        /* Purple color for hover state */
+        background-color: rgba(182, 109, 255, 0.1);
+        /* Slight background for hover */
+        border-radius: 20px;
+        margin-right: 35px;
+    }
+
+    /* Active State for Sub-menu Links */
+    .sub-menu a.active {
+        color: #B66DFF;
+        /* Purple color for active sub-menu link */
+        font-weight: bold;
+        /* Bold active sub-menu link */
+    }
+
+    /* Home Section */
+    .home-section {
+        background: #f2edf3;
+        /* Light background for home section in light mode */
+        transition: background-color 0.3s ease;
+    }
+
+    body.dark-mode .home-section {
+        background: #1d1b31;
+        /* Dark background for home section in dark mode */
+    }
+
+    .home-content {
+        background: #fff;
+        /* Default background for home content in light mode */
+    }
+
+    body.dark-mode .home-content {
+        background: #2c2b47;
+        /* Dark background for home content in dark mode */
+    }
+
+    .home-content i {
+        color: #a3a6ab;
+        /* Icon color in light mode */
+    }
+
+    body.dark-mode .home-content i {
+        color: #fff;
+        /* Icon color in dark mode */
+    }
+
+    /* Profile Section */
+    .profile-details-top .job {
+        color: #888;
+        /* Job text color in light mode */
+    }
+
+    body.dark-mode .profile-details-top .job {
+        color: #ccc;
+        /* Job text color in dark mode */
+    }
+
+    /* Toggle switch button container */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 5px;
+    }
+
+    .sidebar.close .toggle-switch {
+        display: none;
+    }
+
+    /* Slider (the circle that moves) */
+    .toggle-switch .slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 14px;
+        height: 14px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+
+    /* When active (night mode on) */
+    .toggle-switch.active {
+        background-color: #BB73F9;
+    }
+
+    .toggle-switch.active {
+        background-color: #BB73F9;
+
+    }
+
+    .sidebar.close .toggle-switch.active {
+        display: none;
+    }
+
+    /* Moves the slider to the right when active */
+    .toggle-switch.active .slider {
+        transform: translateX(30px);
+    }
+
+    /* Moon and sun icon positioning */
+    #modeIcon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        pointer-events: none;
+    }
+
+    /* Change icon to sun when active */
+    #nightModeToggle.active #modeIcon {
+        color: #fff;
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode {
+        background-color: #1d1b31;
+        /* Warna latar belakang untuk mode gelap */
+        color: #eaeaea;
+        /* Warna teks untuk mode gelap */
+    }
+
+    /* Menyesuaikan elemen di sidebar untuk mode gelap */
+    .sidebar.dark-mode {
+        background-color: #2a2a2a;
+        /* Warna sidebar di mode gelap */
+    }
+
+    /* Menyesuaikan warna link di sidebar */
+    .sidebar.dark-mode .nav-links li a {
+        color: #eaeaea;
+        /* Warna link di mode gelap */
+    }
+
+    .sidebar.dark-mode .nav-links li a:hover {
+        background-color: #3e3e3e;
+        /* Warna hover di mode gelap */
+    }
+
+    /* Mengatur warna ikon di sidebar */
+    .sidebar.dark-mode .nav-links li i {
+        color: #eaeaea;
+        /* Warna ikon di mode gelap */
+    }
+
+    /* Menyesuaikan posisi Help Center */
+    .help-center {
+        position: fixed;
+        /* Memastikan pusat bantuan tetap di posisi tetap */
+        right: 20px;
+        /* Mengatur jarak dari kanan */
+        bottom: 20px;
+        /* Mengatur jarak dari bawah */
+        background: #f8f9fa;
+        /* Latar belakang pusat bantuan */
+        border-radius: 8px;
+        /* Sudut melengkung untuk pusat bantuan */
+        padding: 10px;
+        /* Memberikan ruang di dalam pusat bantuan */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        /* Bayangan untuk efek kedalaman */
+    }
+
+    /* Menyesuaikan teks di pusat bantuan */
+    .help-center p {
+        color: #333;
+        /* Warna teks pusat bantuan */
+    }
+
+    /* Mengatur tampilan pusat bantuan di mode gelap */
+    body.dark-mode .help-center {
+        background: #2a2a2a;
+        /* Latar belakang pusat bantuan di mode gelap */
+        color: #eaeaea;
+        /* Warna teks pusat bantuan di mode gelap */
+    }
+
+    .bottom-section {
+        margin-top: 125px;
+    }
+
+    .sidebar .bottom-section {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        width: 260px;
+        bottom: 0;
+        left: 0;
+        padding: 10px 14px;
+        color: white;
+        transition: all 0.5s ease;
+        white-space: nowrap;
+        justify-content: space-between;
+    }
+
+    .sidebar.dark-mode .bottom-section {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        width: 260px;
+        bottom: 0;
+        left: 0;
+        padding: 10px 14px;
+        background: #f8f9fa;
+        color: white;
+        transition: all 0.5s ease;
+        white-space: nowrap;
+        justify-content: space-between;
+    }
+
+
+    .sidebar.close .bottom-section {
+        flex-direction: column;
+        width: 78px;
+        padding: 10px 0;
+        align-items: center;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
     * {
@@ -266,6 +655,12 @@
 
     .sidebar .nav-links li:hover {
         background: #f8f9fa;
+        border-radius: 20px;
+    }
+
+    .sidebar .nav-links li:hover {
+        background: #f8f9fa;
+        border-radius: 20px;
     }
 
     .sidebar .nav-links li .iocn-link {
@@ -314,8 +709,8 @@
     }
 
     .sidebar .nav-links li a .link_name {
-        font-size: 14px;
-        font-weight: 400;
+        font-size: 18px;
+        font-weight: 600;
         color: #000;
         transition: opacity 0.4s ease;
     }
@@ -349,7 +744,7 @@
     .sidebar .nav-links li .sub-menu {
         padding: 6px 6px 14px 80px;
         margin-top: -10px;
-        background: #f8f9fa;
+
         display: none;
     }
 
@@ -359,12 +754,32 @@
 
     .sidebar .nav-links li .sub-menu a {
         color: #000;
-        font-size: 13px;
-        padding: 5px 0;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 5px 20px;
+        /* Adds left padding to indent the sub-menu */
         white-space: nowrap;
-        opacity: 0.6;
+        opacity: 0.8;
         transition: opacity 0.3s ease;
+        position: relative;
     }
+
+    .sidebar .nav-links li .sub-menu a::before {
+
+        font-size: 12px;
+        opacity: 0.6;
+        position: absolute;
+        left: 0;
+        /* Positions the bullet to the left of the sub-menu text */
+        top: 50%;
+        transform: translateY(-50%);
+        /* Vertically centers the bullet */
+    }
+
+    .sidebar .nav-links li .sub-menu a:hover {
+        opacity: 1;
+    }
+
 
     .sidebar .nav-links li .sub-menu a:hover {
         opacity: 1;
@@ -466,20 +881,29 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: #fff; /* Non-transparent background */
+        background: #fff;
+        /* Non-transparent background */
         padding: 15px 20px;
         margin-top: 0;
-        margin-left: 260px; /* Default margin untuk sidebar terbuka */
-        transition: margin-left 0.5s ease, width 0.5s ease; /* Tambahkan transisi untuk margin dan width */
-        position: fixed; /* Pastikan tetap di atas viewport */
-        top: 0; /* Atur posisi di atas */
-        width: calc(100% - 260px); /* Lebar saat sidebar terbuka */
-        z-index: 10; /* Pastikan di atas sidebar */
+        margin-left: 260px;
+        /* Default margin untuk sidebar terbuka */
+        transition: margin-left 0.5s ease, width 0.5s ease;
+        /* Tambahkan transisi untuk margin dan width */
+        position: fixed;
+        /* Pastikan tetap di atas viewport */
+        top: 0;
+        /* Atur posisi di atas */
+        width: calc(100% - 260px);
+        /* Lebar saat sidebar terbuka */
+        z-index: 10;
+        /* Pastikan di atas sidebar */
     }
 
-    .sidebar.close ~ .home-content {
-        margin-left: 78px; /* Margin saat sidebar ditutup */
-        width: calc(100% - 78px); /* Lebar saat sidebar ditutup */
+    .sidebar.close~.home-content {
+        margin-left: 78px;
+        /* Margin saat sidebar ditutup */
+        width: calc(100% - 78px);
+        /* Lebar saat sidebar ditutup */
     }
 
     .gsi-button {
@@ -494,8 +918,6 @@
     .profile-details-top {
         display: flex;
         align-items: center;
-        /* Centers profile items vertically */
-        margin-right: 30px;
     }
 
     .profile-details-top .profile-content {
@@ -591,6 +1013,18 @@
             /* Show submenus when parent is expanded */
         }
     }
+
+    #logout-icon {
+        font-size: 24px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    #logout-icon:hover {
+        color: red;
+        /* Efek hover menjadi merah */
+    }
 </style>
 
 <script>
@@ -622,10 +1056,40 @@
         }
     });
 
-    document.getElementById('logout-icon').addEventListener('click', function (event) {
-        event.preventDefault();
-        document.getElementById('logout-form').submit();
+    // Logout functionality with SweetAlert confirmation
+    document.getElementById('logout-icon').addEventListener('click', function (e) {
+        e.preventDefault();  // Prevent form from submitting immediately
+
+        // Show SweetAlert modal for logout confirmation with improved design
+        swal({
+            title: "Are you sure?",
+            text: "You will be logged out of the system.",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "Cancel",
+                    value: null,
+                    visible: true,
+                    className: "btn-secondary",
+                    closeModal: true
+                },
+                confirm: {
+                    text: "Log Out",
+                    value: true,
+                    visible: true,
+                    className: "btn-danger",
+                    closeModal: true
+                }
+            },
+            dangerMode: true,
+        }).then((willLogout) => {
+            if (willLogout) {
+                // If user confirms, submit the logout form
+                document.getElementById('logout-form').submit();
+            }
+        });
     });
+
 
     // Untuk add color pada sidebar menu saat berada d page tersebut
     document.querySelectorAll('.nav-links li a').forEach(link => {
@@ -648,9 +1112,5 @@
             }
         });
     });
-    document.getElementById('back-icon').addEventListener('click', function () {
-        window.history.back();
-    });
-
 
 </script>

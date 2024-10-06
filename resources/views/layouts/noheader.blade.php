@@ -135,6 +135,7 @@
         .dataTables_length select:focus {
             outline: none;
         }
+
         /* TABLE HOVER ROW */
         .table-hover tbody tr td,
         .table-hover thead tr th {
@@ -182,22 +183,7 @@
         $userRole = session('user_role');
     @endphp
 
-    <!-- Include header based on user role -->
-    @if ($userRole === 'admin')
-        @include('shared.header')
-    @elseif ($userRole === 'user' || $userRole === 'sales')
-        @include('shared.headeruser')
-    @else
-        @include('shared.header') <!-- Default or fallback header -->
-    @endif
-
-    @if ($userRole === 'user' || $userRole === 'sales')
-        <main class="py-4">
-            <div class="container form-container">
-                @yield('content')
-            </div>
-        </main>
-    @endif
+    @yield('content')
 
     <!-- Vendor JS Files -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -221,10 +207,10 @@
                     ordering: false,
                     info: true,
                     lengthChange: true,
-                    pageLength: 5,
+                    pageLength: 10,
                     lengthMenu: [
-                        [5, 25, 50, -1],  // Options: 10, 25, 50, Show All (-1)
-                        [5, 25, 50, "All"]  // Display text for the options
+                        [10, 25, 50, -1],  // Options: 10, 25, 50, Show All (-1)
+                        [10, 25, 50, "All"]  // Display text for the options
                     ],
                     language: {
                         search: "",

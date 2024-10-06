@@ -131,7 +131,7 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            color: #888;
+            color: #b66dff;
         }
 
         .text-center {
@@ -257,6 +257,11 @@
                         </div>
                         <div class="form-group">
                             <i class="fas fa-lock icon"></i>
+                            <div class="mb-1" style="position: relative;">
+                                <span style="position: absolute; right: 40px; top: 35%; margin-top: 7.5px; cursor: pointer;" onclick="togglePassword()">
+                                    <i id="password-icon" class="fas fa-eye icon" style="margin-top: 11px;"></i>
+                                </span>
+                            </div>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Your password..." required>
                         </div>
 
@@ -304,6 +309,21 @@
                 loginForm.submit(); // Lanjutkan pengiriman form
             });
         });
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('password-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 

@@ -301,9 +301,6 @@
 
 </html>
 <style>
-    /* Animasi untuk memudar masuk */
-
-/* Animasi untuk menutup ke dalam */
 @keyframes collapseToRight {
     from {
         transform: translateX(0);

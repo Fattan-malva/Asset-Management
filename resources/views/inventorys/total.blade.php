@@ -4,15 +4,24 @@
 
 <br>
 <div class="container">
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; margin-top: 30px;">
-        <i class='bx bx-arrow-back' id="back-icon" style="cursor:pointer; background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35); margin-right: auto;">
-        </i>
-        <h3 style="font-weight: bold; font-size: 1.125rem;">
-            Asset Total&nbsp;&nbsp;
-            <span style="background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35);">
-                <i class="fa-solid fa-2xs fa-database" style="font-size: 16px;"></i>
-            </span>
-        </h3>
+    <div>
+        <div class="container">
+            <div class="header-container">
+                <div class="back-wrapper">
+                    <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
+                    <div class="back-text">
+                        <span class="title">Back</span>
+                        <span class="small-text">to previous page</span>
+                    </div>
+                </div>
+                <h3 class="AssetTotal-title">
+                    Asset Total&nbsp;&nbsp;
+                    <span class="icon-wrapper">
+                        <i class="fa-solid fa-2xs fa-database previous-icon"></i>
+                    </span>
+                </h3>
+            </div>
+        </div>
     </div>
     <div class="card">
         <div class="card-body">
@@ -39,7 +48,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center" style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No Assets found.</td>
+                                <td colspan="4" class="text-center"
+                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
+                                    Assets found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -52,26 +63,84 @@
 <br>
 
 <style>
-    /* CSS for table row borders */
-    .table-hover tbody tr td,
-    .table-hover thead tr th {
-        border-bottom: 1px solid #ebedf2; /* Add a border to the bottom of each row */
-        background-color: #fff;
+    /* Header Styles */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        margin-top: 30px;
     }
 
-    .table-hover tbody tr td {
-        font-weight: 300;
+    .back-icon {
+        cursor: pointer;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+        margin-right: auto;
+        transition: background 0.3s ease;
+        /* Transition untuk efek hover */
     }
 
-    .table-hover thead tr th {
+    .back-icon:hover {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) -13%, #B100FF);
+        /* Warna gradien saat hover dengan putih sedikit di kiri */
+    }
+
+    .back-wrapper {
+        display: flex;
+        align-items: center;
+        /* Center vertically */
+        margin-right: auto;
+        /* Push the dashboard title to the right */
+    }
+
+    .back-text {
+        display: flex;
+        flex-direction: column;
+        /* Stack text vertically */
+        margin-left: 10px;
+        /* Space between icon and text */
+    }
+
+    .back-text .title {
         font-weight: 600;
+        font-size: 17px;
     }
 
-    /* Remove any cell borders */
-    .table-hover th,
-    .table-hover td {
-        border: none; /* Remove borders from cells */
-        padding: 10px; /* Keep padding for cells */
+    .back-text .small-text {
+        font-size: 0.8rem;
+        /* Smaller font size for the second line */
+        color: #aaa;
+        /* Optional: a lighter color for the smaller text */
+        margin-top: -3px;
+    }
+
+    .AssetTotal-title {
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+
+    .icon-wrapper {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .previous-icon {
+        font-size: 16px;
     }
 </style>
 @endsection

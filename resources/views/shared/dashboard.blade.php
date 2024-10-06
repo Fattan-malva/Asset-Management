@@ -7,23 +7,108 @@
 <br>
 <div>
     <div class="container">
-        <div
-            style="display: flex; align-items: center; justify-content: space-between; padding: 10px; margin-top: 30px;">
-            <i class='bx bx-arrow-back' id="back-icon"
-                style="cursor:pointer; background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35); margin-right: auto;">
-            </i>
-            <h3 style="font-weight: bold; font-size: 1.125rem;">
-                Dashboard&nbsp;&nbsp;
-                <span
-                    style="background: linear-gradient(135deg, #FFFFFF, #B66DFF); height: 36px; width: 36px; border-radius: 4px; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 3px 8.3px .7px rgba(163, 93, 255, .35);">
-                    <i class="fa-solid fa-2xs fa-house-chimney" style="font-size: 16px;"></i>
-                </span>
-            </h3>
+        <div class="container">
+            <div class="header-container">
+                <div class="back-wrapper">
+                    <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
+                    <div class="back-text">
+                        <span class="title">Back</span>
+                        <span class="small-text">to previous page</span>
+                    </div>
+                </div>
+                <h3 class="dashboard-title">
+                    Dashboard&nbsp;&nbsp;
+                    <span class="icon-wrapper">
+                        <i class="fa-solid fa-2xs fa-house-chimney previous-icon"></i>
+                    </span>
+                </h3>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
+    /* Header Styles */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        margin-top: 30px;
+    }
+
+    .back-icon {
+        cursor: pointer;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+        margin-right: auto;
+        transition: background 0.3s ease;
+        /* Transition untuk efek hover */
+    }
+
+    .back-icon:hover {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) -13%, #B100FF);
+        /* Warna gradien saat hover dengan putih sedikit di kiri */
+    }
+
+    .back-wrapper {
+        display: flex;
+        align-items: center;
+        /* Center vertically */
+        margin-right: auto;
+        /* Push the dashboard title to the right */
+    }
+
+    .back-text {
+        display: flex;
+        flex-direction: column;
+        /* Stack text vertically */
+        margin-left: 10px;
+        /* Space between icon and text */
+    }
+
+    .back-text .title {
+        font-weight: 600;
+        font-size: 17px;
+    }
+
+    .back-text .small-text {
+        font-size: 0.8rem;
+        /* Smaller font size for the second line */
+        color: #aaa;
+        /* Optional: a lighter color for the smaller text */
+        margin-top: -3px;
+    }
+
+    .dashboard-title {
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+
+    .icon-wrapper {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) -30%, #B66DFF);
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .previous-icon {
+        font-size: 16px;
+    }
+
+
     /* CARD */
     .card {
         overflow: hidden;
