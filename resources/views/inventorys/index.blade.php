@@ -5,10 +5,32 @@
 <br>
 
 
-
 <div class="container">
     <div>
         <div class="container">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <script>
+                // Menampilkan pesan sukses setelah redirect dari controller
+                @if(session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '{{ session('success') }}', // Pesan sukses dari session
+                        icon: 'success', // Ikon sukses
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+
+                // Menampilkan pesan error validasi
+                @if($errors->any())
+                    Swal.fire({
+                        title: 'Error!',
+                        text: '{!! implode(', ', $errors->all()) !!}', // Menggabungkan semua pesan error
+                        icon: 'error', // Ikon error
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+            </script>
             <div class="header-container">
                 <div class="back-wrapper">
                     <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
@@ -43,12 +65,13 @@
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Asset Tag</th>
-                            <th scope="col">Asset Name</th>
+                            <th scope="col">Asset Code</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Status Maintenance</th>
-                            <th scope="col">Status Usage</th>
+                            <th scope="col" style="width: 100px;">Location</th>
+                            <th scope="col" style="width: 130px;">Name Holder</th>
+                            <th scope="col">Maintenance</th>
+                            <th scope="col" style="width: 130px;">Status Usage</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -59,6 +82,7 @@
                                                     <td>{{ $inventory->tagging }}</td>
                                                     <td>{{ $inventory->asets }}</td>
                                                     <td>{{ $inventory->merk_name }}</td>
+
                                                     <td>
                                                         @php
                                                             // Ambil nilai lokasi
@@ -72,6 +96,7 @@
 
                                                         {{ $lokasi }}
                                                     </td>
+                                                    <td>{{ $inventory->name_holder ?? 'New Assets' }}</td>
                                                     <td>
                                                         @php
                                                             $tanggalMasuk = $inventory->tanggalmasuk;
@@ -89,13 +114,13 @@
 
                                                         @if ($bulanSejakAcuan >= 1)
                                                             <span class="badge text-center align-middle"
-                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px;  background-color:#FE7C96;">
+                                                                style="padding: 5px; font-size: 0.9em;   background-color:#FE7C96;">
                                                                 Need Maintenance
                                                             </span>
                                                         @else
                                                             <span class="badge text-center align-middle"
-                                                                style="padding: 5px; font-size: 0.9em; margin-top:10px;  background-color:#B46EFF;">
-                                                                Under Maintenance
+                                                                style="padding: 5px 44px; font-size: 0.9em;  background-color:#B46EFF;">
+                                                                Done
                                                             </span>
                                                         @endif
                                                     </td>
@@ -105,27 +130,29 @@
                                                         <!-- Status Badge -->
                                                         @if ($inventory->status === 'Inventory')
                                                             <span class="badge bg-warning"
-                                                                style="padding: 5px;  font-size: 0.9em; background-color:#FED713;">Available</span>
+                                                                style="padding: 5px 30  px;  font-size: 0.9em; background-color:#FED713;">Available</span>
                                                         @elseif ($inventory->status === 'Operation')
-                                                            <span class="badge" style="padding: 5px;  font-size: 0.9em; background-color:#1BCFB4;">In
+                                                            <span class="badge"
+                                                                style="padding: 5px 18px;  font-size: 0.9em; background-color:#1BCFB4;">In
                                                                 Use</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         <div class="action-buttons">
-                                                            <button type="button" class="btn btn-sm" data-bs-toggle="modal"
-                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details" style="background-color:#4FB0F1;">
-                                                                <i class="bi bi-file-earmark-text"></i> Detail
+                                                            <button type="button" class="btn text-white" data-bs-toggle="modal"
+                                                                data-bs-target="#detailsModal-{{ $inventory->id }}" title="Details"
+                                                                style="background-color:#4FB0F1;">
+                                                                <i class="bi bi-file-earmark-text-fill text-white"></i> Detail
                                                             </button>
                                                             <!-- <form action="{{ route('inventorys.delete', ['id' => $inventory->id]) }}"
-                                                                                                                                                                                                                                                    method="POST" style="display: inline;">
-                                                                                                                                                                                                                                                    @csrf
-                                                                                                                                                                                                                                                    @method('DELETE')
-                                                                                                                                                                                                                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                                                                                                                                                                                                                        onclick="return confirm('Are you sure you want to delete this Asset?')">
-                                                                                                                                                                                                                                                        <i class="bi bi-trash"></i> Scrap Asset
-                                                                                                                                                                                                                                                    </button>
-                                                                                                                                                                                                                                                </form> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                            method="POST" style="display: inline;">
+                                                                                                                                                                                                                                                                                                                                                                                                                            @csrf
+                                                                                                                                                                                                                                                                                                                                                                                                                            @method('DELETE')
+                                                                                                                                                                                                                                                                                                                                                                                                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"
+                                                                                                                                                                                                                                                                                                                                                                                                                                onclick="return confirm('Are you sure you want to delete this Asset?')">
+                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="bi bi-trash"></i> Scrap Asset
+                                                                                                                                                                                                                                                                                                                                                                                                                            </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                       </form> -->
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -137,22 +164,30 @@
                 <div class="mt-4">
                     <ul class="list-unstyled legend-list">
                         <li>
-                            <span class="badge bg-warning legend-badge"
-                                style=" margin-right: 55px;">Available</span> : <span
-                                class="legend-description">Asset is available for use.</span>
+                            <span class="badge legend-badge"
+                                style="padding: 5px 32px; color: #fff; margin-right: 5px; background-color: #ffdc3b;">Available</span>
+                            <span class="legend-colon">:</span>
+                            <span class="legend-description">Asset is available for use.</span>
                         </li>
                         <li>
-                            <span class="badge legend-badge" style=" margin-right: 55px; background-color:#1BCFB4;">In
-                                Use</span> : <span class="legend-description">Asset is currently in operation.</span>
+                            <span class="badge legend-badge"
+                                style="padding: 5px 39px; color: #fff; margin-right: 5px; background-color: #1bcfb4;">In
+                                Use</span>
+                            <span class="legend-colon">:</span>
+                            <span class="legend-description">Asset is currently in operation.</span>
                         </li>
                         <li>
-                            <span class="badge legend-badge" style=" margin-right: 20px; background-color:#FE7C96;">Need
-                                Maintenance</span> : <span class="legend-description">Assets need maintenance.</span>
+                            <span class="badge legend-badge"
+                                style="padding: 5px 9px; margin-right: 5px; background-color: #fe7c96">Need
+                                Maintenance</span>
+                            <span class="legend-colon">:</span>
+                            <span class="legend-description">Assets need maintenance.</span>
                         </li>
                         <li>
-                            <span class="badge legend-badge" style=" margin-right: 15px; background-color:#B46EFF;">Under
-                                Maintenance</span> : <span class="legend-description">Assets have been
-                                maintained.</span>
+                            <span class="badge legend-badge"
+                                style="padding: 5px 42px; color: #fff; margin-right: 5px; background-color: #b66dff">Done</span>
+                            <span class="legend-colon">:</span>
+                            <span class="legend-description">Assets have been maintained.</span>
                         </li>
                     </ul>
                 </div>
@@ -167,7 +202,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center fw-bold w-100" id="detailsModalLabel">Asset Details</h4>
+                    <h4 class="modal-title text-center fw-bold w-100 text-black" id="detailsModalLabel">Asset Details</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -177,11 +212,11 @@
                             <table class="table no-border-table">
                                 <tbody>
                                     <tr>
-                                        <th style="width: 30%"><strong>Assets Tag</strong></th>
+                                        <th><strong>Code</strong></th>
                                         <td>{{ $inventory->tagging }}</td>
                                     </tr>
                                     <tr>
-                                        <th><strong>Assets Name</strong></th>
+                                        <th><strong>Type</strong></th>
                                         <td>{{ $inventory->asets }}</td>
                                     </tr>
                                     <tr>
@@ -189,7 +224,7 @@
                                         <td>{{ $inventory->merk_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th><strong>Serial Number</strong></th>
+                                        <th><strong>S/N</strong></th>
                                         <td>{{ $inventory->seri }}</td>
                                     </tr>
                                 </tbody>
@@ -201,7 +236,7 @@
                             <table class="table no-border-table">
                                 <tbody>
                                     <tr>
-                                        <th><strong>Type</strong></th>
+                                        <th><strong>Specification</strong></th>
                                         <td>{{ $inventory->type }}</td>
                                     </tr>
                                     <tr>
@@ -254,13 +289,11 @@
                 <div class="modal-footer">
 
                     <button type="button" class="btn"
-                        onclick="window.open('{{ route('prints.qr', ['id' => $inventory->id]) }}', '_blank')" style="background-color:#1BCFB4;">
+                        onclick="window.open('{{ route('prints.qr', ['id' => $inventory->id]) }}', '_blank')"
+                        style="background-color:#1BCFB4;">
                         <i class="bi bi-qr-code"></i> Print QR Code
                     </button>
-                    <a href="{{ route('inventorys.edit', ['id' => $inventory->id]) }}" class="btn btn-warning">
-                        <i class="bi bi-tools"></i> Maintenance
-                    </a>
-                    <button type="button" class="btn  open-history-modal " style="background-color: #dddcde;"
+                    <button type="button" class="btn  open-history-modal " style="background-color: #9A9A9A;"
                         data-tagging="{{ $inventory->tagging }}" data-inventory-id="{{ $inventory->id }}"
                         data-bs-toggle="modal" data-bs-target="#historyModal-{{ $inventory->id }}">
                         <i class="bi bi-clock-history"></i>
@@ -277,7 +310,8 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="historyModalLabel">History for Asset: {{ $inventory->tagging }}</h5>
+                    <h5 class="modal-title text-black" id="historyModalLabel">History for Asset: {{ $inventory->tagging }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -288,6 +322,7 @@
                                 <th>Date</th>
                                 <th>User</th>
                                 <th>Reason</th>
+                                <th>Note</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -368,23 +403,24 @@
                             if (actionBadge) {
                                 // Print button
                                 printButton = `<button type="button" class="btn btn-success btn-sm printButton" 
-                                                            data-action="${item.action}" 
-                                                            data-tagging="${item.asset_tagging}" 
-                                                            data-changed-at="${item.changed_at}">
-                                                            <i class="bi bi-printer"></i> Print Proof
-                                                        </button>`;
+                                                                                        data-action="${item.action}" 
+                                                                                        data-tagging="${item.asset_tagging}" 
+                                                                                        data-changed-at="${item.changed_at}">
+                                                                                        <i class="bi bi-printer"></i> Print Proof
+                                                                                    </button>`;
 
                                 // Generate the row
                                 const row = `<tr>
-                                                                <td>${actionBadge}</td>
-                                                                <td>${item.changed_at}</td>
-                                                                <td>${item.nama_old || '-'}</td>
-                                                                <td>${item.keterangan || '-'}</td>
-                                                                <td>
-                                                                    ${documentationLink}
-                                                                    ${printButton}
-                                                                </td>
-                                                            </tr>`;
+                                                                                            <td>${actionBadge}</td>
+                                                                                            <td>${item.changed_at}</td>
+                                                                                            <td>${item.nama_old || '-'}</td>
+                                                                                            <td>${item.keterangan || '-'}</td>
+                                                                                            <td>${item.note || '-'}</td>
+                                                                                            <td>
+                                                                                                ${documentationLink}
+                                                                                                ${printButton}
+                                                                                            </td>
+                                                                                        </tr>`;
 
                                 historyBody.innerHTML += row;
                             }
@@ -450,28 +486,53 @@
     .no-border-table th,
     .no-border-table td {
         border: none !important;
-        padding: 5px 12px;
+        padding: 9px 12px;
+    }
+
+    .no-border-table td {
+        margin-top: 6px;
     }
 
     .legend-list {
         font-size: 0.875em;
         line-height: 1.5;
+        margin-top: 33px;
     }
 
     .legend-list li {
         display: flex;
+        flex-direction: row;
+        /* Align items horizontally */
         align-items: center;
+        /* Center vertically */
         margin-bottom: 5px;
     }
 
-    .legend-list li .badge {
-        min-width: 80px;
-        margin-right: 10px;
+    .legend-description {
+        margin-left: 15px;
+        /* Add margin for larger screens */
     }
 
-    .legend-list li .legend-description {
-        margin-left: 10px;
-        text-align: left;
+    /* Responsive styles */
+    @media (max-width: 576px) {
+        .legend-list li {
+            flex-direction: column;
+            /* Stack items vertically on mobile */
+            align-items: flex-start;
+            /* Align items to the start */
+        }
+
+        .legend-colon {
+            display: none;
+            /* Hide colon on mobile */
+        }
+
+        .legend-description {
+            margin-left: 0;
+            /* Reset margin for mobile */
+            text-align: left;
+            /* Align description to the left */
+        }
     }
 
     /* Container styles */
@@ -545,5 +606,10 @@
 
     .previous-icon {
         font-size: 16px;
+    }
+
+    .btn {
+        margin: 0 0.5rem;
+
     }
 </style>

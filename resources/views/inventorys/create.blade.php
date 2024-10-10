@@ -24,11 +24,11 @@
     </div>
     <div class="card">
         <div class="card-body" style="padding: 30px;">
-            <form action="{{ route('inventorys.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('inventorys.store') }}" method="POST" enctype="multipart/form-data" id="addAsset">
                 @csrf
                 <div class="row">
                     <div class="col-md-6 form-group">
-                        <label for="tagging" class="form-label">Asset Tag</label>
+                        <label for="tagging" class="form-label">Asset Code</label>
                         <input type="text" class="form-control @error('tagging') is-invalid @enderror" id="tagging"
                             name="tagging" value="{{ old('tagging') }}" placeholder="Enter asset tag">
                         @error('tagging')
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="col-md-6 form-group">
-                        <label for="type" class="form-label">Type</label>
+                        <label for="type" class="form-label">Specification</label>
                         <input type="text" class="form-control @error('type') is-invalid @enderror" id="type"
                             name="type" value="{{ old('type') }}" placeholder="Enter asset type">
                         @error('type')
@@ -107,7 +107,7 @@
                         <label for="documentation" class="form-label">Documentation</label>
                         <input type="file" class="form-control @error('documentation') is-invalid @enderror"
                             id="documentation" name="documentation" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                        <small class="form-text text-muted"> Please upload the documentation file.</small>
+                        <small class="form-text text-muted">*Please upload the documentation file.</small>
                         @error('documentation')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -115,8 +115,9 @@
                 </div>
 
                 <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-create">Add</button>
-                    <a href="{{ route('inventorys.index') }}" class="btn btn-cancel ms-2">Cancel</a>
+                    <button type="submit" class="btn" style="background-color:#1bcfb4;">Submit</button>
+                    <a href="{{ route('inventorys.index') }}" class="btn ml-3"
+                        style="background-color:#FE7C96;">Cancel</a>
                 </div>
             </form>
         </div>
@@ -210,45 +211,31 @@
         font-weight: 550;
     }
 
-
-    .btn-create {
-        border: 1px solid #1bcfb4;
-        color: #1bcfb4;
-        background-color: transparent;
-        /* Darker shade for hover */
-        padding: 4px 25px;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s;
-        font-weight: 500;
-    }
-
-    .btn-create:hover {
-        background-color: #1bcfb4;
-        /* Darker shade for hover */
-        transform: scale(1.05);
-        border: none;
+    .btn {
+        margin: 0 0.5rem;
+        font-size: 16px;
+        font-weight: bold;
         color: white;
-        padding: 4px 25px;
-    }
-
-    .btn-cancel {
-        background-color: #fe7c96;
-        /* Bootstrap secondary color */
-        border: none;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s;
-        font-weight: 500;
-    }
-
-    .btn-cancel:hover {
-        background-color: transparent;
-        /* Darker shade for hover */
-        transform: scale(1.05);
-        border: 1px solid #fe7c96;
-        color: #fe7c96;
-        padding: 5px 15px;
     }
 </style>
+<script>
+    document.getElementById('addAsset').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Show loading alert
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait while we create the asset.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Simulate form submission
+        setTimeout(() => {
+            this.submit(); // Submit the form after the loading alert
+        }, 1500);
+    });
+</script>
 @endsection

@@ -113,18 +113,22 @@ Route::middleware(['auth.check:admin'])->group(function () {
 
 
     Route::resource('inventorys', InventoryController::class);
+    Route::resource('inventorys', InventoryController::class);
     Route::get('inventorys', [InventoryController::class, 'index'])->name('inventorys.index');
     Route::get('inventorystotal', [InventoryTotalController::class, 'summary'])->name('inventorys.total');
     Route::delete('inventorys/delete', [InventoryController::class, 'destroy'])->name('inventorys.delete');
     Route::get('inventorys/create', [InventoryController::class, 'create'])->name('inventorys.create');
     Route::post('inventorys', [InventoryController::class, 'store'])->name('inventorys.store');
-    Route::get('inventorys/{id}/edit', [InventoryController::class, 'edit'])->name('inventorys.edit');
-    Route::put('inventorys/{id}', [InventoryController::class, 'update'])->name('inventorys.update');
+    Route::get('inventorys/edit', [InventoryController::class, 'edit'])->name('inventorys.edit');
+
+    // Route for updating multiple assets at once
+    Route::post('inventorys/update', [InventoryController::class, 'update'])->name('inventorys.update');
     Route::get('/inventory/{id}/detail', [InventoryController::class, 'show'])->name('inventorys.show');
     Route::get('mapping', [MappingController::class, 'mapping'])->name('inventorys.mapping');
     Route::get('/scrap-history', [InventoryHistoryController::class, 'index'])->name('inventory.history');
     Route::get('/asset-history-modal', [InventoryHistoryController::class, 'historyAssetModal'])->name('inventory.historyModal');
     Route::get('/inventory/scrap', [InventoryController::class, 'showScrapForm'])->name('inventorys.scrap');
+    Route::get('/inventory/edit', [InventoryController::class, 'showEditForm'])->name('inventorys.edit');
 
 
     Route::resource('merk', MerkController::class);

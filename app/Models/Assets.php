@@ -29,7 +29,8 @@ class Assets extends Model
         'previous_customer_name',
         'latitude',
         'longitude',
-        'keterangan'
+        'keterangan',
+        'note'
     ];
 
     // Relationships

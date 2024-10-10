@@ -24,7 +24,7 @@
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
         </div>
-    @endif 
+    @endif
     @if (session('error'))
         <div class="alert alert-danger" role="alert">
             {{ session('error') }}
@@ -33,8 +33,9 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="{{ route('customer.create') }}" class="btn btn-lg btn-custom">
-                    <i class="bi bi-cloud-plus-fill"></i> Create
+                <a href="{{ route('customer.create') }}" class="btn btn-lg btn-custom" id="create-btn"
+                    style="background-color: #3EEAD0;">
+                    <i class="bi bi-plus-circle"></i> Create
                 </a>
             </div>
             <div class="table-responsive">
@@ -59,15 +60,16 @@
                                 <td>{{ $customer->mapping }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-sm btn-edit" title="Edit">
+                                        <a href="{{ route('customer.edit', $customer->id) }}" class="btn"
+                                            style="background-color:#4fb0f1;" id="edit-btn" title="Edit">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
                                         <form action="{{ route('customer.destroy', $customer->id) }}" method="POST"
-                                            style="display: inline;">
+                                            style="display: inline;" class="delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-delete" title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this customer?')">
+                                            <button type="submit" class="btn" style="background-color:#FE7C96;"
+                                                title="Delete">
                                                 <i class="bi bi-trash"></i> Delete
                                             </button>
                                         </form>
@@ -75,11 +77,6 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="6" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    customer found.</td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -89,6 +86,84 @@
 </div>
 <br>
 <br>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // SweetAlert for loading on Create button
+    document.getElementById('create-btn').addEventListener('click', function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Loading',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+                window.location.href = "{{ route('customer.create') }}";
+            }
+        });
+    });
+
+    // SweetAlert for loading on Edit button
+    document.querySelectorAll('.btn-edit').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Loading',
+                text: 'Please wait...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    window.location.href = this.href;
+                }
+            });
+        });
+    });
+
+    // SweetAlert for Delete confirmation
+    document.querySelectorAll('.delete-form').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6B07C2',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Deleting',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            form.submit(); // Submit the form after confirmation
+                        }
+                    });
+                }
+            });
+        });
+    });
+    @if(session('success'))
+        Swal.fire({
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonColor: '#6B07C2'
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            title: 'Error!',
+            text: "{{ session('error') }}",
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    @endif
+</script>
 
 <style>
     /* Header Styles */
@@ -112,45 +187,30 @@
         justify-content: center;
         box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
         margin-right: auto;
-        transition: background 0.3s ease; /* Transition untuk efek hover */
+        transition: background 0.3s ease;
+        /* Transition untuk efek hover */
     }
 
-    .btn-edit{
-        background-color: transparent; border: 1.4px solid #4fb0f1; color: #4fb0f1; font-weight: 500;
-    }
-
-    .btn-edit:hover {
-        background-color: #4fb0f1;
-        color: #fff;
-    }
-
-    .btn-delete {
-        background-color: #fe7c96;
-        color: #fff;
-        padding: 5px 7px;
-    }
-
-    .btn-delete:hover {
-        background-color: transparent;
-        color: #fe7c96;
-        border: 1.4px solid #fe7c96;
-        padding: 3.5px 7px;
-    }
 
     .back-icon:hover {
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) -13%, #B100FF); /* Warna gradien saat hover dengan putih sedikit di kiri */
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) -13%, #B100FF);
+        /* Warna gradien saat hover dengan putih sedikit di kiri */
     }
 
     .back-wrapper {
         display: flex;
-        align-items: center; /* Center vertically */
-        margin-right: auto; /* Push the dashboard title to the right */
+        align-items: center;
+        /* Center vertically */
+        margin-right: auto;
+        /* Push the dashboard title to the right */
     }
 
     .back-text {
         display: flex;
-        flex-direction: column; /* Stack text vertically */
-        margin-left: 10px; /* Space between icon and text */
+        flex-direction: column;
+        /* Stack text vertically */
+        margin-left: 10px;
+        /* Space between icon and text */
     }
 
     .back-text .title {
@@ -159,8 +219,10 @@
     }
 
     .back-text .small-text {
-        font-size: 0.8rem; /* Smaller font size for the second line */
-        color: #aaa; /* Optional: a lighter color for the smaller text */
+        font-size: 0.8rem;
+        /* Smaller font size for the second line */
+        color: #aaa;
+        /* Optional: a lighter color for the smaller text */
         margin-top: -3px;
     }
 
@@ -186,40 +248,46 @@
     }
 
     .btn-custom {
-        background-color: #1bcfb4;
         color: white;
         border: none;
         padding: 0.4rem 0.5rem;
         border-radius: 0.5rem;
-        transition: background-color 0.3s ease;
         margin-bottom: -70px;
         font-weight: 600;
         font-size: 16px;
         margin-left: 10px;
     }
 
-    .btn-custom:hover {
-        background-color: #3EEAD0; /* Darker shade for hover effect */
-        color: #fff;
+    .btn {
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
     }
+
+
 
     @media (max-width: 576px) {
         .btn-custom {
-            width: 100%; /* Make the button full-width on small screens */
-            margin-bottom: 1rem; /* Add some spacing below the button */
+            width: 100%;
+            /* Make the button full-width on small screens */
+            margin-bottom: 1rem;
+            /* Add some spacing below the button */
             margin-right: 8px;
         }
-        
+
         .d-flex {
-            flex-direction: column; /* Stack elements vertically */
-            align-items: stretch; /* Stretch elements to full width */
+            flex-direction: column;
+            /* Stack elements vertically */
+            align-items: stretch;
+            /* Stretch elements to full width */
         }
     }
 
     /* CSS for table row borders */
     .table-hover tbody tr td,
     .table-hover thead tr th {
-        border-bottom: 1px solid #ebedf2; /* Add a border to the bottom of each row */
+        border-bottom: 1px solid #ebedf2;
+        /* Add a border to the bottom of each row */
         background-color: #fff;
     }
 
@@ -234,20 +302,23 @@
     /* Remove any cell borders */
     .table-hover th,
     .table-hover td {
-        border: none; /* Remove borders from cells */
-        padding: 10px; /* Keep padding for cells */
+        border: none;
+        /* Remove borders from cells */
+        padding: 10px;
+        /* Keep padding for cells */
     }
 
     .legend-colon {
-        margin: 0 5px; /* Space around the colon */
+        margin: 0 5px;
+        /* Space around the colon */
     }
 
     /* Hide colon on mobile devices */
     @media (max-width: 576px) {
         .legend-colon {
-            display: none; /* Hide colon */
+            display: none;
+            /* Hide colon */
         }
     }
-
 </style>
 @endsection

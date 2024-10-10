@@ -9,8 +9,8 @@
             {{ session('success') }}
         </div>
     @endif
-    <div>
-        <div class="container">
+    <div class="container">
+        <div>
             <div class="header-container">
                 <div class="back-wrapper">
                     <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
@@ -36,9 +36,9 @@
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Tagging</th>
+                            <th scope="col">Asset Code</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Seri</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Date</th>
                             <th scope="col">Action</th>
                             <th scope="col">Documentation</th> <!-- New Documentation column -->
@@ -56,40 +56,36 @@
                                 <td>
                                     @if ($history->action === 'INSERT')
                                         <span class="badge"
-                                            style="font-size: 0.8rem; padding: 0.2em 1em; color: #fff; border-radius: 0.5em; background-color: #1bcfb4;">Entry</span>
+                                            style="padding: 5px 15px; color: #fff; border-radius: 0.5em; background-color: #1bcfb4;">Entry</span>
                                     @elseif ($history->action === 'DELETE')
                                         <span class="badge"
-                                            style="font-size: 0.8rem; padding: 0.2em 1em; color: #fff; border-radius: 0.5em; background-color: #fe7c96">Scrap</span>
+                                            style="padding: 5px 15px; color: #fff; border-radius: 0.5em; background-color: #fe7c96">Scrap</span>
                                     @else
                                         <span class="badge"
-                                            style="font-size: 0.8rem; padding: 0.2em 1em; color: #fff; border-radius: 0.5em; background-color: #4fb0f1">N/A</span>
+                                            style="padding: 5px 15px; color: #fff; border-radius: 0.5em; background-color: #4fb0f1">N/A</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if ($history->documentation)
                                         <a href="{{ asset($history->documentation) }}" target="_blank"
-                                            class="btn btn-sm" style="background-color: #4fb0f1; color: #fff; font-weight: 500;">View Document</a>
+                                            class="btn btn-sm" style="background-color: #4fb0f1; color: #fff; font-weight: 600;"> <i class="bi bi-file-earmark-image"></i> Documentation</a>
                                     @else
                                         <span class="text-muted">No Document</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="7" class="text-center" style="padding: 50px; font-size: 1.2em;">No history
-                                    found.</td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>
                 <div class="mt-4">
                     <ul class="list-unstyled legend-list">
                         <li>
-                            <span class="badge legend-badge" style="color:#fff; background-color: #1bcfb4;">Entry</span> : <span
+                            <span class="badge legend-badge" style="padding: 5px 10px; color:#fff; background-color: #1bcfb4;">Entry</span> : <span
                                 class="legend-description">Assets added.</span>
                         </li>
                         <li>
-                            <span class="badge legend-badge" style="color:#fff; background-color: #fe7c96;">Scrap</span> : <span
+                            <span class="badge legend-badge" style="padding: 5px 10px; color:#fff; background-color: #fe7c96;">Scrap</span> : <span
                                 class="legend-description">Assets have been removed or destroyed.</span>
                         </li>
                     </ul>
@@ -100,47 +96,13 @@
 </div>
 
 <style>
-    /* CSS untuk menghapus garis tabel pada modal */
-    .no-border-table th,
-    .no-border-table td {
-        border: none !important;
-        padding: 0.5rem;
-    }
-
-    .modal-title {
-        font-weight: bold;
-        text-align: center;
-        width: 100%;
-    }
-
-    .legend-list {
-        font-size: 0.875em;
-        line-height: 1.5;
-    }
-
-    .legend-list li {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-    }
-
-    .legend-list li .badge {
-        min-width: 80px;
-        margin-right: 10px;
-    }
-
-    .legend-list li .legend-description {
-        margin-left: 10px;
-        text-align: left;
-    }
-
-    /* Header Styles */
-    .header-container {
+     /* Header Styles */
+     .header-container {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 10px;
-        margin-top: 10px;
+        margin-top: 30px;
     }
 
     .back-icon {
@@ -214,6 +176,40 @@
         font-size: 16px;
     }
 
+    /* CSS untuk menghapus garis tabel pada modal */
+    .no-border-table th,
+    .no-border-table td {
+        border: none !important;
+        padding: 0.5rem;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+    }
+
+    .legend-list {
+        font-size: 0.875em;
+        line-height: 1.5;
+    }
+
+    .legend-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .legend-list li .badge {
+        min-width: 80px;
+        margin-right: 10px;
+    }
+
+    .legend-list li .legend-description {
+        margin-left: 10px;
+        text-align: left;
+    }
+
      /* CSS for table row borders */
      .table-hover tbody tr td,
     .table-hover thead tr th {
@@ -242,6 +238,26 @@
 
     /* Hide colon on mobile devices */
     @media (max-width: 576px) {
+        .header-container {
+            flex-direction: column; /* Stack items vertically on mobile */
+            align-items: flex-start; /* Align items to the start */
+            padding: 10px 20px; /* Adjust padding */
+        }
+
+        .back-text .title {
+            font-size: 1rem; /* Adjust font size for mobile */
+        }
+
+        .back-text .small-text {
+            font-size: 0.75rem; /* Smaller font size for mobile */
+        }
+
+        .dashboard-title {
+            margin-left: 15px; /* Add margin to the left for spacing */
+            font-size: 1.125rem; /* Maintain the title size */
+            margin-top: 5px; /* Add some margin on top */
+        }
+
         .legend-colon {
             display: none; /* Hide colon */
         }

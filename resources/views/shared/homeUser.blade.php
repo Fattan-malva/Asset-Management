@@ -8,24 +8,23 @@
     <section id="user-assets" class="user-assets">
         <br>
         <br>
-        <h1 class="text-center animate__animated animate__fadeInDown display-4">
+        <h1 class="text-center ms-3 animate_animated animate_fadeInDown display-4 fw-bold">
             Hello <b class="fw-bold">{{ ucfirst(strtolower(session('user_name'))) }}</b>,
             This is your asset
         </h1>
         <br>
-        <br>
         <div class="container">
             <div class="row">
 <div class="col-md-4 mb-4">
-<div class="card border-secondary">
-                        <div class="card-header bg-secondary text-white">
-                            <h2>Waiting for Approval</h2>
+<div class="card" style="box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+                        <div class="card-header text-white" style="background-color: #fed713; text-align: center">
+                            <h2 style="font-weight: bold; margin-top:5px">Waiting Approval</h2>
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <div class="form-check">
-                                <input type="checkbox" id="selectAll" class="form-check-input">
-                                <label for="selectAll" class="form-check-label">Select All</label>
+                        <div class="col-md-12 d-flex justify-content-end" style="margin-top: 15px; margin-left: -20px; margin-right: 20px;">
+                            <div class="form-check" style="display: inline-flex; align-items: center;">
+                                <label for="selectAll" class="form-check-label" style="margin-right: 30px;">Select All</label>
+                                <input type="checkbox" id="selectAll" class="form-check-input" style="margin-top: 0px;">
                             </div>
                         </div>
 
@@ -39,22 +38,26 @@
                                         @foreach ($pendingAssets as $asset)
                                             <div class="col-md-12 mb-3">
                                                 <div class="card"
-                                                    style="background-color: rgba({{ $asset->aksi == 'Handover' ? '40, 167, 69, 0.2' : '' }} {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }} {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }}); border: 3px solid black;">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center mb-4">
+                                                    style="background-color: rgba({{ $asset->aksi == 'Handover' ? '174,244,191' : '' }} {{ $asset->aksi == 'Mutasi' ? '255, 193, 7, 0.2' : '' }} {{ $asset->aksi == 'Return' ? '220, 53, 69, 0.2' : '' }}); border: 3px solid black;">
+                                                    <div class="card-body" style="margin-top: 30px;">
+                                                        <div class="d-flex align-items-center justify-content-between mb-4">
                                                             <img src="{{ asset('assets/img/pending.png') }}"
                                                                 alt="Pending Asset Icon" class="me-3"
                                                                 style="width: 80px; height: 80px;">
                                                             <p class="card-text flex-grow-1">
-                                                                <span
-                                                                    class="badge position-absolute top-0 end-0 m-2 {{ $asset->aksi == 'Handover' ? 'bg-success text-dark' : '' }} {{ $asset->aksi == 'Mutasi' ? 'bg-warning text-dark' : '' }} {{ $asset->aksi == 'Return' ? 'bg-danger text-dark' : '' }}">
-                                                                    {{ $asset->aksi }}
-                                                                </span>
                                                                 <strong>Asset Tag:</strong> {{ $asset->tagging }}<br>
                                                                 <strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}<br>
                                                                 <strong>Merk:</strong> {{ $asset->merk_name }}
                                                             </p>
-                                                            <div class="form-check ms-auto" style="margin-left: auto;">
+                                                            <!-- <span
+                                                                class="badge position-absolute top-0" style="background-color: rgba({{ $asset->aksi == 'Handover' ? '27,207,180' : '' }} {{ $asset->aksi == 'Mutasi' ? '254,215,19' : '' }} {{ $asset->aksi == 'Return' ? '254,124,150' : '' }});  margin-left: {{ $asset->aksi == 'Return' ? '260px' : '245px' }}; margin-top: 10px;">
+                                                                {{ $asset->aksi }}
+                                                            </span> -->
+                                                            <div class="form-check ms-auto position-absolute top-0 end-0 m-2 " style="margin-left: auto;">
+                                                            <span
+                                                                class="badge" style="background-color: rgba({{ $asset->aksi == 'Handover' ? '27,207,180' : '' }} {{ $asset->aksi == 'Mutasi' ? '254,215,19' : '' }} {{ $asset->aksi == 'Return' ? '254,124,150' : '' }}); margin-left: {{ $asset->aksi == 'Return' ? '-90px' : '-105px' }};">
+                                                                {{ $asset->aksi }}
+                                                            </span>
                                                                 <input type="checkbox" class="form-check-input" name="assets[]"
                                                                     value="{{ $asset->id }}" id="asset-{{ $asset->id }}"
                                                                     style="transform: scale(1.5);">
@@ -85,20 +88,20 @@
                 <!-- Assets Section -->
                 <div class="col-md-8">
                     <!-- Section for Approved Assets -->
-                    <div class="card border-success">
-                        <div class="card-header bg-success text-white">
-                            <h2>Approved Assets</h2>
+                    <div class="card" style="box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+                        <div class="card-header text-white" style="background-color: #1bcfb4;">
+                            <h2 style="text-align: center; margin-top:5px; font-weight: bold;">Approved Assets</h2>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body flex-column align-items-center">
                             @if ($assets->isEmpty())
                                 <p class="text-center">No approved assets found.</p>
                             @else
 
-                                                    <div class="row">
+                                                    <div class="row justify-content-center">
                                                         @foreach ($assets as $index => $asset)
                                                                                     <div class="col-md-5 mb-3">
                                                                                         <div class="card"
-                                                                                            style="background-color: rgba(130, 130, 130, 0.2); border: 3px solid black;">
+                                                                                            style="background-color: rgb(218,181,255); border: none;">
                                                                                             <div class="card-body">
                                                                                                 <div class="d-flex align-items-center mb-4">
                                                                                                     @php
@@ -121,7 +124,7 @@
                                                                                                 </div>
 
                                                                                                 <div class="action-buttons d-flex justify-content-end">
-                                                                                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                                                                <button class="btn btn-sm" style="background-color: #4FB0F1; color: #fff; font-weight: 500;" data-bs-toggle="modal"
                                                                                                     data-bs-target="#detailModal{{ $asset->id }}" title="View Details">
                                                                                                     <i class="bi bi-file-earmark-text"></i> Detail
                                                                                                 </button>
@@ -313,7 +316,7 @@
 
         /* Badge styles */
         .badge.bg-success {
-            background-color: #28a745 !important;
+            background-color: #1bcfb4 !important;
         }
 
         .badge.bg-warning {

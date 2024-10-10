@@ -36,6 +36,7 @@ class InventoryHistoryController extends Controller
                 'asset_history.changed_at',
                 'asset_history.action',
                 'asset_history.keterangan',
+                'asset_history.note',
                 'asset_history.documentation_old',
                 'asset_history.documentation_new'
             )

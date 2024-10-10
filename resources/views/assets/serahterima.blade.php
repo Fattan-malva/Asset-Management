@@ -109,6 +109,12 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="note">Notes</label>
+                                        <input type="text" class="form-control" id="note"
+                                            value="{{ old('note', $asset->note) }}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="lokasi">Location</label>
                                         <input type="text" class="form-control" id="lokasi" value="{{ old('lokasi', $asset->lokasi) }}"
                                             readonly>

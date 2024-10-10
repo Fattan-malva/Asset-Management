@@ -41,7 +41,7 @@ class CustomerController extends Controller
             'mapping' => $request->input('mapping'),
         ]);
 
-        return redirect()->route('customer.index')->with('success', 'Customer created successfully.');
+        return redirect()->route('customer.index')->with('success', 'User created successfully.');
     }
 
     // Display the specified resource
@@ -69,7 +69,7 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return redirect()->route('customer.index')->with('success', 'Customer updated successfully.');
+        return redirect()->route('customer.index')->with('success', 'User updated successfully.');
     }
 
     // Remove the specified resource from storage

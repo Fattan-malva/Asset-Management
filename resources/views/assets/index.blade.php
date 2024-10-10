@@ -4,6 +4,30 @@
 <div class="container">
     <div>
         <div class="container">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <script>
+                // Menampilkan pesan sukses setelah redirect dari controller
+                @if(session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '{{ session('success') }}', // Pesan sukses dari session
+                        icon: 'success', // Ikon sukses
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+
+                // Menampilkan pesan error validasi
+                @if($errors->any())
+                    Swal.fire({
+                        title: 'Error!',
+                        text: '{!! implode(', ', $errors->all()) !!}', // Menggabungkan semua pesan error
+                        icon: 'error', // Ikon error
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+            </script>
+
             <div class="header-container">
                 <div class="back-wrapper">
                     <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
@@ -31,21 +55,22 @@
                 </div>
             @endif
             <div class="mb-3">
-                <div class="d-flex justify-content-start">
-                    <a href="{{ route('assets.create') }}" class="btn btn-sm me-2"
-                        style="background-color: #1BCFB4; color: #fff; font-weight: bold">Handover Asset</a>
+                <div class="d-flex flex-column flex-sm-row justify-content-start" style="margin-bottom: -50px;">
+                    <a href="{{ route('assets.create') }}" class="btn btn-sm me-2 mb-2 mb-sm-0"
+                        style="background-color: #1BCFB4; color: #fff; font-weight: bold;">Handover Asset</a>
                     <a href="{{ route('assets.indexreturn') }}" class="btn btn-sm"
-                        style="background-color: #FE7C96; color: #fff; font-weight: bold">Return Asset</a>
+                        style="background-color: #FE7C96; color: #fff; font-weight: bold;">Return Asset</a>
                 </div>
             </div>
+
             <div class="table-responsive">
                 <table id="assetTable" class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">Asset Tagging</th>
-                            <th scope="col">Name Holder</th>
-                            <th scope="col">Asset Type</th>
+                            <th scope="col" style="width: 100px;">Asset Code</th>
+                            <th scope="col" style="width: 150px;">Name Holder</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Process</th>
                             <th scope="col">Approval</th>
@@ -80,36 +105,34 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <!-- Button to View Details -->
-                                        <button class="btn btn-sm"
-                                            style="background-color: #4FB0F1; color: #fff; font-weight:500;"
-                                            data-bs-toggle="modal" data-bs-target="#detailModal{{ $asset->id }}"
-                                            title="View Details" style="margin-right:10px;">
-                                            <i class="bi bi-file-earmark-text"></i> Detail
+                                        <button type="button" class="btn btn-sm text-white" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal{{ $asset->id }}" title="Details"
+                                            style="background-color:#4FB0F1; margin-right:5px;">
+                                            <i class="bi bi-file-earmark-text-fill text-white"></i> Detail
                                         </button>
                                         <!-- Conditional Button: Cancel Process -->
                                         @if ($asset->approval_status === 'Rejected' && $asset->aksi === 'Handover')
                                             <form action="{{ route('assets.delete', ['id' => $asset->id]) }}" method="POST"
-                                                style="display:inline;">
+                                                style="display:inline;" class="cancel-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" title="Cancel Process"
-                                                    onclick="return confirm('Are you sure you want to return this asset to inventory?')">
+                                                <button type="submit" class="btn btn-danger text-white"
+                                                    title="Cancel Process"><i class="bi bi-x-circle"></i>
                                                     Cancel Process
                                                 </button>
                                             </form>
                                         @endif
 
-                                        <!-- Conditional Button: Rollback Name -->
                                         @if ($asset->approval_status === 'Rejected' && ($asset->aksi === 'Mutasi' || $asset->aksi === 'Return'))
                                             <form action="{{ route('assets.rollbackMutasi', ['id' => $asset->id]) }}"
-                                                method="POST" style="display:inline;">
+                                                method="POST" style="display:inline;" class="rollback-form">
                                                 @csrf
-                                                <button type="submit" class="btn btn-warning" title="Rollback Name"
-                                                    onclick="return confirm('Are you sure you want to rollback this asset to its previous name?')">
-                                                    Rollback Name
+                                                <button type="submit" class="btn btn-warning text-white" title="Rollback Name">
+                                                    <i class="bi bi-arrow-repeat"></i> Rollback Name
                                                 </button>
                                             </form>
                                         @endif
+
                                     </div>
 
                                     <a href="{{ route('assets.track', ['id' => $asset->id]) }}" class="btn"
@@ -120,10 +143,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="9" class="text-center" style="padding: 50px; font-size: 1.2em;">No approval
-                                    status found.</td>
-                            </tr>
+
                         @endforelse
                     </tbody>
                 </table>
@@ -136,7 +156,8 @@
                             <span class="legend-description">The asset has been approved by the user.</span>
                         </li>
                         <li>
-                            <span class="badge legend-badge" style="padding: 5px 7px; background-color: #FED713">Waiting
+                            <span class="badge legend-badge"
+                                style="padding: 5px 10px; background-color: #FED713">Waiting
                                 Approval</span>
                             <span class="legend-colon">:</span>
                             <span class="legend-description">Waiting for the asset to be approved by the user.</span>
@@ -160,11 +181,12 @@
         aria-labelledby="detailModalLabel{{ $asset->id }}" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-center font-weight-bold" id="detailModalLabel{{ $asset->id }}">Asset Details
-                    </h4>
+                <div class="d-flex justify-content-between align-items-center  modal-header">
+                    <h4 class="modal-title text-center flex-grow-1 text-black" style="font-weight: 600;"
+                        id="detailModalLabel{{ $asset->id }}">Approval Details</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <hr style="width: 90%; margin: auto;" />
                 <div class="modal-body">
                     <div class="row">
                         <!-- Tabel Kiri -->
@@ -172,7 +194,7 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Asset Tagging</th>
+                                        <th scope="row">Asset Code</th>
                                         <td>{{ $asset->tagging }}</td>
                                     </tr>
                                     <tr>
@@ -191,10 +213,7 @@
                                         <th scope="row">Asset Type</th>
                                         <td>{{ $asset->jenis_aset }}</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">Merk</th>
-                                        <td>{{ $asset->merk_name }}</td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -204,12 +223,12 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Serial Number</th>
-                                        <td>{{ $asset->serial_number }}</td>
+                                        <th scope="row">Merk</th>
+                                        <td>{{ $asset->merk_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">O365</th>
-                                        <td>{{ $asset->o365 }}</td>
+                                        <th scope="row">Serial Number</th>
+                                        <td>{{ $asset->serial_number }}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Status</th>
@@ -239,9 +258,6 @@
                             </table>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <br>
                 </div>
             </div>
         </div>
@@ -292,16 +308,62 @@
         text-align: left;
     }
 
+    /* CSS for table row borders */
+    .table-hover tbody tr td,
+    .table-hover thead tr th {
+        border-bottom: 1px solid #ebedf2;
+        /* Add a border to the bottom of each row */
+        background-color: #fff;
+    }
+
+    .table-hover tbody tr td {
+        font-weight: 300;
+    }
+
+    .table-hover thead tr th {
+        font-weight: 600;
+    }
+
+    /* Remove any cell borders */
+    .table-hover th,
+    .table-hover td {
+        border: none;
+        /* Hapus border dari tabel */
+    }
+
+    .table th,
+    .table td {
+        border: none;
+        /* Hapus border dari tabel */
+    }
+
+    .table th {
+        font-weight: 600;
+    }
+
     .legend-colon {
         margin: 0 5px;
         /* Space around the colon */
     }
 
     /* Hide colon on mobile devices */
+    /* Hide colon on mobile devices */
     @media (max-width: 576px) {
         .legend-colon {
             display: none;
             /* Hide colon */
+        }
+
+        .btn-group {
+            flex-direction: column;
+            /* Stack buttons vertically on small screens */
+            margin-bottom: 5px;
+            /* Add space between buttons */
+        }
+
+        .btn {
+            width: 100%;
+            /* Full width on mobile */
         }
     }
 
@@ -398,5 +460,146 @@
     .previous-icon {
         font-size: 16px;
     }
+
+    @media (max-width: 576px) {
+        .header-container {
+            flex-direction: column;
+            /* Stack items vertically on mobile */
+            align-items: flex-start;
+            /* Align items to the start */
+            padding: 10px 20px;
+            /* Adjust padding */
+        }
+
+        .back-text .title {
+            font-size: 1rem;
+            /* Adjust font size for mobile */
+        }
+
+        .back-text .small-text {
+            font-size: 0.75rem;
+            /* Smaller font size for mobile */
+        }
+
+        .dashboard-title {
+            margin-left: 15px;
+            /* Add margin to the left for spacing */
+            font-size: 1.125rem;
+            /* Maintain the title size */
+            margin-top: 5px;
+            /* Add some margin on top */
+        }
+
+        .card-body {
+            padding: 15px;
+            /* Menyesuaikan padding untuk tampilan mobile */
+        }
+
+        .table-responsive {
+            margin-top: 70px;
+            /* Menambahkan jarak antara tombol dan tabel */
+        }
+
+        .btn {
+            width: 100%;
+            /* Buat tombol penuh lebar pada mobile */
+        }
+
+        .d-flex {
+            flex-direction: column;
+            /* Stack tombol secara vertikal */
+        }
+
+        .mb-2 {
+            margin-bottom: 10px;
+            /* Tambahkan jarak antara tombol di mobile */
+        }
+    }
 </style>
+
 @endsection
+
+<!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // SweetAlert for Delete confirmation
+        document.querySelectorAll('.rollback-form').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#6B07C2',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, rollback it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Rolling back',
+                            text: 'Please wait...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                form.submit(); // Submit the form after confirmation
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.cancel-form').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#6B07C2',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Canceling',
+                            text: 'Please wait...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                form.submit(); // Submit the form after confirmation
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    });
+
+
+    @if(session('success'))
+        Swal.fire({
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonColor: '#6B07C2'
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            title: 'Error!',
+            text: "{{ session('error') }}",
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    @endif
+</script>

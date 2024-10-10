@@ -87,49 +87,82 @@ class InventoryController extends Controller
 
 
 
-    public function edit($id)
+    public function edit()
     {
-        // Fetch inventory item with merk name
-        $inventory = DB::table('inventory')
+        // Fetch all inventories with their merk names for the form
+        $inventories = DB::table('inventory')
             ->join('merk', 'inventory.merk', '=', 'merk.id')
-            ->select('inventory.*', 'merk.name as merk_name')
-            ->where('inventory.id', $id)
-            ->first();
+            ->select('inventory.id', 'inventory.tagging', 'merk.name as merk_name')
+            ->get();
 
-        // Fetch all merk names
+        // Fetch all merk names for the form
         $merks = DB::table('merk')->pluck('name', 'id');
 
-        return view('inventorys.edit', compact('inventory', 'merks'));
+        return view('inventorys.edit', compact('inventories', 'merks'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        // Validate that at least one asset is selected
         $request->validate([
-            'tagging' => 'required|string|max:255|unique:inventory,tagging,' . $id,
-            'asets' => 'required|string|max:255',
-            'merk' => 'required|exists:merk,id',
-            'seri' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'ids' => 'required|array', // Ensure that it's an array of IDs
+            'ids.*' => 'exists:inventory,id', // Ensure each ID exists in the inventory table
+            // 'asets' => 'required|string|max:255',
+            // 'merk' => 'required|exists:merk,id',
+            // 'seri' => 'required|string|max:255',
+            // 'type' => 'required|string|max:255',
             'maintenance' => 'required|string|max:255',
             'kondisi' => 'required|in:Good,Exception,Bad,New',
         ]);
 
-        $inventory = Inventory::findOrFail($id);
+        // Loop through each selected asset ID and update
+        foreach ($request->input('ids') as $id) {
+            $inventory = Inventory::findOrFail($id); // Find the asset by ID
 
-        $inventory->asets = $request->input('asets');
-        $inventory->merk = $request->input('merk');
-        $inventory->tagging = $request->input('tagging'); // Include tagging here
-        $inventory->seri = $request->input('seri');
-        $inventory->type = $request->input('type');
-        $inventory->kondisi = $request->input('kondisi');
-        $inventory->maintenance = $request->input('maintenance');
-        $inventory->save();
+            // $inventory->asets = $request->input('asets');
+            // $inventory->merk = $request->input('merk');
 
-        return redirect()->route('inventorys.index')->with('success', 'Asset updated successfully');
+            // Check if tagging is provided in the request
+            if ($request->has('tagging')) {
+                $inventory->tagging = $request->input('tagging');
+            } else {
+                // If tagging is not provided, keep the existing tagging or generate one
+                $inventory->tagging = $inventory->tagging ?? $this->generateTagging($inventory); // Adjust to your logic
+            }
+
+            // $inventory->seri = $request->input('seri');
+            // $inventory->type = $request->input('type');
+            $inventory->kondisi = $request->input('kondisi');
+            $inventory->maintenance = $request->input('maintenance');
+            $inventory->save(); // Save each asset
+        }
+
+        // Redirect with success message after all updates
+        return redirect()->route('inventorys.index')->with('success', 'Selected assets maintained successfully');
     }
+
+    // Example function for tagging generation (customize according to your needs)
+    private function generateTagging($inventory)
+    {
+        // Generate the tagging value based on your own logic
+        return strtoupper(substr($inventory->asets, 0, 3)) . '-' . strtoupper(substr($inventory->merk, 0, 2)) . '-' . str_pad($inventory->id, 3, '0', STR_PAD_LEFT);
+    }
+
+    public function showEditForm()
+    {
+        // Fetch all inventory items for display in the select dropdown
+        $inventories = Inventory::all();
+        // Fetch all merk items
+        $merks = Merk::pluck('name', 'id'); // Fetch merk names with their corresponding IDs
+
+        // Return the view with the inventory and merk data
+        return view('inventorys.edit', compact('inventories', 'merks'));
+    }
+
+
     public function destroy(Request $request)
     {
-        $ids = $request->input('ids');
+        $ids = $request->input('ids');  // Get the IDs from the request
         $documentationPath = null;
 
         // Handle the uploaded documentation file
@@ -139,37 +172,46 @@ class InventoryController extends Controller
             $file->move(public_path('documentation'), $documentationPath);
         }
 
-        try {
-            foreach ($ids as $id) {
-                // Find and delete the inventory
-                $inventory = Inventory::findOrFail($id);
+        foreach ($ids as $id) {
+            // Find the inventory by its ID
+            $inventory = Inventory::findOrFail($id);
 
-                // Create a record in the inventory_history
-                InventoryHistory::create([
-                    'inventory_id' => $id,
-                    'action' => 'DELETE',
-                    'tagging' => $inventory->tagging,
-                    'asets' => $inventory->asets,
-                    'merk' => $inventory->merk,
-                    'seri' => $inventory->seri,
-                    'tanggalmasuk' => $inventory->tanggalmasuk,
-                    'type' => $inventory->type,
-                    'kondisi' => $inventory->kondisi,
-                    'status' => $inventory->status,
-                    'lokasi' => $inventory->lokasi,
-                    'tanggal_diterima' => $inventory->tanggal_diterima,
-                    'documentation' => $documentationPath, // Save the documentation path
-                ]);
-
-                // Now delete the inventory
-                $inventory->delete();
+            // Check the status before attempting to delete
+            if ($inventory->status === 'Operation') {
+                return redirect()->route('inventorys.index')->with('error', 'Cannot delete assets because assets are still operational, please make a return first.');
             }
 
-            return redirect()->route('inventory.history')->with('success', 'Assets scrapped successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('inventory.history')->with('error', 'An error occurred while deleting the asset: ' . $e->getMessage());
+            // Now delete the inventory from the database if status is Inventory
+            $inventory->delete();
+
+            // Create a record in the inventory_history table after successful deletion
+            // Create a record in the inventory_history table after successful deletion
+            InventoryHistory::create([
+                'inventory_id' => $id,
+                'action' => 'DELETE',
+                'tagging' => $inventory->tagging,
+                'asets' => $inventory->asets,
+                'merk' => $inventory->merk,
+                'seri' => $inventory->seri,
+                'tanggalmasuk' => $inventory->tanggalmasuk,
+                'type' => $inventory->type,
+                'kondisi' => $inventory->kondisi,
+                'status' => $inventory->status,
+                'lokasi' => $inventory->lokasi,
+                'tanggal_diterima' => ($inventory->tanggal_diterima === '0000-00-00 00:00:00') ? null : $inventory->tanggal_diterima,
+                'documentation' => $documentationPath,  // Save the documentation path
+            ]);
+
         }
+
+        return redirect()->route('inventorys.index')->with('success', 'Assets scrapped successfully.');
     }
+
+
+
+
+
+
 
 
 

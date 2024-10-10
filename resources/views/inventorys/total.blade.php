@@ -34,7 +34,7 @@
                 <table id="inventoryTable" class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Asets Name</th>
+                            <th scope="col" style="width: 400px;">Type</th>
                             <th scope="col">Merk</th>
                             <th scope="col">Total Quantity</th>
                         </tr>
@@ -47,11 +47,6 @@
                                 <td>{{ $summary->total_quantity }}</td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="4" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    Assets found.</td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>

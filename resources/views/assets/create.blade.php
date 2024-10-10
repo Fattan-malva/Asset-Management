@@ -24,51 +24,67 @@
     <div class="card">
         <div class="card-body">
             @if ($assetTaggingAvailable && $namesAvailable)
-                <form action="{{ route('assets.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('assets.store') }}" method="POST" enctype="multipart/form-data" id="Handover">
                     @csrf
 
                     <input type="hidden" name="approval_status" value="Pending">
                     <input type="hidden" name="aksi" value="Handover">
 
+                    <!-- Row untuk membagi dua kolom -->
+                    <div class="row">
+                        <!-- Kolom Kiri -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="asset_tagging">Asset Code</label>
+                                <select class="form-control" id="asset_tagging" name="asset_tagging[]" multiple="multiple"
+                                    required>
+                                    @foreach($inventories as $inventory)
+                                        <option style="color:black;" value="{{ $inventory->id }}">{{ $inventory->tagging }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                    <div class="form-group">
-                        <label for="asset_tagging">Asset Tagging</label>
-                        <select class="form-control" id="asset_tagging" name="asset_tagging[]" multiple="multiple" required>
-                            @foreach($inventories as $inventory)
-                                <option value="{{ $inventory->id }}">{{ $inventory->tagging }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="nama">Name</label>
-                        <select class="form-control" id="nama" name="nama" required>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <div class="input-group">
-                            <input type="text" id="location-input" class="form-control" placeholder="Search for a location"
-                                required>
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" id="enter-location">Search</button>
+                            <div class="form-group">
+                                <label for="nama">Name Holder</label>
+                                <select class="form-control" id="nama" name="nama" required>
+                                    @foreach($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama">Detail Location</label>
+                                <br>
+                                <small>
+                                    *Add here if you want to add a more specific location.
+                                </small>
+                                <input type="text" id="lokasi" class="form-control" name="lokasi"
+                                    placeholder="Location details will be set here" required>
                             </div>
                         </div>
-                        <div id="map" style="height: 400px; width: 100%; margin-top:10px;"></div>
-                        <input type="hidden" id="latitude" name="latitude">
-                        <input type="hidden" id="longitude" name="longitude">
+
+                        <!-- Kolom Kanan -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <div class="input-group">
+                                    <input type="text" id="location-input" class="form-control"
+                                        placeholder="Search for a location" required>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary" id="enter-location"><i
+                                                class="bi bi-search"></i> Search</button>
+                                    </div>
+                                </div>
+                                <div id="map" style="height: 300px; width: 100%; margin-top:10px;"></div>
+                                <input type="hidden" id="latitude" name="latitude">
+                                <input type="hidden" id="longitude" name="longitude">
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <input type="text" id="lokasi" class="form-control" name="lokasi"
-                            placeholder="Location details will be set here" required>
-                    </div>
-
+                    <!-- Form lainnya di bawah row -->
                     <div class="form-group">
                         <select class="form-control" id="status" name="status" hidden>
                             <option value="Operation">Operation</option>
@@ -102,9 +118,10 @@
                         @endif
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-success">Submit</button>
-                        <a href="{{ route('assets.index') }}" class="btn btn-secondary ml-3">Cancel</a>
+                    <div class="text-end">
+                        <button type="submit" class="btn" style="background-color:#1bcfb4;">Submit</button>
+                        <a href="{{ route('assets.indexreturn') }}" class="btn ml-3"
+                            style="background-color:#FE7C96;">Cancel</a>
                     </div>
                 </form>
             @elseif (!$assetTaggingAvailable)
@@ -126,7 +143,6 @@
 
 
 <script>
-    // The rest of your JavaScript for the map and geocoding remains unchanged
     document.addEventListener('DOMContentLoaded', function () {
         var map = L.map('map').setView([-6.2088, 106.8456], 13); // Default coordinates for Jakarta
 
@@ -141,13 +157,13 @@
                 var result = results[0];
                 var latlng = result.center;
 
-                // Update the input fields
+                // Update the input fields for latitude, longitude, and location
                 document.getElementById('latitude').value = latlng.lat;
                 document.getElementById('longitude').value = latlng.lng;
                 document.getElementById('location-input').value = result.name;
 
-                // Also set the lokasi field with the location name
-                document.getElementById('lokasi').value = result.name;
+                // Store the location value in a variable but don't add it to the detail input directly
+                locationName = result.name;
 
                 // Add a marker on the map
                 L.marker(latlng).addTo(map)
@@ -161,6 +177,7 @@
             }
         }
 
+        var locationName = ''; // Store the location name from the search
         var marker = L.marker([-6.2088, 106.8456], { draggable: true }).addTo(map);
         marker.on('moveend', function (e) {
             var latlng = e.target.getLatLng();
@@ -181,7 +198,53 @@
                 document.getElementById('enter-location').click();
             }
         });
+
+        // Handle user input for the "Detail Location" field
+        document.getElementById('lokasi').addEventListener('blur', function (e) {
+            const lokasiInput = e.target.value.trim();
+
+            // If user has entered something in the "Detail Location" field
+            if (lokasiInput) {
+                // Format the value as "[lokasiInput], [locationName]"
+                document.getElementById('lokasi').value = lokasiInput + (locationName ? ', ' + locationName : '');
+            } else {
+                // If no input, just use the location name from the search result
+                document.getElementById('lokasi').value = locationName;
+            }
+        });
+
     });
+
+    // Event listener untuk form submit
+    document.getElementById('Handover').addEventListener('submit', function (event) {
+        event.preventDefault(); // Mencegah form submit default
+
+        // Tampilkan loading alert menggunakan SweetAlert
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait while we handover to the user.',
+            allowOutsideClick: false, // Mencegah klik di luar
+            didOpen: () => {
+                Swal.showLoading(); // Menampilkan loading spinner
+            }
+        });
+
+        // Simulasi pengiriman form (ganti dengan logika pengiriman form yang sesungguhnya)
+        setTimeout(() => {
+            this.submit(); // Kirim form setelah 1,5 detik (simulasi)
+        }, 1500);
+    });
+
+    // Menampilkan pesan sukses setelah redirect dari controller
+    @if(session('success'))
+        Swal.fire({
+            title: 'Success!',
+            text: '{{ session('success') }}', // Pesan sukses dari session
+            icon: 'success', // Ikon sukses
+            confirmButtonText: 'OK' // Tombol OK
+        });
+    @endif
+
 </script>
 
 <style>
@@ -219,6 +282,9 @@
 
     .btn {
         margin: 0 0.5rem;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
     }
 
     .select2-container {

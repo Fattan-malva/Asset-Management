@@ -35,8 +35,8 @@
                     <thead>
                         <tr>
                             <th scope="col">Location</th>
-                            <th scope="col">Aset Type</th>
-                            <th scope="col">Aset Quantity</th>
+                            <th scope="col" style="width: 100px;">Type</th>
+                            <th scope="col" style="width: 100px;">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,11 +47,6 @@
                                 <td>{{ $item->jumlah_aset }}</td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="3" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    Data found.</td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>

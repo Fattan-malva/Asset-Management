@@ -5,6 +5,30 @@
 <div class="container">
     <div>
         <div class="container">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <script>
+                // Menampilkan pesan sukses setelah redirect dari controller
+                @if(session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '{{ session('success') }}', // Pesan sukses dari session
+                        icon: 'success', // Ikon sukses
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+
+                // Menampilkan pesan error validasi
+                @if($errors->any())
+                    Swal.fire({
+                        title: 'Error!',
+                        text: '{!! implode(', ', $errors->all()) !!}', // Menggabungkan semua pesan error
+                        icon: 'error', // Ikon error
+                        confirmButtonText: 'OK' // Tombol OK
+                    });
+                @endif
+            </script>
+
             <div class="header-container">
                 <div class="back-wrapper">
                     <i class='bx bxs-chevron-left back-icon' id="back-icon"></i>
@@ -35,10 +59,10 @@
                         <tr>
                             <th scope="col">No.</th>
                             <th scope="col">Name Holder</th>
-                            <th scope="col">Asset Tagging</th>
-                            <th scope="col">Asset Type</th>
+                            <th scope="col">Asset Code</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Merk</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +75,8 @@
                                 <td>{{ $asset->merk_name }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{{ route('assets.return', ['id' => $asset->id]) }}" class="btn btn-sm"
+                                        <a href="{{ route('assets.return', ['id' => $asset->id]) }}"
+                                            class="btn btn-sm form-return"
                                             style="background-color: #fe7c96; color: #fff; font-weight: 500;"
                                             title="Return">
                                             Return
@@ -105,11 +130,6 @@
                                 </div>
                             </div>
                         @empty
-                            <tr>
-                                <td colspan="9" class="text-center"
-                                    style="padding: 50px; padding-bottom: 100px; padding-top: 100px; font-size: 1.2em;">No
-                                    assets found.</td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -121,8 +141,8 @@
 <br>
 
 <style>
-     /* Header Styles */
-     .header-container {
+    /* Header Styles */
+    .header-container {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -201,4 +221,20 @@
         font-size: 16px;
     }
 </style>
+<script>
+    document.querySelectorAll('.form-return').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Loading',
+                text: 'Please wait...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    window.location.href = this.href;
+                }
+            });
+        });
+    });
+</script>
 @endsection

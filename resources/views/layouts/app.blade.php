@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Additional CSS -->
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -25,6 +26,8 @@
     <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
@@ -135,6 +138,7 @@
         .dataTables_length select:focus {
             outline: none;
         }
+
         /* TABLE HOVER ROW */
         .table-hover tbody tr td,
         .table-hover thead tr th {
@@ -165,6 +169,38 @@
             margin: 0 5px;
             /* Space around the colon */
         }
+
+        /* Ensure default DataTables sorting icons don't reappear */
+        th.sorting:after,
+        th.sorting_asc:after,
+        th.sorting_desc:after {
+            display: none !important;
+            /* Force hiding default sorting arrows */
+        }
+
+        th.sorting:before,
+        th.sorting_asc:before,
+        th.sorting_desc:before {
+            display: none !important;
+            /* Force hiding default sorting arrows */
+        }
+
+        /* Add space between the header text and the custom Font Awesome icon */
+        th i {
+            margin-left: 10px;
+            /* Adjust spacing */
+            opacity: 0.3;
+            /* Set the transparency level (0.5 = 50% visible) */
+            transition: opacity 0.2s ease;
+            /* Smooth transition for hover effect */
+        }
+
+        th:hover i {
+            opacity: 1;
+            /* Full visibility on hover */
+        }
+
+
 
         /* Hide colon on mobile devices */
         @media (max-width: 576px) {
@@ -218,12 +254,12 @@
                 $(this).find('table').DataTable({
                     paging: true,
                     searching: true,
-                    ordering: false,
+                    ordering: true,
                     info: true,
                     lengthChange: true,
                     pageLength: 5,
                     lengthMenu: [
-                        [5, 25, 50, -1],  // Options: 10, 25, 50, Show All (-1)
+                        [5, 25, 50, -1],  // Options: 5, 25, 50, Show All (-1)
                         [5, 25, 50, "All"]  // Display text for the options
                     ],
                     language: {
@@ -246,13 +282,39 @@
                     initComplete: function () {
                         // Apply 'text-center' and 'align-middle' class to the header columns
                         $(this).closest('.table').find('th').addClass('text-center align-middle');
+
+                        // Add Font Awesome icons to the sorting headers
+                        $(this).closest('.table').find('th').each(function () {
+                            // Remove default DataTables sort classes
+                            $(this).removeClass('sorting sorting_asc sorting_desc');
+
+                            // Add Font Awesome sort icons
+                            $(this).append('<i class="fa-solid fa-arrow-up-z-a"></i>');
+                        });
+
+                        // Update icons on sorting
+                        $(this).on('click', 'th', function () {
+                            // Reset all icons first
+                            $(this).closest('thead').find('th i')
+                                .removeClass('fas fa-sort-up fas fa-sort-down')
+                                .addClass('fas fa-sort');
+
+                            // Change icon based on sorting order
+                            if ($(this).hasClass('sorting_asc')) {
+                                $(this).find('i').removeClass('fas fa-sort').addClass('fas fa-sort-up'); // Ascending
+                            } else if ($(this).hasClass('sorting_desc')) {
+                                $(this).find('i').removeClass('fas fa-sort').addClass('fas fa-sort-down'); // Descending
+                            }
+                        });
                     }
                 });
             });
 
+
+
             // Initialize Select2
             $('#asset_tagging').select2({
-                placeholder: "Select asset tagging",
+                placeholder: "Select asset code",
                 allowClear: true
             }).on('change', function () {
                 updateSelectedAssets();
@@ -290,7 +352,7 @@
             });
             $(document).ready(function () {
                 $('#tagging').select2({
-                    placeholder: 'Select assets to scrap',
+                    placeholder: 'Select assets',
                     allowClear: true
                 });
             });

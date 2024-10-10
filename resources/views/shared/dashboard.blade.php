@@ -261,6 +261,108 @@
         margin-top: -45px;
 
     }
+
+    /* style title card */
+
+    .location-summary {
+        display: inline-block;
+        background-color: rgba(254, 221, 57, 0.5);
+        border-radius: 20px;
+        padding: 5px 10px;
+        line-height: 1.5;
+    }
+
+    .location-icon {
+        color: #fedd39;
+        background-color: black;
+        padding: 26px 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .inventory-summary {
+        display: inline-block;
+        background-color: rgba(128, 0, 128, 0.3);
+        /* Transparent purple */
+        border-radius: 20px;
+        padding: 5px 10px;
+        line-height: 1.5;
+    }
+
+    .inventory-icon {
+        color: white;
+        /* Purple color */
+        background-color: black;
+        padding: 26px 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .operation-summary {
+        display: inline-block;
+        background-color: rgba(27, 207, 180, 0.3);
+        /* Transparent orange */
+        border-radius: 20px;
+        padding: 5px 10px;
+        line-height: 1.5;
+    }
+
+    .operation-icon {
+        color: #1BCFB4;
+        /* Orange color */
+        background-color: black;
+        padding: 25px 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+
+        .location-summary,
+        .inventory-summary,
+        .operation-summary {
+            display: block;
+            /* Stack vertically */
+            text-align: center;
+            /* Center align text */
+            width: 100%;
+            /* Full width */
+            margin: 10px 0;
+            /* Add margin for spacing */
+        }
+
+        .location-icon,
+        .inventory-icon,
+        .operation-icon {
+            padding: 20px;
+            /* Adjust padding for mobile */
+            background-color: transparent;
+            /* Remove background color */
+            color: black;
+            /* Change icon color to black */
+            margin: 0 auto;
+            /* Center the icon */
+        }
+    }
+
+    /* Further adjustments for smaller screens */
+    @media (max-width: 480px) {
+
+        .location-summary,
+        .inventory-summary,
+        .operation-summary {
+            font-size: 14px;
+            /* Reduce font size for smaller screens */
+        }
+
+        .location-icon,
+        .inventory-icon,
+        .operation-icon {
+            padding: 15px;
+            /* Further adjust padding */
+        }
+    }
 </style>
 
 <script>
@@ -385,7 +487,7 @@
             </a>
         </div>
 
-        <!-- Card Asset Type -->
+        <!-- Card Type -->
         <div class="col-lg-4 col-md-6 mb-2 assettotal-padding">
             <a href="{{ route('inventorys.index') }}" class="text-decoration-none">
                 <div
@@ -410,7 +512,7 @@
         <!-- Column for Pie Charts (Left Side) -->
         <div class="col-md-6">
             <div class="row">
-                <!-- Pie Chart for Asset Types -->
+                <!-- Pie Chart for Types -->
                 <div class="col-md-12 mb-4">
                     <div class="card border-1 shadow-sm card-chart">
                         <div class="card-body">
@@ -449,16 +551,20 @@
         <div class="col-md-12 mb-4">
             <div class="card border-1 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Operation Summary</h5>
+                    <h5 class="card-title operation-summary">
+                        <i class="fa-solid fa-gear fa-xl operation-icon"></i>
+                        Operation Summary
+                    </h5>
+
                     <div class="table-responsivee">
                         <table id="operationSummaryTable" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Location</th>
-                                    <th>Asset Type</th>
-                                    <th>Merk Name</th>
-                                    <th>Asset Tagging</th>
-                                    <th>Total Assets</th>
+                                    <th style="width: 270px;">Type</th>
+                                    <th style="width: 200px;">Merk</th>
+                                    <th>Asset Code</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -488,14 +594,18 @@
                 <div class="col-md-12 mb-4">
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Inventory Summary</h5>
+                            <h5 class="card-title inventory-summary">
+                                <i class="fa-solid fa-boxes-stacked fa-xl inventory-icon"></i>
+                                Inventory Summary
+                            </h5>
+
                             <div class="table-responsivee">
                                 <table id="inventorySummaryTable" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Asset Tagging</th>
+                                            <th>Asset Code</th>
                                             <th>Asset</th>
-                                            <th>Merk Name</th>
+                                            <th>Merk</th>
                                             <th>Condition</th>
                                         </tr>
                                     </thead>
@@ -525,14 +635,19 @@
                 <div class="col-md-12">
                     <div class="card border-1 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Location Summary</h5>
+                            <h5 class="card-title location-summary">
+                                <i class="fa-solid fa-map-location-dot fa-xl location-icon"></i>
+                                Location Summary
+                            </h5>
+
+
                             <div class="table-responsivee">
                                 <table id="mappingTable" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Location</th>
-                                            <th>Asset Type</th>
-                                            <th>Asset Quantity</th>
+                                            <th style="width: 160px;">Type</th>
+                                            <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -543,12 +658,6 @@
                                                 <td>{{ $item->jumlah_aset }}</td>
                                             </tr>
                                         @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center"
-                                                    style="padding: 50px; font-size: 1.2em;">
-                                                    No Data found.
-                                                </td>
-                                            </tr>
                                         @endforelse
                                     </tbody>
                                 </table>

@@ -192,6 +192,7 @@ class AsetsController extends Controller
             'latitude' => $request->input('latitude'),
             'longitude' => $request->input('longitude'),
             'keterangan' => $request->input('keterangan'),
+            'note' => $request->input('note'),
             'approval_status' => $request->input('approval_status', ''),
             'aksi' => $request->input('aksi', ''),
         ];
@@ -222,8 +223,8 @@ class AsetsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'asset_tagging' => 'required|array', // Change to array
-            'asset_tagging.*' => 'exists:inventory,id', // Validate each selected asset
+            'asset_tagging' => 'required|array',
+            'asset_tagging.*' => 'exists:inventory,id',
             'nama' => 'required|exists:customer,id',
             'status' => 'required|string',
             'o365' => 'required|string',
@@ -233,6 +234,7 @@ class AsetsController extends Controller
             'longitude' => 'required|numeric',
             'documentation' => 'nullable|image|max:2048', // Updated to nullable
             'keterangan' => 'nullable|string',
+            'note' => 'nullable|string',
         ]);
 
         $customer = Customer::find($request->input('nama'));
@@ -267,13 +269,15 @@ class AsetsController extends Controller
                 'latitude' => $request->input('latitude'),
                 'longitude' => $request->input('longitude'),
                 'keterangan' => $request->input('keterangan'),
+                'note' => $request->input('note'),
                 'documentation' => $documentationPath,
             ];
 
             Assets::create($assetData); // Create an asset record for each selected tagging
         }
 
-        return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over. Please wait for the user to agree.');
+        // Redirect back to the assets index with a success message
+        return redirect()->route('assets.index')->with('success', 'Assets have been successfully handed over.');
     }
 
 
@@ -285,6 +289,7 @@ class AsetsController extends Controller
             'status' => 'required|string',
             'o365' => 'required|string',
             'keterangan' => 'nullable|string',
+            'note' => 'nullable|string',
             'kondisi' => 'required|in:Good,Exception,Bad,New',
             'approval_status' => 'nullable|string|in:Pending,Approved', // Ensure valid status
             'documentation' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Updated to nullable
@@ -306,6 +311,7 @@ class AsetsController extends Controller
             'lokasi' => $request->input('lokasi', ''),
             'status' => $request->input('status'),
             'keterangan' => $request->input('keterangan'),
+            'note' => $request->input('note'),
             'kondisi' => $request->input('kondisi', ''),
             'approval_status' => $request->input('approval_status', ''), // Use input value
         ];
@@ -336,7 +342,7 @@ class AsetsController extends Controller
         $asset = Assets::findOrFail($id);
         $asset->delete();
 
-        return redirect()->route('assets.index')->with('success', 'Asset Returned successfully.');
+        return redirect()->route('assets.index')->with('success', 'The asset has been successfully returned to Inventory');
     }
 
 
@@ -379,6 +385,7 @@ class AsetsController extends Controller
                 'asset_history.changed_at',
                 'asset_history.action',
                 'asset_history.keterangan',
+                'asset_history.note',
                 'asset_history.documentation_old' // Field untuk pengecekan nanti
             )
             ->whereIn('asset_history.action', ['CREATE', 'UPDATE', 'DELETE'])
@@ -399,6 +406,10 @@ class AsetsController extends Controller
                     return $item->action === 'DELETE' && empty($item->documentation_old);
                 })->pluck('keterangan')->first(); // Ambil keterangan pertama yang memenuhi kondisi
     
+                $note = $filteredItems->filter(function ($item) {
+                    return $item->action === 'DELETE' && empty($item->documentation_old);
+                })->pluck('note')->first(); // Ambil keterangan pertama yang memenuhi kondisi
+    
                 // Group by changed_at to remove duplicates
                 $uniqueItems = $filteredItems->groupBy('changed_at')->map(function ($itemsByTime) {
                     return $itemsByTime->unique(function ($item) {
@@ -407,9 +418,10 @@ class AsetsController extends Controller
                 })->flatten()->sortBy('changed_at');
 
                 // Tambahkan field keterangan dari DELETE jika ada
-                $uniqueItems->each(function ($item) use ($keterangan) {
+                $uniqueItems->each(function ($item) use ($keterangan, $note) {
                     if ($item->action === 'DELETE') {
                         $item->keterangan = $keterangan; // Ganti dengan keterangan dari DELETE
+                        $item->note = $note;
                     }
                 });
 
@@ -452,6 +464,7 @@ class AsetsController extends Controller
             'nama' => 'required|exists:customer,id',
             'lokasi' => 'required|string',
             'keterangan' => 'required|string',
+            'note' => 'nullable|string',
             'documentation' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
@@ -478,6 +491,7 @@ class AsetsController extends Controller
             'approval_status' => 'Pending', // Status set to "Pending"
             'aksi' => $request->input('aksi'),
             'keterangan' => $request->input('keterangan'),
+            'note' => $request->input('note'),
         ];
 
         // Handle documentation file
@@ -556,12 +570,12 @@ class AsetsController extends Controller
     public function bulkAction(Request $request)
     {
         $selectedAssets = $request->input('assets'); // Get the selected asset IDs
-    
+
         // Validate that at least one asset was selected
         if (empty($selectedAssets)) {
             return redirect()->back()->with('error', 'Please select at least one asset.');
         }
-    
+
         // Determine the action (approve or reject)
         if ($request->input('action') === 'approve') {
             // Redirect to serahterima for approval
@@ -576,10 +590,10 @@ class AsetsController extends Controller
             }
             return redirect()->back()->with('status', 'Selected assets have been rejected.');
         }
-    
+
         return redirect()->back()->with('error', 'Unexpected action.');
     }
-    
+
 
 
 

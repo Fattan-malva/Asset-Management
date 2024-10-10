@@ -62,6 +62,12 @@
                             class="{{ request()->routeIs('assets.indexreturn') ? 'active' : '' }}">Return</a></li>
                     <li><a href="{{ route('inventorys.scrap') }}"
                             class="{{ request()->routeIs('inventorys.scrap') ? 'active' : '' }}">Scrap</a></li>
+                    <li><a href="{{ route('inventorys.edit') }}"
+                            class="{{ request()->routeIs('inventorys.edit') ? 'active' : '' }}">
+                            Maintenance
+                        </a>
+                    </li>
+
                     <!-- <li><a href="{{ route('assets.indexmutasi') }}">Mutasi</a></li> -->
                 </ul>
             </li>
@@ -115,21 +121,21 @@
                     <a href="https://helpdesk.globalservice.co.id/" target="_blank"
                         class="{{ request()->routeIs('sales.index') ? 'active' : '' }}">
                         <i class="fa-solid fa-headset"></i>
-                        <span class="link_name" style="font-size:19px;  margin-left:-10px; text-decoration: underline;">Help Center</span>
+                        <span class="link_name" style="font-size:19px; margin-left:-10px;">Help Center</span>
                     </a>
-                    <a href="#">
+                    <a href="#" onclick="toggleNightMode()">
                         <i class="fa-solid fa-moon" style="margin-top:-20px"></i>
                         <span class="link_name"
                             style="font-size:19px; margin-top:-20px; margin-left:-10px; margin-right:10px;">Dark
                             Mode</span>
-                        <button onclick="toggleNightMode()" id="nightModeToggle" class="toggle-switch"
-                            style="margin-top:-20px ">
+                        <button id="nightModeToggle" class="toggle-switch" style="margin-top:-20px">
                             <i id="modeIcon" class='bx bx-moon'></i>
                             <div class="slider"></div>
                         </button>
                     </a>
                 </li>
             </div>
+
         </ul>
     </div>
 
@@ -146,7 +152,7 @@
                 <div class="job">Infrastructure</div>
             </div>
             <!-- Ganti icon logout menjadi lebih umum, misalnya, icon power-off -->
-            <i class='fa-solid fa-power-off' id="logout-icon" style="cursor: pointer;"></i>
+            <i class="fa-solid fa-right-from-bracket" id="logout-icon" style="cursor: pointer;"></i>
 
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
@@ -222,6 +228,15 @@
 
 
 <style>
+    .toggle-switch {
+        background-color: transparent;
+        /* Keeps it transparent */
+        border: none;
+        /* No border */
+        cursor: pointer;
+        /* Changes cursor to pointer on hover */
+    }
+
     /* Dark Mode Styles */
     body.dark-mode {
         background-color: #1d1b31;
@@ -246,7 +261,7 @@
     }
 
     body.dark-mode .sidebar .nav-links li:hover {
-        background: #3e3d58;
+        background: #59586b;
         /* Hover color for dark mode */
     }
 
@@ -489,46 +504,40 @@
         width: 260px;
         bottom: 0;
         left: 0;
+        margin-bottom: -10px;
         padding: 10px 14px;
         color: white;
         transition: all 0.5s ease;
         white-space: nowrap;
         justify-content: space-between;
+        background-color: #f8f9fa;
     }
 
-    .sidebar.dark-mode .bottom-section {
-        display: flex;
-        align-items: center;
-        position: fixed;
-        width: 260px;
-        bottom: 0;
-        left: 0;
-        padding: 10px 14px;
-        background: #f8f9fa;
-        color: white;
-        transition: all 0.5s ease;
-        white-space: nowrap;
-        justify-content: space-between;
+    body.dark-mode .sidebar .bottom-section {
+        background-color: #59586b;
     }
 
 
     .sidebar.close .bottom-section {
         flex-direction: column;
         width: 78px;
+        /* Adjusted for closed state */
         padding: 10px 0;
         align-items: center;
     }
 
+    /* Hide text labels when sidebar is closed */
+    .sidebar.close .bottom-section .link_name {
+        display: none;
+        /* Hides the text when the sidebar is closed */
+    }
 
+    .sidebar .bottom-section .link_name {
+        display: inline;
+        /* Shows text when sidebar is open */
+    }
 
-
-
-
-
-
-
-
-
+    
 
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -653,10 +662,6 @@
         transition: all 0.4s ease;
     }
 
-    .sidebar .nav-links li:hover {
-        background: #f8f9fa;
-        border-radius: 20px;
-    }
 
     .sidebar .nav-links li:hover {
         background: #f8f9fa;
@@ -793,7 +798,7 @@
         top: 0;
         margin-top: 0;
         padding: 0px;
-        background: #1d1b31;
+
         border-radius: 0 6px 6px 0;
         opacity: 1;
         display: none;
@@ -826,7 +831,7 @@
         /* Adjust position as necessary */
         top: 0;
         /* Align with the parent menu item */
-        background: #f8f9fa;
+        background: white;
         /* Background for the submenu */
         border-radius: 6px;
         /* Optional: rounded corners */
@@ -1061,33 +1066,22 @@
         e.preventDefault();  // Prevent form from submitting immediately
 
         // Show SweetAlert modal for logout confirmation with improved design
-        swal({
+        Swal.fire({
             title: "Are you sure?",
             text: "You will be logged out of the system.",
             icon: "warning",
-            buttons: {
-                cancel: {
-                    text: "Cancel",
-                    value: null,
-                    visible: true,
-                    className: "btn-secondary",
-                    closeModal: true
-                },
-                confirm: {
-                    text: "Log Out",
-                    value: true,
-                    visible: true,
-                    className: "btn-danger",
-                    closeModal: true
-                }
-            },
-            dangerMode: true,
-        }).then((willLogout) => {
-            if (willLogout) {
-                // If user confirms, submit the logout form
+            showCancelButton: true,
+            confirmButtonColor: "#6B07C2",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Log Out",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, submit the logout form
                 document.getElementById('logout-form').submit();
             }
         });
+
     });
 
 
